@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-15 -*
 # Copyright (C) 2009 Søren Bjerregaard Vrist
 #
 # This program is free software; you can redistribute it and/or

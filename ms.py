@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-15 -*
 # Copyright (C) 2009 Søren Bjerregaard Vrist
 #
 # This program is free software; you can redistribute it and/or
@@ -14,8 +15,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+"""
+Uses fixed but scaled bounding box measures with a precision of _precis to mark
+dynamic f and dynamic ff with red and green.
+The scaled numbers is based on bounding box for ff and f in 
+http://www.free-scores.com/download-sheet-music.php?pdf=14870#
+"""
 from gamera.core import *
 from gamera.toolkits.musicstaves import musicstaves_rl_fujinaga
+#from gamera.toolkits.musicstaves import musicstaves_skeleton
 import sys
 import re
 import time
@@ -29,6 +37,7 @@ noend = m.group(1)
 
 image = load_image(imgname)
 image = image.to_onebit()
+#ms = musicstaves_skeleton.MusicStaves_skeleton(image)
 ms = musicstaves_rl_fujinaga.MusicStaves_rl_fujinaga(image)
 ms.remove_staves(crossing_symbols = 'bars')
 rgbimg = image.to_rgb()
