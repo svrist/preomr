@@ -15,21 +15,24 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from gamera.core import *
-from gamera.toolkits.musicstaves import musicstaves_rl_simple
 from gamera.toolkits.musicstaves import musicstaves_rl_fujinaga
-from gamera.toolkits.musicstaves import musicstaves_skeleton
-from gamera.toolkits.musicstaves import musicstaves_rl_carter
 import sys
 import re
 
-init_gamera()
-for imgname in sys.argv[1:]:
-    m = re.match(r"^(.*)\.[^\.]+$",imgname)
-    noend = m.group(1)
-    image = load_image(imgname)
-    image = image.to_onebit()
+def remstaves(image):
     ms = musicstaves_rl_fujinaga.MusicStaves_rl_fujinaga(image)
     ms.remove_staves(crossing_symbols = 'bars')
-    ms.image.save_PNG("%s_fujinaga.png"%noend)
-    print "Saved %s_fujinaga.png"%noend
+    return ms
+
+
+if __name__ == '__main__':
+    init_gamera()
+    for imgname in sys.argv[1:]:
+        m = re.match(r"^(.*)\.[^\.]+$",imgname)
+        noend = m.group(1)
+        image = load_image(imgname)
+        image = image.to_onebit()
+        ms = remstaves(image)
+        ms.image.save_PNG("%s_fujinaga.png"%noend)
+        print "Saved %s_fujinaga.png"%noend
 
