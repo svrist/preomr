@@ -15,14 +15,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from gamera.core import RGBPixel
-def outline(rgb_img,cc,width=2.0,color=RGBPixel(255,0,0)):
-    rgb_img.draw_hollow_rect((cc.offset_x,cc.offset_y),(cc.offset_x+cc.ncols,cc.offset_y+cc.nrows),color,width)
+from numpy import arange
+from gamera.core import *
+from class_dynamic import Classifier_with_remove
+import sys
 
-def outline_matched(rgb_img,needle,haystack):
-    epsilon = 5
-    bottom_ncols = needle.ncols-5
-    top_ncols = needle.ncols+5
-    for c in haystack:
-        if c.ncols == needle.ncols and c.nrows == needle.nrows:
-            outline(rgb_img,c)
+def test_e_fp(filename):
+    init_gamera()
+    for dynamic in ["mergedyn.xml","only-dynamics.xml", "newtrain-dynamic"]:
+        c = Classifier_with_remove("mergedyn.xml",0.1)
+        ci = c.classify_image(filename)
+        result = {}
+        for e_fp in arange(0.1,0.95,0.01):
+            c.e_fp=e_fp
+            count = len(ci.classified_glyphs(c.d_t()))
+            if not result.has_key(count):
+                result[count] = []
+                result[count].append(e_fp)
+        print "%s: %s"%(dynamic,[round(r,3) for r in result[10]])
+
+if __name__ == '__main__':
+    test_e_fp(sys.argv[-1])

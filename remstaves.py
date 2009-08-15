@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-15 -*
 # Copyright (C) 2009 Søren Bjerregaard Vrist
 #
 # This program is free software; you can redistribute it and/or
@@ -14,25 +15,50 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from gamera.core import *
 from gamera.toolkits.musicstaves import musicstaves_rl_fujinaga
-import sys
-import re
+from gamera.toolkits.musicstaves import musicstaves_skeleton
 
 def remstaves(image):
     ms = musicstaves_rl_fujinaga.MusicStaves_rl_fujinaga(image)
     ms.remove_staves(crossing_symbols = 'bars')
     return ms
 
+def remstaves_skeleton(image):
+    ms = musicstaves_skeleton.MusicStaves_skeleton(image)
+    ms.remove_staves(crossing_symbols = 'bars')
+    return ms
+
+
+
 
 if __name__ == '__main__':
+    from gamera.core import *
+    import sys
+    import re
+    import time
     init_gamera()
-    for imgname in sys.argv[1:]:
+
+    progress=0
+    amount = len(sys.argv[1:])
+    elapsed = 0
+    for i,imgname in enumerate(sys.argv[1:]):
+        progress = ((i+1)/float(amount))*100
+        start = time.time()
         m = re.match(r"^(.*)\.[^\.]+$",imgname)
         noend = m.group(1)
         image = load_image(imgname)
         image = image.to_onebit()
-        ms = remstaves(image)
+        try:
+            ms = remstaves(image)
+        except:
+            ms = remstaves_skeleton(image)
+
+        stop = time.time()
+        elapsed += stop-start
+        timeleft = (elapsed/float(i+1))*(amount-(i+1))
         ms.image.save_PNG("%s_fujinaga.png"%noend)
+        print "%d %% done (%d/%d) %ds elapsed. %ds remaining"\
+                %(progress,i,amount,elapsed,timeleft)
         print "Saved %s_fujinaga.png"%noend
+        sys.stdout.flush()
 
