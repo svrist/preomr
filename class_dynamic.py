@@ -31,18 +31,30 @@ e_fp = 0.78
 
 class Classified_image:
 
-    def __init__(self,classifier,image,image_without_stafflines):
-        self.classifier = classifier
+    def __init__(self,classifier,image,ccs):
+        self.myclassifier = classifier
         self.image = image
-        self.ms = image_without_stafflines
-        self.classify_image()
+        self.ccs = ccs
+        self._invalid = True
         self._rgbimg = None
 
     def classify_image(self):
-        self.ccs = self.ms.image.cc_analysis()
-        self.classifier.classify_list_automatic(self.ccs)
+        self.myclassifier.classifier.classify_list_automatic(self.ccs)
+        self._invalid = False
 
-    def classified_glyphs(self,d_t):
+    def invalid(self):
+        self._invalid = True
+
+    def valid(self):
+        self._invalid = False
+
+    def classified_glyphs(self,d_t=None):
+        if self._invalid:
+            self.classify_image()
+
+        if d_t is None:
+            d_t = self.myclassifier.d_t()
+
         return [g for g in self.ccs if g.get_confidence(CONFIDENCE_AVGDISTANCE) <= d_t]
 
     def rgbimg(self):
@@ -56,18 +68,28 @@ class Classifier_with_remove:
         self.filename = training_filename
         self.e_fp = e_fp
         self.k = k
+        self.images = []
         self.init_classifier()
 
     def init_classifier(self,features= ["aspect_ratio", "zernike_moments",\
                                    "volume64regions","volume"]):
         self.classifier=knn.kNNInteractive([],features, 0)
         self.classifier.num_k = self.k
-        self.classifier.from_xml_filename(self.filename)
-        self.classifier.confidence_types = [CONFIDENCE_AVGDISTANCE]
-        self.stats = self.classifier.knndistance_statistics()
+        self.load_new_training_data(self.filename)
+
+    def invalidate_images(self):
+        [ i.invalid for i in self.images]
 
     def change_features(self,features):
         self.classifier.change_feature_set(features)
+        self.invalidate_images()
+
+    def load_new_training_data(self,filename):
+        self.classifier.from_xml_filename(filename)
+        self.classifier.confidence_types = [CONFIDENCE_AVGDISTANCE]
+        self.stats = self.classifier.knndistance_statistics()
+        self.invalidate_images()
+        print "loaded new file with training data: %s"%filename
 
     def d_t(self):
         cdf = EmpiricalCDF([s[0] for s in self.stats])
@@ -77,40 +99,29 @@ class Classifier_with_remove:
         image = load_image(imgname)
         image = image.to_onebit()
         ms = remstaves(image)
-        return Classified_image(self.classifier,image,ms)
-
-
-
-def paint_dynamics(classifier,imgname,d_t):
-    start=time.time()
-    ccs = ms.image.cc_analysis()
-    classifier.classify_list_automatic(ccs)
-    count = 0
-    for g in ccs:
-        if g.get_confidence(CONFIDENCE_AVGDISTANCE) <= d_t:
-            outline(rgbimg,g,3,RGBPixel(255,0,0))
-            count += 1
-    print "Classified %d glyps in  %f seconds"%(count,time.time()-start)
-    return rgbimg
+        ret = Classified_image(self,image,ms.image.cc_analysis())
+        self.images.append(ret)
+        return ret
 
 
 if __name__ == '__main__':
     start=time.time()
     init_gamera()
-    c = Classifier_with_remove("newtrain-dynamic.xml",0.35)
+    c = Classifier_with_remove(sys.argv[1],float(sys.argv[2]))
+    d_t = c.d_t()
     print "Loaded Gamera and classifier in %f seconds"%(time.time()-start)
-    print "count_of_training=%d, k=%d, e_fp=%f, d_t=%f"%(len(c.stats),c.k,c.e_fp,c.d_t())
+    print "count_of_training=%d, k=%d, e_fp=%f, d_t=%f"%(len(c.stats),c.k,c.e_fp,d_t)
+    sys.stdout.flush()
 
     start=time.time()
-    for imgname in sys.argv[1:]:
+    for imgname in sys.argv[3:]:
         m = re.match(r"^(.*)\.[^\.]+$",imgname)
         noend = m.group(1)
         ci = c.classify_image(imgname)
         rgbimg = ci.rgbimg()
-        cg = ci.classified_glyphs(c.d_t())
+        cg = ci.classified_glyphs(d_t)
         [outline(rgbimg,g,3.0,RGBPixel(255,0,0)) for g in cg]
         rgbimg.save_PNG("class_%s.png"%noend)
         print "Saved class_%s.png: %d glypgs found"%(noend,len(cg))
         sys.stdout.flush()
-
-    print "Parsed %d images in %f seconds"%(len(sys.argv[1:]),time.time()-start)
+    print "Parsed %d images in %f seconds"%(len(sys.argv[3:]),time.time()-start)

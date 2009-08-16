@@ -18,21 +18,72 @@
 from numpy import arange
 from gamera.core import *
 from class_dynamic import Classifier_with_remove
+from outline import outline
 import sys
 
-def test_e_fp(filename):
+class Result_item():
+    def __init__(self,key,e_fp,d_t):
+        self.key = key
+        self.e_fp  = e_fp
+        self.d_t = d_t
+
+    def __str__(self):
+        return "RI(%.2f,%.4f)"%(self.e_fp,self.d_t)
+
+    def __repr__(self):
+        return str(self)
+
+def find_nearest(result,count):
+    diff = 0
+    myres = result.keys()
+    myres.sort()
+    myres.reverse()
+    maxkey = myres[0]
+    while True:
+        if result.has_key(count-diff) and count-diff >0:
+            return (count-diff),result[count-diff],-diff
+        elif result.has_key(count+diff) and count+diff < maxkey:
+            return (count+diff),result[count+diff],diff
+        else:
+            diff += 1
+            if count-diff< 0 and count+diff > maxkey:
+                return maxkey,result[maxkey],None
+
+def test_e_fp(filename,expected_count=10):
     init_gamera()
-    for dynamic in ["mergedyn.xml","only-dynamics.xml", "newtrain-dynamic"]:
-        c = Classifier_with_remove("mergedyn.xml",0.1)
-        ci = c.classify_image(filename)
-        result = {}
-        for e_fp in arange(0.1,0.95,0.01):
+    c = Classifier_with_remove("newtrain-dynamic.xml",0.1,2)
+    c.change_features(["volume64regions"])
+    ci = c.classify_image(filename)
+    # try to match with different trainingsets.
+    for dynamic in ["mergedyn2.xml", "mergedyn.xml","only-dynamics.xml", "newtrain-dynamic.xml"]:
+        c.load_new_training_data(dynamic)
+        print "count_of_training=%d, k=%d"%(len(c.stats),c.k)
+        result = {} # Push into buckets based on the count of found glyphs.
+        sys.stdout.flush()
+
+        # Try with different epsilon for false_positives: e_fp
+        for e_fp in arange(0.05,0.97,0.01):
             c.e_fp=e_fp
-            count = len(ci.classified_glyphs(c.d_t()))
+            count = len(ci.classified_glyphs())
+
+            # Init bucket.
             if not result.has_key(count):
                 result[count] = []
-                result[count].append(e_fp)
-        print "%s: %s"%(dynamic,[round(r,3) for r in result[10]])
+            result[count].append(Result_item(count,e_fp,c.d_t()))
+
+        # Find the best match to the wanted result.
+        k,res,diff  = find_nearest(result,expected_count)
+        if not result.has_key(expected_count):
+            print "Never found the desired amount with %s"%dynamic
+
+        print "Found in %d(%d): %s"%(k,diff,[r for r in res])
+        rgbimg = ci.rgbimg().image_copy()
+        cg = ci.classified_glyphs(res[0].d_t)
+        [outline(rgbimg,g,3.0,RGBPixel(255,0,0)) for g in cg]
+        rgbimg.save_PNG("class_%s_%s.png"%(filename,dynamic))
+        print
+
+
 
 if __name__ == '__main__':
-    test_e_fp(sys.argv[-1])
+    test_e_fp(sys.argv[1],int(sys.argv[2]))
