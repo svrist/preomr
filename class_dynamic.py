@@ -62,20 +62,34 @@ class Classified_image:
             self._rgbimg = self.image.to_rgb()
         return self._rgbimg
 
+    def load_new_training_data(self,filename):
+        self.myclassifier.load_new_training_data(filename)
+
 class Classifier_with_remove:
 
-    def __init__(self,training_filename,e_fp=0.1,k=1):
+    def baseinit(self):
+        self.images = []
+        self.classifier = None
+
+    def __init__(self):
+        self.baseinit()
+        #self.init_classifier()
+
+    def __init__(self,training_filename=None,e_fp=0.1,k=1):
         self.filename = training_filename
+        self.baseinit()
         self.e_fp = e_fp
         self.k = k
-        self.images = []
-        self.init_classifier()
+        self.init_classifier(self.filename)
 
-    def init_classifier(self,features= ["aspect_ratio", "zernike_moments",\
+    def init_classifier(self,filename=None,features= ["aspect_ratio", "zernike_moments",\
                                    "volume64regions","volume"]):
         self.classifier=knn.kNNInteractive([],features, 0)
         self.classifier.num_k = self.k
-        self.load_new_training_data(self.filename)
+        if not filename is None:
+            self.load_new_training_data(filename)
+        else:
+            self.invalidate_images()
 
     def invalidate_images(self):
         [ i.invalid for i in self.images]

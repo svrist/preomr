@@ -51,12 +51,16 @@ def find_nearest(result,count):
 
 def test_e_fp(filename,expected_count=10):
     init_gamera()
-    c = Classifier_with_remove("newtrain-dynamic.xml",0.1,2)
+    c = Classifier_with_remove()
+    c.k = 1
     c.change_features(["volume64regions"])
     ci = c.classify_image(filename)
+    files = ["mergedyn2.xml", "mergedyn.xml","only-dynamics.xml", "newtrain-dynamic.xml"]
+    import os.path
     # try to match with different trainingsets.
-    for dynamic in ["mergedyn2.xml", "mergedyn.xml","only-dynamics.xml", "newtrain-dynamic.xml"]:
-        c.load_new_training_data(dynamic)
+    for dynamic in ([ d for d in files if os.path.isfile(d) ]):
+
+        ci.load_new_training_data(dynamic)
         print "count_of_training=%d, k=%d"%(len(c.stats),c.k)
         result = {} # Push into buckets based on the count of found glyphs.
         sys.stdout.flush()
