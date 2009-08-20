@@ -27,7 +27,7 @@ def between(y,bottom,top):
     return y <= top and y >= bottom
 
 def inout_staff_condition(mss):
-    stavey = [ (s.yposlist[0],s.yposlist[-1]) for s in ms.get_staffpos()]
+    stavey = [ (s.yposlist[0],s.yposlist[-1]) for s in mss.get_staffpos()]
     def ret(c):
         c1,c2 = minmaxy(c)
         f = lambda x: between(x[0],c1,c2) 

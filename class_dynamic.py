@@ -14,22 +14,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-
 from gamera.core import *
 from gamera.toolkits.musicstaves import musicstaves_rl_fujinaga
 from gamera import knn
 from remstaves import remstaves
 from outline import outline
 from cdf import EmpiricalCDF
+from withinstaff import inout_staff_condition
 import sys
 import re
 import time
 
-k = 1
+k = 5
 e_fp = 0.78
 
 class Classified_image:
+    """
+     Image with an attached classifier.
+     When the classifier gets updated somewhere, this image uses the new
+     classifier.
+    """
 
     def __init__(self,classifier,image,ccs):
         self.myclassifier = classifier
@@ -40,7 +44,7 @@ class Classified_image:
 
     def classify_image(self):
         self.myclassifier.classifier.classify_list_automatic(self.ccs)
-        self._invalid = False
+        self.valid()
 
     def invalid(self):
         self._invalid = True
@@ -51,6 +55,7 @@ class Classified_image:
     def classified_glyphs(self,d_t=None):
         if self._invalid:
             self.classify_image()
+            print "k=%d"%self.myclassifier.classifier.num_k
 
         if d_t is None:
             d_t = self.myclassifier.d_t()
@@ -65,15 +70,11 @@ class Classified_image:
     def load_new_training_data(self,filename):
         self.myclassifier.load_new_training_data(filename)
 
-class Classifier_with_remove:
+class Classifier_with_remove(object):
 
     def baseinit(self):
         self.images = []
         self.classifier = None
-
-    def __init__(self):
-        self.baseinit()
-        #self.init_classifier()
 
     def __init__(self,training_filename=None,e_fp=0.1,k=1):
         self.filename = training_filename
@@ -81,6 +82,12 @@ class Classifier_with_remove:
         self.e_fp = e_fp
         self.k = k
         self.init_classifier(self.filename)
+
+    def set_k(self,value):
+        self.k =value
+        if not self.classifier is None:
+            self.classifier.num_k = value
+            self.invalidate_images()
 
     def init_classifier(self,filename=None,features= ["aspect_ratio", "zernike_moments",\
                                    "volume64regions","volume"]):
@@ -92,7 +99,7 @@ class Classifier_with_remove:
             self.invalidate_images()
 
     def invalidate_images(self):
-        [ i.invalid for i in self.images]
+        [ i.invalid() for i in self.images]
 
     def change_features(self,features):
         self.classifier.change_feature_set(features)
@@ -113,7 +120,9 @@ class Classifier_with_remove:
         image = load_image(imgname)
         image = image.to_onebit()
         ms = remstaves(image)
-        ret = Classified_image(self,image,ms.image.cc_analysis())
+        cond = inout_staff_condition(ms)
+        relevant_cc = [ c for c in ms.image.cc_analysis() if not cond(c)]
+        ret = Classified_image(self,image,relevant_cc)
         self.images.append(ret)
         return ret
 

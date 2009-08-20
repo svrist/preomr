@@ -52,7 +52,7 @@ def find_nearest(result,count):
 def test_e_fp(filename,expected_count=10):
     init_gamera()
     c = Classifier_with_remove()
-    c.k = 1
+    c.set_k(4)
     c.change_features(["volume64regions"])
     ci = c.classify_image(filename)
     files = ["mergedyn2.xml", "mergedyn.xml","only-dynamics.xml", "newtrain-dynamic.xml"]
