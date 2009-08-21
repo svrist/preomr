@@ -28,6 +28,11 @@ def remstaves_skeleton(image):
     ms.remove_staves(crossing_symbols = 'bars')
     return ms
 
+def reminside(ms,image):
+    ccs = image.cc_analysis()
+    cond = inout_staff_condition(ms)
+    [c.fill_white() for c in ccs if cond(c) ]
+    return image
 
 
 

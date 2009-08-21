@@ -17,7 +17,7 @@
 
 from gamera.toolkits.musicstaves import musicstaves_rl_fujinaga
 from outline import outline
-from remstaves import remstaves
+from remove import remstaves
 
 
 def minmaxy(cc):

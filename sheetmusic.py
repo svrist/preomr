@@ -15,7 +15,7 @@ class MusicImage(object):
 
     def without_insidestaves_info(self):
         if self.noinside is None:
-            self.noinside = reminside(self.image.image_copy())
+            self.noinside = reminside(self.ms,self.ms.image.image_copy())
         return self.noinside
 
     def __getattr__(self,name):
