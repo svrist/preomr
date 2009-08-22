@@ -17,6 +17,9 @@
 
 from gamera.toolkits.musicstaves import musicstaves_rl_fujinaga
 from gamera.toolkits.musicstaves import musicstaves_skeleton
+from gamera.core import RGBPixel
+import gamera.core
+from withinstaff import inout_staff_condition
 
 def remstaves(image):
     ms = musicstaves_rl_fujinaga.MusicStaves_rl_fujinaga(image)
@@ -28,11 +31,31 @@ def remstaves_skeleton(image):
     ms.remove_staves(crossing_symbols = 'bars')
     return ms
 
-def reminside(ms,image):
-    ccs = image.cc_analysis()
-    cond = inout_staff_condition(ms)
+def _rembase(staffpos,image):
+    if isinstance(image,gamera.core.Image):
+        print "not list doing cc_analysis"
+        ccs = image.cc_analysis()
+    else:
+        ccs = image
+    cond = inout_staff_condition(staffpos)
+    return ccs,cond
+
+def reminside(staffpos,image):
+    ccs,cond = _rembase(staffpos,image)
     [c.fill_white() for c in ccs if cond(c) ]
     return image
+
+def remoutside(staffpos,image):
+    ccs,cond = _rembase(staffpos,image)
+    [c.fill_white() for c in ccs if not cond(c) ]
+    return image
+
+def is_sort_of_a_list(l):
+    for method in ['__getitem__', '__setitem__']:
+        if method not in dir(l):
+            return False
+    return True
+
 
 
 

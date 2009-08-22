@@ -15,19 +15,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from gamera.toolkits.musicstaves import musicstaves_rl_fujinaga
-from outline import outline
-from remove import remstaves
-
-
 def minmaxy(cc):
     return cc.offset_y,cc.offset_y+cc.nrows
 
 def between(y,bottom,top):
     return y <= top and y >= bottom
 
-def inout_staff_condition(mss):
-    stavey = [ (s.yposlist[0],s.yposlist[-1]) for s in mss.get_staffpos()]
+def inout_staff_condition(staffpos):
+    stavey = [ (s.yposlist[0],s.yposlist[-1]) for s in staffpos]
     def ret(c):
         c1,c2 = minmaxy(c)
         f = lambda x: between(x[0],c1,c2) 
@@ -44,6 +39,8 @@ def split_on_condition(seq, condition):
 
 if __name__ == '__main__':
     from gamera.core import *
+    from remove import remstaves
+    from outline import outline
     import sys
     import re
     import time
@@ -61,7 +58,7 @@ if __name__ == '__main__':
         image = image.to_onebit()
         ms = remstaves(image)
         ccs = ms.image.cc_analysis()
-        cond = inout_staff_condition(ms)
+        cond = inout_staff_condition(ms.get_staffpos())
         for c in ccs:
             if cond(c):
                 # insid

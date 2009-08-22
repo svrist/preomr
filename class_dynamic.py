@@ -120,7 +120,7 @@ class Classifier_with_remove(object):
         image = load_image(imgname)
         image = image.to_onebit()
         ms = remstaves(image)
-        cond = inout_staff_condition(ms)
+        cond = inout_staff_condition(ms.get_staffpos())
         relevant_cc = [ c for c in ms.image.cc_analysis() if not cond(c)]
         ret = Classified_image(self,image,relevant_cc)
         self.images.append(ret)
