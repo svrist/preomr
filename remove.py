@@ -33,7 +33,6 @@ def remstaves_skeleton(image):
 
 def _rembase(staffpos,image):
     if isinstance(image,gamera.core.Image):
-        print "not list doing cc_analysis"
         ccs = image.cc_analysis()
     else:
         ccs = image
