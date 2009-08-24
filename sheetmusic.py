@@ -40,9 +40,9 @@ class MusicImage(object):
     def highlight_possible_text(self,min_cutoff_factor=0.02,
                                 height_cutoff_factor=0.8,image=None):
         if image is None:
-          ret = self._orig.to_rgb()
+            ret = self._orig.to_rgb()
         else:
-          ret = image
+            ret = image
         p = Projection(self.without_insidestaves_info().projection_rows())
         p.threshold(min_cutoff_factor*ret.width)
         spikes = p.spikes(height_cutoff_factor*self._ms.staffspace_height)

@@ -20,7 +20,7 @@ from gamera import knn
 from remove import remstaves
 from outline import outline
 from cdf import EmpiricalCDF
-from withinstaff import inout_staff_condition
+from within import inout_staff_condition
 import sys
 import re
 import time

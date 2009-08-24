@@ -17,17 +17,32 @@
 
 
 class Projection(object):
-
+    """ Projection wrapper
+    for finding  peaks, and peak areas
+    """
     def __init__(self,proj):
         self.orig = proj
         self.proj = proj[:]
 
 
     def threshold(self,threshold):
+        """ Cut out all projections lower than a given threshold
+
+        Keyword arguments:
+            threshold --- the absolute threshold to cut off with. Base it on a
+            procentile of the complete page width.
+
+        """
         self.proj = [ v if v > threshold else 0\
                      for v in self.proj ]
 
     def spikes(self,height_threshold=None):
+        """ Get a list of all spikes split around zero areas.
+
+        Keyword arguments:
+            height_threshold --- only return spikes which is at least as wide as
+            height_threshold.
+        """
         state = 0
         start = None
         stop = None
@@ -49,8 +64,6 @@ class Projection(object):
             elif state == 1 and v > 0:
                 data.append((i,v))
 
-
-
         if height_threshold is None:
             return ret
         else:
@@ -61,10 +74,6 @@ class Projection(object):
 
     def __getitem__(self,key):
         self.proj[key]
-
-
-
-
 
 if __name__ == '__main__':
     from gamera.core import *

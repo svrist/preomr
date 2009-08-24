@@ -19,7 +19,7 @@ from gamera.toolkits.musicstaves import musicstaves_rl_fujinaga
 from gamera.toolkits.musicstaves import musicstaves_skeleton
 from gamera.core import RGBPixel
 import gamera.core
-from withinstaff import inout_staff_condition
+from within import inout_staff_condition
 
 def remstaves(image):
     ms = musicstaves_rl_fujinaga.MusicStaves_rl_fujinaga(image)
