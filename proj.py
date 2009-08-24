@@ -69,8 +69,17 @@ class Projection(object):
 if __name__ == '__main__':
     from gamera.core import *
     import sys
+    import re
     from sheetmusic import MusicImage
     init_gamera()
-    i = MusicImage(sys.argv[-1])
-    i.highlight_possible_text().save_PNG("possibletext.png")
-    print "Save possibletext.png with possibletext highlighted with red box"
+    for i,imgname in enumerate(sys.argv[1:]):
+        m = re.match(r"^(.*)\.[^\.]+$",imgname)
+        noend = m.group(1)
+        i = MusicImage(imgname)
+        i.highlight_possible_text().scale(0.5,2).save_PNG("%s_possibletext.png"%noend)
+        i.highlight_possible_text(
+            image=i.with_row_projections(RGBPixel(50,50,50))
+            ).scale(0.5,2).save_PNG("%s_possibletext_withprojections.png"%noend)
+
+        print ("Save %s_possibletext.png and "+\
+        "%s_possibletext_withprojections.png")%(noend,noend)

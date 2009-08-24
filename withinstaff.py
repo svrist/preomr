@@ -21,21 +21,49 @@ def minmaxy(cc):
 def between(y,bottom,top):
     return y <= top and y >= bottom
 
+
 def inout_staff_condition(staffpos):
+    """Generate in/out condtion based on staffpositions
+
+    Keyword arguments:
+        staffpos --- the list of staff positions to uses a basis for the
+        condition
+
+    """
     stavey = [ (s.yposlist[0],s.yposlist[-1]) for s in staffpos]
-    def ret(c):
-        c1,c2 = minmaxy(c)
-        f = lambda x: between(x[0],c1,c2) 
-        f2 = lambda x,y: between(y,x[0],x[1])
-        return (True in [ f2(s,c1) or f2(s,c2) or f(s) for s in stavey ])
-    return ret
+    return inout_vertical_ys(stavey)
 
 def split_on_condition(seq, condition):
+    """ Split a list based on a condition
+
+    Keyword arguments:
+        seq --- the sequence to split
+        condtion --- the condition to split on. True -> left, False -> right
+
+    """
     a, b = [], []
     for item in seq:
         (a if condition(item) else b).append(item)
     return a,b
- 
+
+def inout_vertical_ys(boxes):
+    """ Generate in/out condition
+
+    Generate a function based on a list of (top,bottom) pairs that will return
+    true if a given connected_component is within+touches+overlaps one of the
+    pairs.
+
+    Keyword arguments:
+        boxes --- list of (top,bottom) y-coordinates
+
+    """
+    def ret(c):
+        c1,c2 = minmaxy(c)
+        f = lambda x: between(x[0],c1,c2) 
+        f2 = lambda x,y: between(y,x[0],x[1])
+        return (True in [ f2(s,c1) or f2(s,c2) or f(s) for s in boxes ])
+    return ret
+
 
 if __name__ == '__main__':
     from gamera.core import *
