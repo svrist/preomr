@@ -79,13 +79,34 @@ if __name__ == '__main__':
     from gamera.core import *
     import sys
     import re
+    import time
     from sheetmusic import MusicImage
+    from within import inout_vertical_ys
+    from numpy import average
     init_gamera()
     for i,imgname in enumerate(sys.argv[1:]):
         m = re.match(r"^(.*)\.[^\.]+$",imgname)
         noend = m.group(1)
+        start = time.time()
         i = MusicImage(imgname)
-        i.highlight_possible_text().scale(0.5,2).save_PNG("%s_possibletext.png"%noend)
+        print "Load image %f"%(time.time()-start)
+        start = time.time()
+        spikes = i.possible_text_areas()
+        print "Spikes %f"%(time.time()-start)
+        start=time.time()
+        ccs = i.without_insidestaves_info().cc_analysis()
+        print "ccanalysis %f"%(time.time()-start)
+        sys.stdout.flush()
+        for s in spikes:
+            cond = inout_vertical_ys([(s['start'],s['stop'])])
+            cs = [ c for c in ccs if cond(c) ]
+            print "%d ccs in ys: %d-%d"%(len(cs),s['start'],s['stop'])
+            avgaspect = average([ c.aspect_ratio() for c in cs ])
+            print "%f mean aspect"%(avgaspect)
+            print
+            sys.stdout.flush()
+
+        #i.highlight_possible_text().scale(0.5,2).save_PNG("%s_possibletext.png"%noend)
         i.highlight_possible_text(
             image=i.with_row_projections(RGBPixel(50,50,50))
             ).scale(0.5,2).save_PNG("%s_possibletext_withprojections.png"%noend)
