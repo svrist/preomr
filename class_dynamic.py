@@ -21,6 +21,7 @@ from remove import remstaves
 from outline import outline
 from cdf import EmpiricalCDF
 from within import inout_staff_condition
+from sheetmusic import MusicImage
 import sys
 import re
 import time
@@ -40,7 +41,6 @@ class Classified_image:
         self.image = image
         self.ccs = ccs
         self._invalid = True
-        self._rgbimg = None
 
     def classify_image(self):
         self.myclassifier.classifier.classify_list_automatic(self.ccs)
@@ -61,11 +61,6 @@ class Classified_image:
             d_t = self.myclassifier.d_t()
 
         return [g for g in self.ccs if g.get_confidence(CONFIDENCE_AVGDISTANCE) <= d_t]
-
-    def rgbimg(self):
-        if self._rgbimg is None:
-            self._rgbimg = self.image.to_rgb()
-        return self._rgbimg
 
     def load_new_training_data(self,filename):
         self.myclassifier.load_new_training_data(filename)
@@ -117,12 +112,10 @@ class Classifier_with_remove(object):
         return cdf.invcdf(self.e_fp)
 
     def classify_image(self,imgname):
-        image = load_image(imgname)
-        image = image.to_onebit()
-        ms = remstaves(image)
-        cond = inout_staff_condition(ms.get_staffpos())
-        relevant_cc = [ c for c in ms.image.cc_analysis() if not cond(c)]
-        ret = Classified_image(self,image,relevant_cc)
+        mi = MusicImage(imgname)
+        #def ccs(remove_text=True,remove_inside_staffs=True):
+        relevant_cc = mi.ccs(remove_text=True,remove_inside_staffs=True)
+        ret = Classified_image(self,mi,relevant_cc)
         self.images.append(ret)
         return ret
 
@@ -141,7 +134,7 @@ if __name__ == '__main__':
         m = re.match(r"^(.*)\.[^\.]+$",imgname)
         noend = m.group(1)
         ci = c.classify_image(imgname)
-        rgbimg = ci.rgbimg()
+        rgbimg = ci.image.to_rgb()
         cg = ci.classified_glyphs(d_t)
         [outline(rgbimg,g,3.0,RGBPixel(255,0,0)) for g in cg]
         rgbimg.save_PNG("class_%s.png"%noend)

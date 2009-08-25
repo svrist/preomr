@@ -1,6 +1,6 @@
 from gamera.core import *
 from remove import remstaves,reminside
-from within import inout_vertical_ys,between
+from within import inout_vertical_ys,between,inout_staff_condition
 from numpy import average
 
 from proj import Projection
@@ -45,6 +45,16 @@ class MusicImage(object):
         [ ret.draw_line( (0,i[1]), (i[0],i[1]),color) for i in l]
         return ret
 
+    def ccs_in_spike(self,spikes,ccs):
+        ret = []
+        for s in spikes[:]:
+            cond = inout_vertical_ys([(s['start'],s['stop'])])
+            cs = [ c for c in ccs if cond(c) ]
+            ret.extend(cs)
+
+        return ret
+
+
     def possible_text_areas(self, min_cutoff_factor=0.02,
                             height_cutoff_factor=0.8,image=None,
                             avg_cutoff=(0.75,2.0),
@@ -78,6 +88,19 @@ class MusicImage(object):
 
     def to_rgb(self):
         return self._orig.to_rgb()
+
+    def ccs(self,remove_text=True,remove_inside_staffs=True):
+        baseimg = self.without_staves()
+        ccs = set(baseimg.cc_analysis())
+        if (remove_text):
+            spikes = self.possible_text_areas(image=self.without_insidestaves_info())
+            inccs = self.ccs_in_spike(spikes,ccs)
+            ccs = ccs-set(inccs) # remove text
+        if (remove_inside_staffs):
+            cond = inout_staff_condition(self.ms().get_staffpos())
+            ccs = [ c for c in ccs if not cond(c)]
+        return ccs
+
 
 
 if __name__ == '__main__':

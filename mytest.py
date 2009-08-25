@@ -52,7 +52,7 @@ def find_nearest(result,count):
 def test_e_fp(filename,expected_count=10):
     init_gamera()
     c = Classifier_with_remove()
-    c.set_k(4)
+    c.set_k(1)
     c.change_features(["volume64regions"])
     ci = c.classify_image(filename)
     files = ["mergedyn2.xml", "mergedyn.xml","only-dynamics.xml", "newtrain-dynamic.xml"]
@@ -81,7 +81,7 @@ def test_e_fp(filename,expected_count=10):
             print "Never found the desired amount with %s"%dynamic
 
         print "Found in %d(%d): %s"%(k,diff,[r for r in res])
-        rgbimg = ci.rgbimg().image_copy()
+        rgbimg = ci.image.to_rgb()
         cg = ci.classified_glyphs(res[0].d_t)
         [outline(rgbimg,g,3.0,RGBPixel(255,0,0)) for g in cg]
         rgbimg.save_PNG("class_%s_%s.png"%(filename,dynamic))
