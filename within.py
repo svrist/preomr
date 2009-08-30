@@ -31,6 +31,8 @@ def inout_staff_condition(staffpos):
 
     """
     stavey = [ (s.yposlist[0],s.yposlist[-1]) for s in staffpos]
+    #stavey = [ s.staffrect for s in staffpos ]
+    #return inout_rects(stavey)
     return inout_vertical_ys(stavey)
 
 def split_on_condition(seq, condition):
@@ -45,6 +47,27 @@ def split_on_condition(seq, condition):
     for item in seq:
         (a if condition(item) else b).append(item)
     return a,b
+
+def inout_rects(rects):
+    """ Generate in/out condition
+
+    Generate a function based on a list of (top,bottom) pairs that will return
+    true if a given connected_component is within+touches+overlaps one of the
+    pairs.
+
+    Keyword arguments:
+        rects --- list of staff rects
+
+    """
+    def ret(c):
+        c1,c2 = minmaxy(c)
+        f = lambda x: between(x.center_y,c1,c2) 
+        f2 = lambda x,y: x.contains_y(y)
+        return (True in [ f2(s,c1) or f2(s,c2) or f(s) for s in rects ])
+    return ret
+
+
+
 
 def inout_vertical_ys(boxes):
     """ Generate in/out condition

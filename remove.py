@@ -21,12 +21,12 @@ from gamera.core import RGBPixel
 import gamera.core
 from within import inout_staff_condition
 
-def remstaves(image):
+def remstaves_fujinaga(image):
     ms = musicstaves_rl_fujinaga.MusicStaves_rl_fujinaga(image)
     ms.remove_staves(crossing_symbols = 'bars')
     return ms
 
-def remstaves_skeleton(image):
+def remstaves(image):
     ms = musicstaves_skeleton.MusicStaves_skeleton(image)
     ms.remove_staves(crossing_symbols = 'bars')
     return ms

@@ -54,6 +54,15 @@ class MusicImage(object):
 
         return ret
 
+    def possible_text_ccs(self):
+        baseimg = self.without_insidestaves_info()
+        ccs = set(baseimg.cc_analysis())
+        spikes = self.possible_text_areas(image=self.without_insidestaves_info())
+        inccs = self.ccs_in_spike(spikes,ccs)
+        return inccs
+
+
+
 
     def possible_text_areas(self, min_cutoff_factor=0.02,
                             height_cutoff_factor=0.8,image=None,
@@ -92,13 +101,20 @@ class MusicImage(object):
     def ccs(self,remove_text=True,remove_inside_staffs=True):
         baseimg = self.without_staves()
         ccs = set(baseimg.cc_analysis())
+
+        outsideccs = []
+        if remove_text or remove_inside_staffs:
+            cond = inout_staff_condition(self.ms().get_staffpos())
+            outsideccs = set([ c for c in ccs if not cond(c)])
+
         if (remove_text):
             spikes = self.possible_text_areas(image=self.without_insidestaves_info())
-            inccs = self.ccs_in_spike(spikes,ccs)
+            inccs = self.ccs_in_spike(spikes,outsideccs)
             ccs = ccs-set(inccs) # remove text
+
         if (remove_inside_staffs):
-            cond = inout_staff_condition(self.ms().get_staffpos())
-            ccs = [ c for c in ccs if not cond(c)]
+            ccs = outsideccs & ccs
+
         return ccs
 
 
