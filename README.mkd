@@ -8,6 +8,22 @@ The purpose of this preprocessing is to eliminate anything that might confuse
 current commercial [Optical Music Recognition][3] systems like Photoscore or
 Sharpeye.
 
+
+Usage
+------
+ - class\_dynamic.py
+
+        $ python class_dynamic.py mergedyn2.xml 0.99 lvbp0.tif
+  First argument is the training data, second is e\_fp and last is a list of filenames
+
+ - mytest.py
+
+        $ python mytest.py lvbp0.tif 8
+ - proj.py
+
+        $ python proj.py lvbp0.tif
+
+
 License
 -------
 As Gamera is GPL this is also GPL v2.
@@ -17,5 +33,3 @@ See LICENSE.txt for more info
 [1]: http://gamera.informatik.hsnr.de/
 [2]: http://lionel.kr.hs-niederrhein.de/~dalitz/data/projekte/stafflines/
 [3]: http://en.wikipedia.org/wiki/Optical_music_recognition
-
-
