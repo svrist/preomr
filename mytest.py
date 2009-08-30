@@ -52,7 +52,7 @@ def find_nearest(result,count):
 def test_e_fp(filename,expected_count=10):
     init_gamera()
     c = Classifier_with_remove()
-    c.set_k(1)
+    c.set_k(2)
     c.change_features(["volume64regions"])
     ci = c.classify_image(filename)
     files = ["mergedyn2.xml", "mergedyn.xml","only-dynamics.xml", "newtrain-dynamic.xml"]
@@ -66,7 +66,7 @@ def test_e_fp(filename,expected_count=10):
         sys.stdout.flush()
 
         # Try with different epsilon for false_positives: e_fp
-        for e_fp in arange(0.05,0.97,0.01):
+        for e_fp in arange(0.01,0.99,0.01):
             c.e_fp=e_fp
             count = len(ci.classified_glyphs())
 
@@ -77,6 +77,15 @@ def test_e_fp(filename,expected_count=10):
 
         # Find the best match to the wanted result.
         k,res,diff  = find_nearest(result,expected_count)
+
+        confid = [ (len(v),key) for key,v in result.iteritems() ]
+
+        confid.sort()
+
+        print (confid[-1],confid[-2],confid[-3])
+
+
+
         if not result.has_key(expected_count):
             print "Never found the desired amount with %s"%dynamic
 
