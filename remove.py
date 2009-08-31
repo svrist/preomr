@@ -23,12 +23,12 @@ from within import inout_staff_condition
 
 def remstaves_fujinaga(image):
     ms = musicstaves_rl_fujinaga.MusicStaves_rl_fujinaga(image)
-    ms.remove_staves(crossing_symbols = 'bars')
+    ms.remove_staves(crossing_symbols = 'bars', num_lines=5)
     return ms
 
 def remstaves(image):
     ms = musicstaves_skeleton.MusicStaves_skeleton(image)
-    ms.remove_staves(crossing_symbols = 'bars')
+    ms.remove_staves(crossing_symbols = 'bars',num_lines=5)
     return ms
 
 def _rembase(staffpos,image):

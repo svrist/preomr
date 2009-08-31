@@ -22,9 +22,11 @@ from outline import outline
 from cdf import EmpiricalCDF
 from within import inout_staff_condition
 from sheetmusic import MusicImage
+from numpy import arange
 import sys
 import re
 import time
+import logging
 
 k = 5
 e_fp = 0.78
@@ -36,7 +38,9 @@ class Classified_image:
      classifier.
     """
 
+
     def __init__(self,classifier,image,ccs):
+        self.l = logging.getLogger(self.__class__.__name__)
         self.myclassifier = classifier
         self.image = image
         self.ccs = ccs
@@ -52,10 +56,29 @@ class Classified_image:
     def valid(self):
         self._invalid = False
 
+    def confident_d_t(self):
+        result = {}
+        pre_e_fp = self.myclassifier.e_fp
+        for e_fp in arange(0.01,0.99,0.01):
+            self.myclassifier.e_fp = e_fp
+            count = len(self.classified_glyphs())
+            # Init bucket.
+            if not result.has_key(count):
+                result[count] = []
+            result[count].append(self.myclassifier.d_t())
+
+        confid = [ (len(v),v[0]) for key,v in result.iteritems() if key > 0]
+        confid.sort(reverse=True)
+
+        self.l.debug("top3: %s %s %s",confid[0],confid[1],confid[2])
+
+        self.myclassifier.e_fp = pre_e_fp
+        return confid[0][1]
+
     def classified_glyphs(self,d_t=None):
         if self._invalid:
             self.classify_image()
-            print "k=%d"%self.myclassifier.classifier.num_k
+            self.l.debug("k=%d",self.myclassifier.classifier.num_k)
 
         if d_t is None:
             d_t = self.myclassifier.d_t()
@@ -72,6 +95,7 @@ class Classifier_with_remove(object):
         self.classifier = None
 
     def __init__(self,training_filename=None,e_fp=0.1,k=1):
+        self.l = logging.getLogger(self.__class__.__name__)
         self.filename = training_filename
         self.baseinit()
         self.e_fp = e_fp
@@ -84,8 +108,8 @@ class Classifier_with_remove(object):
             self.classifier.num_k = value
             self.invalidate_images()
 
-    def init_classifier(self,filename=None,features= ["aspect_ratio", "zernike_moments",\
-                                   "volume64regions","volume"]):
+    def init_classifier(self,filename=None,features=["volume64regions"]):
+        self.l.debug("features=%s, filename=%s",features,filename)
         self.classifier=knn.kNNInteractive([],features, 0)
         self.classifier.num_k = self.k
         if not filename is None:
@@ -99,21 +123,27 @@ class Classifier_with_remove(object):
     def change_features(self,features):
         self.classifier.change_feature_set(features)
         self.invalidate_images()
+        self.l.info("new features %s",features)
 
     def load_new_training_data(self,filename):
         self.classifier.from_xml_filename(filename)
         self.classifier.confidence_types = [CONFIDENCE_AVGDISTANCE]
         self.stats = self.classifier.knndistance_statistics()
         self.invalidate_images()
-        print "loaded new file with training data: %s"%filename
+        self.l.info(filename)
+
 
     def d_t(self):
         cdf = EmpiricalCDF([s[0] for s in self.stats])
         return cdf.invcdf(self.e_fp)
 
     def classify_image(self,imgname):
-        mi = MusicImage(imgname)
-        #def ccs(remove_text=True,remove_inside_staffs=True):
+        if hasattr(imgname,'ccs'):
+            mi = imgname
+        else:
+            self.l.debug("Loading image from file %s",imgname)
+            mi = MusicImage(imgname)
+
         relevant_cc = mi.ccs(remove_text=True,remove_inside_staffs=True)
         ret = Classified_image(self,mi,relevant_cc)
         self.images.append(ret)
@@ -121,12 +151,14 @@ class Classifier_with_remove(object):
 
 
 if __name__ == '__main__':
+    FORMAT = "%(asctime)-15s %(levelname)s [%(name)s.%(funcName)s-%(lineno)s]  %(message)s"
+    logging.basicConfig(level=logging.DEBUG,format=FORMAT)
     start=time.time()
     init_gamera()
     c = Classifier_with_remove(sys.argv[1],float(sys.argv[2]))
     d_t = c.d_t()
-    print "Loaded Gamera and classifier in %f seconds"%(time.time()-start)
-    print "count_of_training=%d, k=%d, e_fp=%f, d_t=%f"%(len(c.stats),c.k,c.e_fp,d_t)
+    logging.debug("Loaded Gamera and classifier in %f seconds",(time.time()-start))
+    logging.debug("count_of_training=%d, k=%d, e_fp=%f, d_t=%f",(len(c.stats),c.k,c.e_fp,d_t))
     sys.stdout.flush()
 
     start=time.time()

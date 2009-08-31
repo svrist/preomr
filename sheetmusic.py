@@ -1,15 +1,19 @@
 from gamera.core import *
 from remove import remstaves,reminside
 from within import inout_vertical_ys,between,inout_staff_condition
+from outline import outline
 from numpy import average
 
 from proj import Projection
 
+import logging
+
 
 class MusicImage(object):
 
-    def __init__(self,image):
+    def __init__(self,image,training_filename=None, classifier=None):
         """ Setup a wrapped image with music methods around """
+        self.l = logging.getLogger(self.__class__.__name__)
         if isinstance(image,basestring):
             image = load_image(image)
 
@@ -18,6 +22,12 @@ class MusicImage(object):
         self._image = self._image.to_onebit()
         self._ms = None
         self._noinside = None
+        if not training_filename is None:
+            self.classifier = Classifier_with_remove(training_filename)
+
+        if not classifier is None:
+            self.classifier = classifier
+
     def ms(self):
         if self._ms is None:
             self.without_staves()
@@ -54,25 +64,35 @@ class MusicImage(object):
 
         return ret
 
-    def possible_text_ccs(self):
-        baseimg = self.without_insidestaves_info()
+    def possible_text_ccs(self,image=None):
+        if image is None:
+            baseimg = self.without_insidestaves_info()
+        else:
+            baseimg = image
         ccs = set(baseimg.cc_analysis())
         spikes = self.possible_text_areas(image=self.without_insidestaves_info())
         inccs = self.ccs_in_spike(spikes,ccs)
         return inccs
 
 
-
-
     def possible_text_areas(self, min_cutoff_factor=0.02,
                             height_cutoff_factor=0.8,image=None,
                             avg_cutoff=(0.75,2.0),
                             min_cc_count=10):
+
         if image is None:
+            self.l.debug("No image given, using without_inside_staves_info()")
             image = self.without_insidestaves_info()
+
         p = Projection(image.projection_rows())
         p.threshold(min_cutoff_factor*image.width)
+        self.l.debug("thresholded at %f",min_cutoff_factor)
+        self.l.debug("min_cc_count: %d",min_cc_count)
+        self.l.debug("avgcutoff: %s",avg_cutoff)
+
+
         spikes = p.spikes(height_cutoff_factor*self.ms().staffspace_height)
+        self.l.debug("HeightCutoff %f",height_cutoff_factor)
         ccs = image.cc_analysis()
         for s in spikes[:]:
             cond = inout_vertical_ys([(s['start'],s['stop'])])
@@ -98,7 +118,20 @@ class MusicImage(object):
     def to_rgb(self):
         return self._orig.to_rgb()
 
-    def ccs(self,remove_text=True,remove_inside_staffs=True):
+    def ccs(self,remove_text=True,remove_inside_staffs=True,remove_classified=False):
+        """ Return the connected components of the image
+        Choose to get all, or with some parts removed
+
+        Keyword arguments:
+            remove_text --- Remove any thing that looks like text from the list
+            off ccs
+            remove_inside_staffs --- Remove all cc's  that overlap with the
+            stafflines.
+        """
+        self.l.debug("remove_text=%s, remove_inside_staffs=%s, remove_classified=%s",\
+                     remove_text,remove_inside_staffs,remove_classified)
+
+
         baseimg = self.without_staves()
         ccs = set(baseimg.cc_analysis())
 
@@ -108,22 +141,124 @@ class MusicImage(object):
             outsideccs = set([ c for c in ccs if not cond(c)])
 
         if (remove_text):
-            spikes = self.possible_text_areas(image=self.without_insidestaves_info())
-            inccs = self.ccs_in_spike(spikes,outsideccs)
+            inccs = self.possible_text_ccs(image=self.without_insidestaves_info())
+            self.l.debug("Removing %d ccs as text",len(inccs))
             ccs = ccs-set(inccs) # remove text
 
         if (remove_inside_staffs):
+            pre = ccs
             ccs = outsideccs & ccs
+            self.l.debug("Removing %d ccs as inside staffs",(len(pre)-len(ccs)))
+
+        if (remove_classified):
+            clasccs = self.classified_ccs()
+            self.l.debug("Removing %d ccs as classified",(len(pre)-ccs))
+            ccs = ccs - clasccs
 
         return ccs
 
+    def classified_ccs(self,other=None):
+        if self.classifier is None:
+            raise Error("Classifier not initialized")
+
+        ci = self.classifier.classify_image(self)
+        d_t = ci.confident_d_t()
+        self.l.debug("Confident d_t %f",d_t)
+        ret = ci.classified_glyphs(d_t)
+        self.l.debug("Found %d glyphs",len(ret))
+        return ret
+
+    def segment(self,classify=False):
+        """ Get cc's for three parts of the image
+        text, instaff,other
+        """
+        cond = inout_staff_condition(self.ms().get_staffpos())
+        instaff = [ c for c in self.ccs(False,False) if cond(c)]
+        other = self.ccs()
+        text =  self.possible_text_ccs()
+        if classify:
+            classified = self.classified_ccs()
+        else:
+            classified = []
+
+        return text,instaff,other,classified
+
+    def without(self,classified=True,text=True):
+        ret = self.color_segment(other_color=RGBPixel(0,0,0),
+                               text_color=RGBPixel(255,255,255),
+                               instaff_color=RGBPixel(0,0,0),
+                               classified_color=RGBPixel(255,255,255)
+                              )
+        return ret
+
+    def color_segment(self,text_color=RGBPixel(255,255,0),\
+                      instaff_color=RGBPixel(0,255,0),\
+                      other_color=RGBPixel(255,0,0),
+                      classified_color=None,
+                     classified_box=False):
+        """ Segment image in three with colors
+        Segment the image into three parts:
+             - text
+             - inside staff
+             - Others/relevant for Classifier
+
+        Keyword arguments:
+            text_color --- What color to use for text ccs
+            instaff_color --- The color to use for in-staff ccs
+            other_color --- The color of the rest.
+            classified_color --- If set we will try to classify stuff in the
+            image and give them the given color
+            classified_box --- If set we will try to classify and but instead of
+            highlight I will box them.
+
+        """
+        ret = self.to_rgb().to_onebit().to_rgb()
+        classify = False
+        if not(classified_color is None and classified_box is None):
+            classify = True
+            if classified_color is None:
+                classified_color = RGBPixel(255,0,0)
+
+        text,instaff,other,classified = self.segment(classify=classify)
+        # Painting inside staff things green
+        for c in instaff:
+            ret.highlight(c,instaff_color)
+
+        # Painting relevant ccs' red.
+        for c in other:
+            ret.highlight(c,other_color)
+
+
+        for c in classified:
+            if classified_box:
+                outline(ret,c,width=2.0,color=classified_color)
+            else:
+                ret.highlight(c,classified_color)
+
+        # Painting text yellow
+        for c in text:
+            ret.highlight(c,text_color)
+
+        return ret
 
 
 if __name__ == '__main__':
     from gamera.core import * 
+    from class_dynamic import Classifier_with_remove
+    #LOG_FILENAME = '/tmp/logging_example.out'
+    FORMAT = "%(asctime)-15s %(levelname)s [%(name)s.%(funcName)s]  %(message)s"
+    logging.basicConfig(level=logging.DEBUG,format=FORMAT)
     init_gamera()
-    mi = MusicImage(load_image("brahmsp1.tif"))
-    mi2 = mi.without_insidestaves_info()
-    mi2.image.save_PNG("newpng.png")
-    mi3 = mi.image_copy_with_row_projections()
-    mi3.image.save_PNG("proj_new.png")
+    c = Classifier_with_remove(training_filename="mergedyn2.xml")
+    c.set_k(2)
+    mi = MusicImage(load_image("brahmsp1.tif"),classifier=c)
+    ret = mi.without()
+    ret.save_PNG("brahmsRemoved.png")
+    logging.debug("Done with %s"%"brahmsRemove")
+    ret = mi.color_segment(classified_box=True)
+    ret.save_PNG("brahmsColorSegment.png")
+    logging.debug("Done with %s"%"brahmsColorSegment")
+
+
+
+
