@@ -39,10 +39,23 @@ class Main(BaseRequestHandler):
 
 class CreateAuthor(BaseRequestHandler):
     def get(self):
-        name = self.request.get("name")
-        info = self.request.get("info")
-        site = self.request.get("site")
-        auth = Author(name=name,info=info,site=site)
+
+        exist = Author.gql("WHERE name = :1",self.request.get("name"))
+        if exist.count(1) > 0:
+            a = exist.fetch(1)[0]
+            jsonout(out = self.response.out,
+                           msg="%s existed with id %d",
+                           format=(a.name,a.key().id()),
+                           id=a.key().id(),
+                           key=str(a.key())
+                          )
+            return
+
+        auth = Author(
+                        name = self.request.get("name"),
+                        site = self.request.get("site"),
+                        url = self.request.get("site-url"),
+                          )
         auth.put()
         jsonout(out = self.response.out,
                 status="ok",
@@ -71,32 +84,33 @@ class AddWork(BaseRequestHandler):
             auth = Author.get_by_id(dat)
             if not auth is None:
                 return auth
-            else:
-                raise KeyError("%s not found in authors"%id)
 
         q = Author.gql("WHERE name = :1",dat)
-
         if q.count(1) >0:
             auth = q.fetch(1)
-            return auth
+            return auth[0]
+
+        raise KeyError("%s not found in authors"%dat)
 
 
     def get(self):
         data = self.request.GET
         found = Work.gql("WHERE link = :1",data["url"])
         if found.count(1) > 0:
-            work = found.fetch(1)
+            work = found.fetch(1)[0]
+            work.name = data['name']
+            work.put()
             jsonout(self.response.out,
                     status="dup",
-                    msg="Work already existed with id %d",
-                    format=(work.key().id()),
+                    msg="%s already existed for %s with id %d",
+                    format=(data['name'],work.author.name,work.key().id()),
                     key=str(work.key())
                    )
             return
 
         try: 
             a = None
-            a = data['author']
+            a = int(data['author'])
             author = self.get_author(a)
         except KeyError,strerror:
             jsonout(out = self.response.out,
@@ -107,18 +121,24 @@ class AddWork(BaseRequestHandler):
 
         rpc = urlfetch.create_rpc()
         blob = urlfetch.make_fetch_call(rpc,data['url'])
-
         work = Work(
             link = data['url'],
             blobtype= data['type'],
+            name = data['name'],
             author = author,
         )
-        work.data = rpc.get_result().content
+        data = rpc.get_result().content
+        l = len(data)
+        if len(data) < 100000:
+            work.data = data
+            msg = "%s  - %d byte data saved in store with id %d"
+        else:
+            msg = "%s - %d byte is too much for datastore. Not inserting pdf. Id %d"
         work.put()
         self.response.content_type = "application/json"
         json.dump({ "status": "ok",\
-                  "msg": ("%d byte data saved in store with id %d"\
-                          % (len(work.data),work.key().id())),\
+                  "msg": msg%(work.name,l,work.key().id()),\
+                   
                    "dbid": str(work.key().id())
                                     },
                   self.response.out

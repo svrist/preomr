@@ -7,10 +7,12 @@ class Author(db.Model):
     name = db.StringProperty()
     info = db.TextProperty()
     site = db.TextProperty()
+    siteurl = db.LinkProperty()
 
 class Work(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty()
     link = db.LinkProperty()
     author = db.ReferenceProperty(Author)
     blobtype = db.StringProperty(choices = [

@@ -245,18 +245,20 @@ class MusicImage(object):
 if __name__ == '__main__':
     from gamera.core import * 
     from class_dynamic import Classifier_with_remove
+    import sys
     #LOG_FILENAME = '/tmp/logging_example.out'
     FORMAT = "%(asctime)-15s %(levelname)s [%(name)s.%(funcName)s]  %(message)s"
     logging.basicConfig(level=logging.DEBUG,format=FORMAT)
     init_gamera()
     c = Classifier_with_remove(training_filename="mergedyn2.xml")
     c.set_k(2)
-    mi = MusicImage(load_image("brahmsp1.tif"),classifier=c)
+    filename = sys.argv[-1]
+    mi = MusicImage(load_image(filename),classifier=c)
     ret = mi.without()
-    ret.save_PNG("brahmsRemoved.png")
+    ret.save_PNG("%s_Removed.png"%filename)
     logging.debug("Done with %s"%"brahmsRemove")
     ret = mi.color_segment(classified_box=True)
-    ret.save_PNG("brahmsColorSegment.png")
+    ret.save_PNG("%s_ColorSegment.png"%filename)
     logging.debug("Done with %s"%"brahmsColorSegment")
 
 
