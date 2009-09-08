@@ -6,6 +6,7 @@ class Author(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty()
     info = db.TextProperty()
+    site = db.TextProperty()
 
 class Work(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)

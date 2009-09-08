@@ -15,9 +15,21 @@ from google.appengine.api import urlfetch
 
 
 
-from model import Work
+from model import Work,Author
 
 from base_request_handler import BaseRequestHandler, ErrorPage, templatedir, default_template_vars, Login, Logout
+
+def jsonout(out,status = "Ok",msg = None,format=None,**kwargs):
+       dat = { "status": status, "msg": msg%format }
+       dat['mything'] = 1
+
+       newt = {}
+       newt.update(dat)
+       newt.update(kwargs)
+
+       logging.debug(newt)
+       json.dump(newt, out)
+
 
 
 class Main(BaseRequestHandler):
@@ -25,6 +37,20 @@ class Main(BaseRequestHandler):
         templatevars = {"title":"PreOMR"}
         self.generate("index.html",templatevars)
 
+class CreateAuthor(BaseRequestHandler):
+    def get(self):
+        name = self.request.get("name")
+        info = self.request.get("info")
+        site = self.request.get("site")
+        auth = Author(name=name,info=info,site=site)
+        auth.put()
+        jsonout(out = self.response.out,
+                status="ok",
+                msg="Author added with id: %d" ,
+                format=(auth.key().id()),
+                id=auth.key().id(),
+                key = str(auth.key())
+               )
 
 class BlobInDataStore(BaseRequestHandler):
     def get(self,id):
@@ -45,7 +71,7 @@ class AddWork(BaseRequestHandler):
             auth = Author.get_by_id(dat)
             if not auth is None:
                 return auth
-            else
+            else:
                 raise KeyError("%s not found in authors"%id)
 
         q = Author.gql("WHERE name = :1",dat)
@@ -55,19 +81,38 @@ class AddWork(BaseRequestHandler):
             return auth
 
 
-    def post(self):
+    def get(self):
+        data = self.request.GET
+        found = Work.gql("WHERE link = :1",data["url"])
+        if found.count(1) > 0:
+            work = found.fetch(1)
+            jsonout(self.response.out,
+                    status="dup",
+                    msg="Work already existed with id %d",
+                    format=(work.key().id()),
+                    key=str(work.key())
+                   )
+            return
+
+        try: 
+            a = None
+            a = data['author']
+            author = self.get_author(a)
+        except KeyError,strerror:
+            jsonout(out = self.response.out,
+                    status="fail",
+                    msg="Author not found(%s:%s). Use /author/create" ,
+                    format=(a,strerror))
+            return
+
         rpc = urlfetch.create_rpc()
-        data = json.loads(self.request.get("data"))
         blob = urlfetch.make_fetch_call(rpc,data['url'])
-        author = self.get_author(data['author'])
 
         work = Work(
             link = data['url'],
             blobtype= data['type'],
+            author = author,
         )
-        if not author is None:
-            work.author = author
-
         work.data = rpc.get_result().content
         work.put()
         self.response.content_type = "application/json"
@@ -121,9 +166,10 @@ def main():
 
 if __name__ == "__main__":
     application = webapp.WSGIApplication(
-        [('/', Main), ('/add',AddWork), 
-         ('/login', Login), 
-         ('/logout', Logout), 
+        [('/', Main), ('/add',AddWork),
+         ('/author/create',CreateAuthor),
+         ('/login', Login),
+         ('/logout', Logout),
          ('/blob/(.*)$',BlobInDataStore)
         ], debug=True)
     main()
