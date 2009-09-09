@@ -13,13 +13,19 @@ from google.appengine.api import urlfetch
 
 from google.appengine.api import urlfetch
 
+from google.appengine.api.datastore_errors import BadValueError
+
+from shardcounter import get_count, increment
+
 
 
 from model import Work,Author
 
 from base_request_handler import BaseRequestHandler, ErrorPage, templatedir, default_template_vars, Login, Logout
 
-def jsonout(out,status = "Ok",msg = None,format=None,**kwargs):
+fetchit = False
+
+def jsonout(resp,status = "Ok",msg = None,format=None,**kwargs):
        dat = { "status": status, "msg": msg%format }
        dat['mything'] = 1
 
@@ -28,7 +34,8 @@ def jsonout(out,status = "Ok",msg = None,format=None,**kwargs):
        newt.update(kwargs)
 
        logging.debug(newt)
-       json.dump(newt, out)
+       resp.content_type = "application/json"
+       json.dump(newt, resp.out)
 
 
 
@@ -39,31 +46,47 @@ class Main(BaseRequestHandler):
 
 class CreateAuthor(BaseRequestHandler):
     def get(self):
-
-        exist = Author.gql("WHERE name = :1",self.request.get("name"))
-        if exist.count(1) > 0:
-            a = exist.fetch(1)[0]
-            jsonout(out = self.response.out,
-                           msg="%s existed with id %d",
-                           format=(a.name,a.key().id()),
-                           id=a.key().id(),
-                           key=str(a.key())
-                          )
-            return
-
-        auth = Author(
-                        name = self.request.get("name"),
-                        site = self.request.get("site"),
-                        url = self.request.get("site-url"),
-                          )
-        auth.put()
-        jsonout(out = self.response.out,
-                status="ok",
-                msg="Author added with id: %d" ,
-                format=(auth.key().id()),
-                id=auth.key().id(),
-                key = str(auth.key())
+        siteurl = self.request.get("site-url").strip()
+        name = self.request.get("name").strip()
+        site = self.request.get("site").strip()
+        try:
+            exist = Author.gql("WHERE name = :1 and site = :2",
+                               name,
+                               site)
+            if exist.count(1) > 0:
+                a = exist.fetch(1)[0]
+                a.siteurl = siteurl
+                jsonout(resp = self.response,
+                        status="dup",
+                        msg="%s existed with id %d",
+                        format=(a.name,a.key().id()),
+                        id=a.key().id(),
+                        key=str(a.key())
+                       )
+                return
+            auth = Author(
+                name = name,
+                site = site,
+                siteurl = siteurl,
+            )
+            auth.put()
+            increment("Author")
+            increment("Author-%s"%site)
+            
+            jsonout(resp = self.response,
+                    status="ok",
+                    msg="%s added as author with id: %d" ,
+                    format=(auth.name,auth.key().id()),
+                    id=auth.key().id(),
+                    key = str(auth.key())
+                   )
+        except BadValueError, e:
+            jsonout(resp = self.response,
+                    status="error",
+                    msg="BadValue: %s. (%s)",
+                    format=(e,self.request.GET),
                )
+
 
 class BlobInDataStore(BaseRequestHandler):
     def get(self,id):
@@ -100,11 +123,12 @@ class AddWork(BaseRequestHandler):
             work = found.fetch(1)[0]
             work.name = data['name']
             work.put()
-            jsonout(self.response.out,
+            jsonout(self.response,
                     status="dup",
                     msg="%s already existed for %s with id %d",
                     format=(data['name'],work.author.name,work.key().id()),
-                    key=str(work.key())
+                    key=str(work.key()),
+                    id = work.key().id()
                    )
             return
 
@@ -113,36 +137,45 @@ class AddWork(BaseRequestHandler):
             a = int(data['author'])
             author = self.get_author(a)
         except KeyError,strerror:
-            jsonout(out = self.response.out,
+            jsonout(self.response,
                     status="fail",
                     msg="Author not found(%s:%s). Use /author/create" ,
                     format=(a,strerror))
             return
-
-        rpc = urlfetch.create_rpc()
-        blob = urlfetch.make_fetch_call(rpc,data['url'])
         work = Work(
             link = data['url'],
             blobtype= data['type'],
             name = data['name'],
             author = author,
+            site = author.site,
         )
-        data = rpc.get_result().content
-        l = len(data)
-        if len(data) < 100000:
-            work.data = data
-            msg = "%s  - %d byte data saved in store with id %d"
-        else:
-            msg = "%s - %d byte is too much for datastore. Not inserting pdf. Id %d"
         work.put()
-        self.response.content_type = "application/json"
-        json.dump({ "status": "ok",\
-                  "msg": msg%(work.name,l,work.key().id()),\
-                   
-                   "dbid": str(work.key().id())
-                                    },
-                  self.response.out
-                 )
+        increment("Work")
+        increment("Work-%d"%author.key().id())
+        increment("Work-%s"%author.site)
+
+        if fetchit:
+            rpc = urlfetch.create_rpc()
+            blob = urlfetch.make_fetch_call(rpc,data['url'])
+            data = rpc.get_result().content
+            l = len(data)
+            if len(data) < 100000:
+                work.data = data
+                work.put()
+                msg = "%s  - %d byte data saved in store with id %d"
+            else:
+                msg = "%s - %d byte is too much for datastore. Not inserting pdf. Id %d"
+            msg = msg % (work.name,l,work.key())
+        else:
+            msg = "%s - Fetching disabled. %s - Id %d"%(work.name,work.link,work.key().id())
+
+        jsonout(self.response,
+                status = "ok",
+                msg = msg,
+                id = work.key().id(),
+                format = (),
+                key =  str(work.key())
+               )
 
 
 
