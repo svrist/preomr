@@ -1,9 +1,12 @@
 import logging
 import os
+import random
+from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import webapp
 from google.appengine.api import users
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
+from django.utils import simplejson as json
 
 class BaseRequestHandler(webapp.RequestHandler):
     def handle_exception(self, exception, debug_mode):
@@ -44,6 +47,15 @@ class BaseRequestHandler(webapp.RequestHandler):
         path = os.path.join(directory,os.path.join('templates',template_name))
         self.response.out.write(template.render(path,values,debug=_DEBUG))
 
+    def jsonout(self,status = "Ok",msg = None,format=(),**kwargs):
+        dat = { "status": status, "msg": msg%format }
+        newt = {}
+        newt.update(dat)
+        newt.update(kwargs)
+        self.response.content_type = "application/json"
+        json.dump(newt, self.response.out)
+
+
 class ErrorPage(BaseRequestHandler):
     def get(self):
         self.generate("not_setup.html",{'without_jquery':'yes'})
@@ -57,16 +69,38 @@ class Logout(BaseRequestHandler):
     def get(self):
         self.redirect(users.create_logout_url('/')) 
 
+def real_main(application):
+    logging.getLogger().setLevel(logging.DEBUG)
+    run_wsgi_app(application)
+
+def profiling_main(application):
+    import cProfile, pstats, StringIO
+    prof = cProfile.Profile()
+    prof = prof.runctx("real_main()", globals(), locals())
+    stream = StringIO.StringIO()
+    stats = pstats.Stats(prof, stream=stream)
+    stats.sort_stats("time")  # Or cumulative
+    stats.print_stats(160)  # 80 = how many to print
+    # The rest is optional.
+    #stats.print_callees()
+    #stats.print_callers()
+    logging.info("Profile data:\n%s", stream.getvalue())
+
+
+def main(application):
+    ## Profiling on 10% of hits. 4 is 100% random choosen by dice roll!
+    if random.randint(0,10) == 4:
+        profiling_main(application)
+    else:
+        real_main(application)
+
 ##################################################################################################
+
 
 
 templatedir = "templates/"
 
-default_template_vars = { "without_jquery": "no",
-                          "with_config": "no",
-                         "logouturl" : users.create_logout_url('/'),
+default_template_vars = { "logouturl" : users.create_logout_url('/'),
                          "loggedin" : users.get_current_user is not None,
                         }
-
-
 _DEBUG=True

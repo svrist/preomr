@@ -3,26 +3,25 @@
   <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
   </head>
   <body>
-  <table summary="DB Counts"> 
-			<caption>DB Counts</caption> 
+  <table summary="Sites"> 
+			<caption>Sites</caption> 
 			<thead> 
 				<tr> 
 					<th scope="col">Name</th> 
 					<th scope="col">Count</th> 
-					
 				</tr> 
 			</thead>	
 			<tfoot> 
 				<tr> 
 					<th scope="row">Total</th> 
-					<td colspan="1">{{ countcounts }}</td> 
+               <td colspan="1">{{ totalhere }}/{{ overalltotal }}</td> 
 				</tr> 
 			</tfoot> 
 			<tbody> 
-			{% for c in counts %}
+			{% for s in sites %}
 				<tr > 
-					<th scope="row" id="r101">{{ c.name }}</th> 
-					<td><a href="twitter.com/radubilei">{{ c.count }}</a></td> 
+              <th scope="row" id="r{{ forloop.counter }}">{{ s.0.name }}</th> 
+					<td>{{ s.1 }}</td> 
 				</tr>
 			{% endfor %}
 			</tbody>
