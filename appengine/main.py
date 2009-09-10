@@ -7,7 +7,7 @@ from google.appengine.ext import webapp
 from shardcounter import get_count
 
 import author
-import site
+import svsite
 import work
 
 from base_request_handler import BaseRequestHandler, Login, Logout,main
@@ -45,8 +45,8 @@ if __name__ == "__main__":
          ('/author/read',author.AuthorRead),
          ('/login', Login),
          ('/logout', Logout),
-         ('^/site/create',site.SiteCreate),
-         ('^/site/read',site.SiteRead),
+         ('^/site/create',svsite.SiteCreate),
+         ('^/site/read',svsite.SiteRead),
          ('/blob/(.*)$',BlobInDataStore)
         ], debug=True)
     main(application)
