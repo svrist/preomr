@@ -76,7 +76,7 @@ def real_main(application):
 def profiling_main(application):
     import cProfile, pstats, StringIO
     prof = cProfile.Profile()
-    prof = prof.runctx("real_main()", globals(), locals())
+    prof = prof.runctx("real_main(application)", globals(), locals())
     stream = StringIO.StringIO()
     stats = pstats.Stats(prof, stream=stream)
     stats.sort_stats("time")  # Or cumulative

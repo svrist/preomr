@@ -17,9 +17,11 @@
 
 from base_request_handler import BaseRequestHandler
 from model import Work
-import author
+import author as A
 from shardcounter import get_count, increment
 from google.appengine.api import urlfetch
+
+fetchit = False
 
 class WorkCreate(BaseRequestHandler):
     def get(self):
@@ -40,7 +42,7 @@ class WorkCreate(BaseRequestHandler):
         try: 
             a = None
             a = int(data['author'])
-            author = author.get_author(a)
+            author = A.get_author(a)
         except KeyError,strerror:
             self.jsonout(status="fail",
                     msg="Author not found(%s:%s). Use /author/create" ,

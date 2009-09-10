@@ -66,7 +66,7 @@ class AuthorRead(BaseRequestHandler):
     def get(self):
         self.jsonout(status="error",msg="AuthorReadNotImplementedYet")
 
-def get_author(self,dat):
+def get_author(dat):
     if isinstance(dat,int):
         auth = Author.get_by_id(dat)
         if not auth is None:
