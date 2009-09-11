@@ -47,6 +47,7 @@ if __name__ == "__main__":
          ('/logout', Logout),
          ('^/site/create',svsite.SiteCreate),
          ('^/site/read',svsite.SiteRead),
-         ('/blob/(.*)$',BlobInDataStore)
+         ('/blob/(.*)$',BlobInDataStore),
+         ('/work/createlist',work.WorkCreateList)
         ], debug=True)
     main(application)

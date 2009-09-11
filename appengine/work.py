@@ -16,10 +16,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from base_request_handler import BaseRequestHandler
-from model import Work
+from model import Work,SavedList
+import random
+import logging
 import author as A
 from shardcounter import get_count, increment
 from google.appengine.api import urlfetch
+from google.appengine.ext import db
 
 fetchit = False
 
@@ -81,5 +84,31 @@ class WorkCreate(BaseRequestHandler):
                      format = (),
                      key =  str(work.key())
                     )
+
+
+class WorkCreateList(BaseRequestHandler):
+    def get(self):
+        count = self.request.get("count")
+        site = self.request.get("site")
+        name = self.request.get("name").strip()
+        if count is None or count is "":
+            count = 10
+
+        if site is None or site is "":
+            workcount=int(get_count("Work"))
+        else:
+            workcount=int(get_count("Work-%s"%site))
+
+        logging.debug("%d",workcount)
+        self.response.out.write("Workcount %d, count %d"%(workcount,count))
+        numberlist = random.sample(range(0,workcount-1),count)
+        numberlist.sort()
+        self.response.out.write("Numberlist %s"%numberlist)
+        wq = db.GqlQuery("SELECT __key__ FROM Work ORDER BY name")
+        keylist = [ wq.fetch(1,c)[0] for c in numberlist ]
+        self.response.out.write("Works %s"%keylist)
+        s = SavedList(name=name,keys=keylist,size=len(keylist))
+        s.put()
+        self.response.out.write("SavedList: %d"%s.key().id())
 
 

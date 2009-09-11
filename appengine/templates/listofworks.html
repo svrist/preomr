@@ -3,12 +3,14 @@
   <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
   </head>
   <body>
-  <table summary="Sites"> 
-			<caption>Sites</caption> 
+  <table summary="Works"> 
+			<caption>Works</caption> 
 			<thead> 
 				<tr> 
 					<th scope="col">Name</th> 
-					<th scope="col">Count</th> 
+					<th scope="col">Author</th> 
+					<th scope="col">Site</th> 
+					<th scope="col">&nbsp;</th> 
 				</tr> 
 			</thead>	
 			<tfoot> 
@@ -18,14 +20,14 @@
 				</tr> 
 			</tfoot> 
 			<tbody> 
-			{% for s in sites %}
+			{% for w in works %}
 				<tr > 
-              <th scope="row" id="r{{ forloop.counter }}">{{ s.0.name }}</th> 
-					<td>{{ s.1 }}</td> 
+              <th scope="row" id="r{{ forloop.counter }}"><a href="{{ w.link }}">{{ w.name }}</a></th> 
+					<td>{{ w.author.name }}</td> 
+					<td>{{ w.site }}</td> 
 				</tr>
 			{% endfor %}
 			</tbody>
 	</table>
-
  </body>
 </html>
