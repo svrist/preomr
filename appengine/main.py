@@ -48,6 +48,7 @@ if __name__ == "__main__":
          ('^/site/create',svsite.SiteCreate),
          ('^/site/read',svsite.SiteRead),
          ('/blob/(.*)$',BlobInDataStore),
-         ('/work/createlist',work.WorkCreateList)
+         ('/work/createlist',work.WorkCreateList),
+         ('/work/readlist',work.WorkReadList),
         ], debug=True)
     main(application)

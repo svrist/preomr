@@ -91,24 +91,60 @@ class WorkCreateList(BaseRequestHandler):
         count = self.request.get("count")
         site = self.request.get("site")
         name = self.request.get("name").strip()
+        if name is None or name is "":
+            self.jsonout(status="error",msg="Name is not specified for list")
+            return
+
+
         if count is None or count is "":
             count = 10
+        else:
+            count = int(count)
 
         if site is None or site is "":
             workcount=int(get_count("Work"))
+            query = "SELECT __key__ FROM Work ORDER BY __key__"
+            wq = db.GqlQuery(query)
         else:
+            query = "SELECT __key__ FROM Work WHERE site = :1 ORDER BY __key__"
             workcount=int(get_count("Work-%s"%site))
+            wq = db.GqlQuery(query,site)
 
-        logging.debug("%d",workcount)
-        self.response.out.write("Workcount %d, count %d"%(workcount,count))
+        if count > workcount:
+            self.jsonout(status="error",msg="Tried to find %d out of %d. Not possible", 
+                         format=(count,workcount))
+            return
+
         numberlist = random.sample(range(0,workcount-1),count)
         numberlist.sort()
-        self.response.out.write("Numberlist %s"%numberlist)
-        wq = db.GqlQuery("SELECT __key__ FROM Work ORDER BY name")
-        keylist = [ wq.fetch(1,c)[0] for c in numberlist ]
-        self.response.out.write("Works %s"%keylist)
-        s = SavedList(name=name,keys=keylist,size=len(keylist))
+        buckets = []
+        for k in numberlist:
+            thisb = int(k/1000)
+            if buckets[thisb] is None:
+                buckets[thisb] = []
+            buckets[thisb].append(k)
+        logging.debug("Numbers: %s. Buckets %s",numberlist,buckets)
+
+        keylist = []
+        for b,l in enumerate(buckets):
+
+
+
+        keylist = [ wq.fetch(limit=1,offset=c)[0] for c in numberlist ]
+
+
+        s = SavedList(name=name,keys=keylist,size=len(keylist),site=site)
         s.put()
-        self.response.out.write("SavedList: %d"%s.key().id())
+        self.jsonout(status="ok", msg="Created list %s with %d items.List id %d",
+                     format=(s.name,s.size,s.key().id()),id=s.key().id())
 
+class WorkReadList(BaseRequestHandler):
+    def get(self):
+        count = self.request.get("count")
+        if count is "" or count is None:
+            count = 10
 
+        templatevars = {}
+        l = SavedList.all().order("-created").fetch(count)
+        templatevars["list"] = l
+        self.generate("readlist.html",templatevars)

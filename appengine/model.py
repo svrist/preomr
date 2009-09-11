@@ -28,5 +28,6 @@ class Site(db.Model):
 class SavedList(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty()
     size = db.IntegerProperty()
     keys = db.ListProperty(db.Key)
