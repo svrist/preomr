@@ -1,0 +1,41 @@
+<html>
+  <head><title>{{ title }}</title>
+  <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
+    <script type="text/javascript" src="/static/jquery.js"></script>
+    <script type="text/javascript" src="/static/jquery.form.js"></script>
+    <script type="text/javascript">
+$(document).ready(function() {
+                  $("#loadingDiv").hide();
+                  $("#Result").hide();
+
+                  $('#myform').ajaxForm(
+                                        { beforeSubmit: befSub,
+success: aftSub, dataType:'json'});
+                  });
+
+      function befSub(formData,jqForm,options){
+        $("#loadingDiv").show();
+        return true;
+      }
+      function aftSub(data){
+        $("#loadingDiv").hide();
+        $("#Result").html(data.msg).show();
+        return true;
+      }
+
+</script>
+  </head>
+  <body>
+    <div id="loadingDiv"><img src="/static/loader.gif" /></div>
+    <div id="Result">Result here</div>
+    <form method="GET" action="/work/createlistjson" id="myform">
+  <table summary="Create List"> 
+			<caption>Create Random List</caption> 
+         <tbody> 
+           {{ form }}
+			</tbody>
+       </table>
+       <input type="submit">
+     </form>
+
+  </body>

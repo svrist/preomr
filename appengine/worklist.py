@@ -24,7 +24,7 @@ import random
 class Create(BaseRequestHandler):
     def get(self):
         pagesize = 1000
-        count = int(self.request.get("count",default_value=10))
+        count = int(self.request.get("size",default_value=10))
         site = self.request.get("site",default_value=None)
         name = self.request.get("name",default_value=None)
         if name is None:
@@ -69,7 +69,7 @@ class Create(BaseRequestHandler):
                 lastkey  = wq.fetch(1,pagesize-1)[0]
                 wq = baseq.filter("__key__ >",lastkey)
 
-        s = SavedList(name=name,keys=result,size=len(result),site=site)
+        s = SavedList(name=name,keys=result,size=len(result),site=site,ids=numberlist)
         increment("/work/list")
         if not site is None:
             increment("/work/%s/list"%site)
