@@ -18,6 +18,7 @@
 from base_request_handler import BaseRequestHandler
 from model import Work,SavedList
 import logging
+from datetime import datetime
 import author as A
 from shardcounter import increment,get_count
 from google.appengine.api import urlfetch
@@ -115,6 +116,9 @@ class WorkReadWget(BaseRequestHandler):
     def get(self,id):
         keylist = SavedList.get_by_id(int(id))
         templatevars = {"works":Work.get(keylist.keys)}
+        templatevars["url"] = self.request.uri
+        templatevars["generatedtime"] = datetime.now()
+        templatevars["listid"] = id
         self.response.headers['Content-Type'] = 'text/plain'
         self.generate("wgetscript.sh",templatevars)
 
@@ -126,5 +130,6 @@ class WorkReadList(BaseRequestHandler):
         templatevars["overalltotal"] = get_count("Work")
         templatevars["totalhere"] = len(keylist.keys)
         templatevars["listname"] = keylist.name
+        templatevars["id"] = id
         self.generate("listofworks.html",templatevars)
         pass
