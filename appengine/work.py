@@ -100,7 +100,7 @@ class Cache(BaseRequestHandler):
         blob = urlfetch.make_fetch_call(rpc,work.link)
         data = rpc.get_result().content
         l = len(data)
-        if len(data) < 100000:
+        if len(data) < 1000000:
             work.data = data
             work.put()
             msg = "%s  - %d byte data saved in store with id %d"

@@ -58,13 +58,11 @@
                {% endif %}
 					<td>{{ w.author.name }}</td> 
                <td>{{ w.site }}</td> 
-               <td>
+               <td align="right">
                  {% if not w.data %} 
                  <a href="/work/cache/{{w.key.id}}"><img src="/static/download.png" /></a>
                  {% endif %}
                  <a href="{{ w.link }}" target="_blank"><img src="/static/pdf.gif"></a>
-                 <a href="/work/delete/{{ w.key.id }}"><img src="/static/del.png" /></a>
-
                </td>
 				</tr>
 			{% endfor %}

@@ -34,9 +34,7 @@ class BlobInDataStore(BaseRequestHandler):
         self.response.headers['Content-Type'] = 'application/pdf'
         expires_date = datetime.datetime.utcnow() + datetime.timedelta(365)
         expires_str = expires_date.strftime("%d %b %Y %H:%M:%S GMT")
-        logging.debug("Expires: %s"%expires_str)
         # self.response.headers.add_header("Expires", expires_str)
-        logging.debug("id %d",id)
         work = Work.get_by_id(int(id))
         self.response.out.write(work.data)
 
