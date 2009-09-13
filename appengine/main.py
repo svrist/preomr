@@ -53,8 +53,8 @@ if __name__ == "__main__":
          ('/work/createlist',worklist.CreateForm),
          ('/work/read/list',worklist.Read),
          ('/work/read/list/(\d+)$',work.WorkReadList),
+         ('/work/read/list/wget/(\d+)$',work.WorkReadWget),
          ('/work/read/(\d+)$',work.WorkRead),
-         ('/work/read/cached/(\d+)$',work.WorkReadCached),
          ('/work/cache/(\d+)$',work.Cache),
         ], debug=True)
     main(application)

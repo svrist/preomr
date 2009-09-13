@@ -111,6 +111,12 @@ class Cache(BaseRequestHandler):
 
         self.jsonout(status="ok",msg=msg)
 
+class WorkReadWget(BaseRequestHandler):
+    def get(self,id):
+        keylist = SavedList.get_by_id(int(id))
+        templatevars = {"works":Work.get(keylist.keys)}
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.generate("wgetscript.sh",templatevars)
 
 
 class WorkReadList(BaseRequestHandler):
