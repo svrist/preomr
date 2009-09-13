@@ -17,10 +17,9 @@
 
 from base_request_handler import BaseRequestHandler
 from model import Work,SavedList
-import random
 import logging
 import author as A
-from shardcounter import get_count, increment
+from shardcounter import increment,get_count
 from google.appengine.api import urlfetch
 from google.appengine.ext import db
 
@@ -85,66 +84,41 @@ class WorkCreate(BaseRequestHandler):
                      key =  str(work.key())
                     )
 
-
-class WorkCreateList(BaseRequestHandler):
-    def get(self):
-        count = self.request.get("count")
-        site = self.request.get("site")
-        name = self.request.get("name").strip()
-        if name is None or name is "":
-            self.jsonout(status="error",msg="Name is not specified for list")
-            return
+class WorkRead(BaseRequestHandler):
+    def get(self,id):
+        pass
 
 
-        if count is None or count is "":
-            count = 10
+class WorkReadCached(BaseRequestHandler):
+    def get(self,id):
+        pass
+
+class Cache(BaseRequestHandler):
+    def get(self,id):
+        work = Work.get_by_id(int(id))
+        rpc = urlfetch.create_rpc()
+        blob = urlfetch.make_fetch_call(rpc,work.link)
+        data = rpc.get_result().content
+        l = len(data)
+        if len(data) < 100000:
+            work.data = data
+            work.put()
+            msg = "%s  - %d byte data saved in store with id %d"
+            msg = msg % (work.name,l,work.key().id())
         else:
-            count = int(count)
+            msg = "%s - %d byte is too much for datastore. Not inserting pdf. Id %d"
+            msg = msg % (work.name,l,work.key().id())
 
-        if site is None or site is "":
-            workcount=int(get_count("Work"))
-            query = "SELECT __key__ FROM Work ORDER BY __key__"
-            wq = db.GqlQuery(query)
-        else:
-            query = "SELECT __key__ FROM Work WHERE site = :1 ORDER BY __key__"
-            workcount=int(get_count("Work-%s"%site))
-            wq = db.GqlQuery(query,site)
-
-        if count > workcount:
-            self.jsonout(status="error",msg="Tried to find %d out of %d. Not possible", 
-                         format=(count,workcount))
-            return
-
-        numberlist = random.sample(range(0,workcount-1),count)
-        numberlist.sort()
-        buckets = []
-        for k in numberlist:
-            thisb = int(k/1000)
-            if buckets[thisb] is None:
-                buckets[thisb] = []
-            buckets[thisb].append(k)
-        logging.debug("Numbers: %s. Buckets %s",numberlist,buckets)
-
-        keylist = []
-        for b,l in enumerate(buckets):
+        self.jsonout(status="ok",msg=msg)
 
 
-
-        keylist = [ wq.fetch(limit=1,offset=c)[0] for c in numberlist ]
-
-
-        s = SavedList(name=name,keys=keylist,size=len(keylist),site=site)
-        s.put()
-        self.jsonout(status="ok", msg="Created list %s with %d items.List id %d",
-                     format=(s.name,s.size,s.key().id()),id=s.key().id())
 
 class WorkReadList(BaseRequestHandler):
-    def get(self):
-        count = self.request.get("count")
-        if count is "" or count is None:
-            count = 10
-
-        templatevars = {}
-        l = SavedList.all().order("-created").fetch(count)
-        templatevars["list"] = l
-        self.generate("readlist.html",templatevars)
+    def get(self,id):
+        keylist = SavedList.get_by_id(int(id))
+        templatevars = {"works":Work.get(keylist.keys)}
+        templatevars["overalltotal"] = get_count("Work")
+        templatevars["totalhere"] = len(keylist.keys)
+        templatevars["listname"] = keylist.name
+        self.generate("listofworks.html",templatevars)
+        pass

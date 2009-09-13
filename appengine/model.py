@@ -31,3 +31,5 @@ class SavedList(db.Model):
     name = db.StringProperty()
     size = db.IntegerProperty()
     keys = db.ListProperty(db.Key)
+    ids = db.ListProperty(int)
+    site = db.StringProperty()

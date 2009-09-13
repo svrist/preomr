@@ -9,6 +9,9 @@ from shardcounter import get_count
 import author
 import svsite
 import work
+import worklist
+
+from model import Work
 
 from base_request_handler import BaseRequestHandler, Login, Logout,main
 
@@ -27,7 +30,7 @@ class Main(BaseRequestHandler):
 
 class BlobInDataStore(BaseRequestHandler):
     def get(self,id):
-        self.enforce_admin()
+        #     self.enforce_admin()
         self.response.headers['Content-Type'] = 'application/pdf'
         expires_date = datetime.datetime.utcnow() + datetime.timedelta(365)
         expires_str = expires_date.strftime("%d %b %Y %H:%M:%S GMT")
@@ -48,7 +51,11 @@ if __name__ == "__main__":
          ('^/site/create',svsite.SiteCreate),
          ('^/site/read',svsite.SiteRead),
          ('/blob/(.*)$',BlobInDataStore),
-         ('/work/createlist',work.WorkCreateList),
-         ('/work/readlist',work.WorkReadList),
+         ('/work/createlist',worklist.Create),
+         ('/work/read/list',worklist.Read),
+         ('/work/read/list/(\d+)$',work.WorkReadList),
+         ('/work/read/(\d+)$',work.WorkRead),
+         ('/work/read/cached/(\d+)$',work.WorkReadCached),
+         ('/work/cache/(\d+)$',work.Cache),
         ], debug=True)
     main(application)

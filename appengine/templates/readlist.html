@@ -9,19 +9,25 @@
 				<tr> 
 					<th scope="col">Name</th> 
 					<th scope="col">Size</th> 
+					<th scope="col">Site</th> 
+					<th scope="col">&nbsp;</th> 
 				</tr> 
 			</thead>	
 			<tfoot> 
 				<tr> 
 					<th scope="row">Total</th> 
-               <td colspan="1">{{ totalhere }}/{{ overalltotal }}</td> 
+               <td colspan="3">{{ totalhere }}/{{ overalltotal }}</td> 
 				</tr> 
 			</tfoot> 
 			<tbody> 
 			{% for l in list %}
 				<tr > 
-              <th scope="row" id="r{{ forloop.counter }}"><a href="/work/fromlist?id={{l.key.id }}">{{ l.name }}</a></th> 
+              <th scope="row" id="r{{ forloop.counter }}"><a href="/work/read/list/{{l.key.id }}">{{ l.name }}</a></th> 
 					<td>{{ l.size }}</td> 
+               <td>{{ l.site }}</td> 
+               <td>
+                 <a href="/work/list/delete/{{ l.key.id }}"><img src="/static/del.png" /></a>
+               </td>
 				</tr>
 			{% endfor %}
 			</tbody>

@@ -7,6 +7,7 @@ from google.appengine.api import users
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
 from django.utils import simplejson as json
+from django.core import serializers
 
 class BaseRequestHandler(webapp.RequestHandler):
     def handle_exception(self, exception, debug_mode):
