@@ -1,0 +1,30 @@
+<html>
+  <head><title>{{ title }}</title>
+  <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
+  </head>
+  <body>
+  <table summary="List Of Works"> 
+			<caption>List of Works</caption> 
+			<thead> 
+				<tr> 
+					<th scope="col">Name</th> 
+					<th scope="col">Size</th> 
+				</tr> 
+			</thead>	
+			<tfoot> 
+				<tr> 
+					<th scope="row">Total</th> 
+               <td colspan="1">{{ totalhere }}/{{ overalltotal }}</td> 
+				</tr> 
+			</tfoot> 
+			<tbody> 
+			{% for l in list %}
+				<tr > 
+              <th scope="row" id="r{{ forloop.counter }}"><a href="/work/fromlist?id={{l.key.id }}">{{ l.name }}</a></th> 
+					<td>{{ l.size }}</td> 
+				</tr>
+			{% endfor %}
+			</tbody>
+	</table>
+ </body>
+</html>
