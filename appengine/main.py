@@ -21,7 +21,7 @@ class Main(BaseRequestHandler):
     def get(self):
         templatevars = {"title":"PreOMR"}
         cnames = ["Work","Author","Work-free-score","Work-mutopia",
-                  "Work-musedata",
+                  "Work-musedata","/work/list","/work/list/free-score",
                   "Author-free-score","Author-musedata","Author-mutopia" ]
 
         templatevars["countcounts"] = len(cnames)
@@ -49,7 +49,8 @@ if __name__ == "__main__":
          ('^/site/create',svsite.SiteCreate),
          ('^/site/read',svsite.SiteRead),
          ('/blob/(.*)$',BlobInDataStore),
-         ('/work/createlist',worklist.Create),
+         ('/work/createlistjson',worklist.Create),
+         ('/work/createlist',worklist.CreateForm),
          ('/work/read/list',worklist.Read),
          ('/work/read/list/(\d+)$',work.WorkReadList),
          ('/work/read/(\d+)$',work.WorkRead),

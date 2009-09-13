@@ -60,9 +60,9 @@
                <td>{{ w.site }}</td> 
                <td align="right">
                  {% if not w.data %} 
-                 <a href="/work/cache/{{w.key.id}}"><img src="/static/download.png" /></a>
+                 <a href="/work/cache/{{w.key.id}}" title="Cache a copy of the pdf"><img src="/static/download.png" alt="Cache a copy of the pdf"/></a>
                  {% endif %}
-                 <a href="{{ w.link }}" target="_blank"><img src="/static/pdf.gif"></a>
+                 <a href="{{ w.link }}" target="_blank" title="The original pdf"><img src="/static/pdf.gif" alt="Original pdf"></a>
                </td>
 				</tr>
 			{% endfor %}

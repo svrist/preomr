@@ -14,9 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+import logging
+from google.appengine.ext import db
 from base_request_handler import BaseRequestHandler
 from shardcounter import increment,get_count
-from model import Work,SavedList
+from model import Work,SavedList,SavedListForm
 import random
 
 class Create(BaseRequestHandler):
@@ -85,3 +87,8 @@ class Read(BaseRequestHandler):
         templatevars["overalltotal"] = get_count("/work/list")
         self.generate("readlist.html",templatevars)
 
+
+class CreateForm(BaseRequestHandler):
+    def get(self):
+        templatevars = {"form":SavedListForm()}
+        self.generate("createlist.html",templatevars)

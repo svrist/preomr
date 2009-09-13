@@ -1,5 +1,6 @@
 
 from google.appengine.ext import db
+from google.appengine.ext.db import djangoforms
 
 class Author(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
@@ -33,3 +34,9 @@ class SavedList(db.Model):
     keys = db.ListProperty(db.Key)
     ids = db.ListProperty(int)
     site = db.StringProperty()
+
+class SavedListForm(djangoforms.ModelForm):
+    class Meta:
+        model = SavedList
+        exclude=['created','updated','keys','ids']
+
