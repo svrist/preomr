@@ -33,6 +33,8 @@ class WorkCreate(BaseRequestHandler):
         if found.count(1) > 0:
             work = found.fetch(1)[0]
             work.name = data['name']
+            if "contentlink" in data:
+                work.contentlink = data['contentlink']
             work.put()
             self.jsonout(status="dup",
                     msg="%s already existed for %s with id %d",
@@ -58,25 +60,14 @@ class WorkCreate(BaseRequestHandler):
             author = author,
             site = author.site,
         )
+        if "contentlink" in data:
+            work.contentlink = data['contentlink']
         work.put()
         increment("Work")
         increment("Work-%d"%author.key().id())
         increment("Work-%s"%author.site)
 
-        if fetchit:
-            rpc = urlfetch.create_rpc()
-            blob = urlfetch.make_fetch_call(rpc,data['url'])
-            data = rpc.get_result().content
-            l = len(data)
-            if len(data) < 100000:
-                work.data = data
-                work.put()
-                msg = "%s  - %d byte data saved in store with id %d"
-            else:
-                msg = "%s - %d byte is too much for datastore. Not inserting pdf. Id %d"
-            msg = msg % (work.name,l,work.key())
-        else:
-            msg = "%s - Fetching disabled. %s - Id %d"%(work.name,work.link,work.key().id())
+        msg = "%s - added.  %s - Id %d"%(work.name,work.link,work.key().id())
 
         self.jsonout(status = "ok",
                      msg = msg,

@@ -17,6 +17,7 @@ class Work(db.Model):
     link = db.LinkProperty(required=True)
     author = db.ReferenceProperty(Author)
     site = db.StringProperty()
+    contentlink = db.LinkProperty()
     blobtype = db.StringProperty(choices = [
         "pdf", "tif","jpg","png" ])
     data = db.BlobProperty()
