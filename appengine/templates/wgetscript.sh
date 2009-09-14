@@ -4,5 +4,5 @@
 # {{ url }}
 {% for w in works %}
 echo "{{ w.name }}"
-wget "{{ w.link }}"
+wget -O "{{ w.name|slugify}}.pdf" "{{ w.link }}"
 {% endfor %}
