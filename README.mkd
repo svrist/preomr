@@ -8,6 +8,18 @@ The purpose of this preprocessing is to eliminate anything that might confuse
 current commercial [Optical Music Recognition][3] systems like Photoscore or
 Sharpeye.
 
+This code is developed as a part of a project named *Optical character
+recognition for structural information from high-quality scanned music* which is
+part of the study credit for my two-years masters(cand.scient) at the 
+[University Of Copenhagen, Department of Computer Science][2]
+
+Other parts can be seen in
+
+ - [MusicCrawler github][4] - Code that uses
+ BeautifulSoup to crawl sheet music libraries for available sheet music.
+ - [Diku ONR Github][5]. LaTeX
+ source of the paper "driving" this code. (Work In Progress)
+
 
 Usage
 ------
@@ -33,3 +45,5 @@ See LICENSE.txt for more info
 [1]: http://gamera.informatik.hsnr.de/
 [2]: http://lionel.kr.hs-niederrhein.de/~dalitz/data/projekte/stafflines/
 [3]: http://en.wikipedia.org/wiki/Optical_music_recognition
+[4]: http://github.com/svrist/musiccrawler
+[5]: http://github.com/svrist/diku/tree/master/onr/
