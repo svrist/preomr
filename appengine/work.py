@@ -110,7 +110,12 @@ class WorkReadWget(BaseRequestHandler):
         templatevars["url"] = self.request.uri
         templatevars["generatedtime"] = datetime.now()
         templatevars["listid"] = id
-        self.response.headers['Content-Type'] = 'text/plain'
+        if not self.request.get("download",None) is None:
+            self.response.headers['Content-Type'] = 'application/download'
+            self.response.headers['Content-disposition'] = \
+                    'attachment; filename=%s.sh'%keylist.name
+        else:
+            self.response.headers['Content-Type'] = 'text/plain'
         self.generate("wgetscript.sh",templatevars)
 
 
