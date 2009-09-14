@@ -1,0 +1,17 @@
+<html>
+  <head><title>{{ title }}</title>
+  <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
+  </head>
+  <body>
+  <table summary="Author"> 
+    <caption>Author - {{author.name}}</caption> 
+         <tbody>
+           <tr><td>Name</td><td>{{ author.name }}</td></tr>
+           <tr><td>Info</td><td>{{ author.info }}</td></tr>
+           <tr><td>Site</td><td>{{ author.site }}</td></tr>
+           <tr><td>Url</td><td>{{ author.siteurl|urlize }}</td></tr>
+           <tr><td>Created</td><td>{{ author.created }}</td></tr>
+           <tr><td>Last changed</td><td>{{ author.updated }}</td></tr>
+         </tbody>
+       </table>
+  </body>

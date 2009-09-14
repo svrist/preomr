@@ -63,8 +63,14 @@ class AuthorCreate(BaseRequestHandler):
                         )
 
 class AuthorRead(BaseRequestHandler):
-    def get(self):
-        self.jsonout(status="error",msg="AuthorReadNotImplementedYet")
+    def get(self,id):
+        a = Author.get_by_id(int(id))
+        if not a is None:
+            templatevars = { "author": a}
+            templatevars["title"]= "PREOMR - %s"%a.name
+            self.generate("authorread.html",templatevars)
+        else:
+            self.generate("error.html",{"traceback":"Author not found"})
 
 def get_author(dat):
     if isinstance(dat,int):

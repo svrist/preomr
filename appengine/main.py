@@ -43,7 +43,7 @@ if __name__ == "__main__":
     application = webapp.WSGIApplication(
         [('/', Main), ('/work/create',work.WorkCreate),
          ('/author/create',author.AuthorCreate),
-         ('/author/read',author.AuthorRead),
+         ('/author/read/(\d+)$',author.AuthorRead),
          ('/login', Login),
          ('/logout', Logout),
          ('^/site/create',svsite.SiteCreate),
