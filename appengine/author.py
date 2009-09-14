@@ -27,12 +27,14 @@ class AuthorCreate(BaseRequestHandler):
         name = self.request.get("name").strip()
         site = self.request.get("site").strip()
         try:
-            exist = Author.gql("WHERE name = :1 and site = :2",
+            exist = Author.gql("WHERE name = :1 and site = :2 LIMIT 1",
                                name,
                                site)
             if exist.count(1) > 0:
-                a = exist.fetch(1)[0]
-                a.siteurl = siteurl
+                a = exist.get()
+                if not a.siteurl is siteurl:
+                    a.siteurl = siteurl
+                    a.put()
                 self.jsonout(status="dup",
                              msg="%s existed with id %d",
                              format=(a.name,a.key().id()),
@@ -63,8 +65,14 @@ class AuthorCreate(BaseRequestHandler):
                         )
 
 class AuthorRead(BaseRequestHandler):
-    def get(self):
-        self.jsonout(status="error",msg="AuthorReadNotImplementedYet")
+    def get(self,id):
+        a = Author.get_by_id(int(id))
+        if not a is None:
+            templatevars = { "author": a}
+            templatevars["title"]= "PREOMR - %s"%a.name
+            self.generate("authorread.html",templatevars)
+        else:
+            self.generate("error.html",{"traceback":"Author not found"})
 
 def get_author(dat):
     if isinstance(dat,int):

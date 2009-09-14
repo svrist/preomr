@@ -1,7 +1,9 @@
 <html>
   <head><title>{{ title }}</title>
     <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
+    <link rel="StyleSheet" href="/static/thickbox.css" type="text/css"> 
     <script type="text/javascript" src="/static/jquery.js"></script>
+    <script type="text/javascript" src="/static/thickbox-compressed.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
                         $('#Result').hide();
@@ -59,7 +61,7 @@
                 {% else %}
                 <a href="{{ w.link }}" target="_blank">{{ w.name }}</a></th> 
                {% endif %}
-					<td>{{ w.author.name }}</td> 
+               <td><a href="/author/read/{{w.author.key.id}}?height=250&width=500" class="thickbox">{{ w.author.name }}</a></td> 
                <td>{{ w.site }}</td> 
                <td align="right">
                  {% if not w.data %} 
