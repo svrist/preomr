@@ -52,16 +52,17 @@ def find_nearest(result,count):
 def test_e_fp(filename,expected_count=10):
     init_gamera()
     c = Classifier_with_remove()
-    c.set_k(2)
+    c.set_k(1)
     c.change_features(["volume64regions"])
     ci = c.classify_image(filename)
-    files = ["mergedyn2.xml", "mergedyn.xml","only-dynamics.xml", "newtrain-dynamic.xml"]
+    #files = ["mergedyn2.xml", "mergedyn.xml","only-dynamics.xml",
+    #        "newtrain-dynamic.xml", "preomr.xml"]
+    files =  ["preomr.xml","preomr_edited.xml","preomr_edited_cnn.xml"]
     import os.path
     # try to match with different trainingsets.
     for dynamic in ([ d for d in files if os.path.isfile(d) ]):
-
         ci.load_new_training_data(dynamic)
-        print "count_of_training=%d, k=%d"%(len(c.stats),c.k)
+        print "%s - count_of_training=%d, k=%d"%(dynamic,len(c.stats),c.k)
         result = {} # Push into buckets based on the count of found glyphs.
         sys.stdout.flush()
 
@@ -77,12 +78,18 @@ def test_e_fp(filename,expected_count=10):
 
         # Find the best match to the wanted result.
         k,res,diff  = find_nearest(result,expected_count)
+        
 
-        confid = [ (len(v),key) for key,v in result.iteritems() ]
+        confid = [ {"conf_count":len(v), "found_elements":key} for key,v in result.iteritems() ]
 
         confid.sort()
 
-        print (confid[-1],confid[-2],confid[-3])
+        ret = []
+        for i in range(1,min(10,len(confid))+1):
+            ret.append(confid[-i])
+
+
+        print ret
 
 
 

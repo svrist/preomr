@@ -25,6 +25,16 @@ from proj import Projection
 
 import logging
 
+def ccs_manip(baseccs,subccs, condturn = lambda x: not x):
+    """ Manipulate "subccs" from baseccs and return a new list
+    Compares on offset_* and cols/rows.
+    Defaults to subtract subccs.
+    """
+    return [ c for c in baseccs \
+            if condturn((c.offset_x,c.offset_y,c.ncols,c.nrows) in \
+                [(ic.offset_x,ic.offset_y,ic.ncols,ic.nrows) for ic in \
+                subccs] ) ]
+
 
 class MusicImage(object):
 
@@ -34,6 +44,7 @@ class MusicImage(object):
         if isinstance(image,basestring):
             image = load_image(image)
 
+        self._ccs = None
         self._orig = image
         self._image= image
         self._image = self._image.to_onebit()
@@ -81,12 +92,14 @@ class MusicImage(object):
 
         return ret
 
-    def possible_text_ccs(self,image=None):
+    def possible_text_ccs(self,image=None,ccs=None):
         if image is None:
+            self.l.debug("No image given. Using without_insidestaves_info()")
             baseimg = self.without_insidestaves_info()
         else:
             baseimg = image
-        ccs = set(baseimg.cc_analysis())
+        if ccs is None:
+            ccs = set(baseimg.cc_analysis())
         spikes = self.possible_text_areas(image=self.without_insidestaves_info())
         inccs = self.ccs_in_spike(spikes,ccs)
         return inccs
@@ -103,14 +116,13 @@ class MusicImage(object):
 
         p = Projection(image.projection_rows())
         p.threshold(min_cutoff_factor*image.width)
-        self.l.debug("thresholded at %f",min_cutoff_factor)
-        self.l.debug("min_cc_count: %d",min_cc_count)
-        self.l.debug("avgcutoff: %s",avg_cutoff)
 
 
         spikes = p.spikes(height_cutoff_factor*self.ms().staffspace_height)
-        self.l.debug("HeightCutoff %f",height_cutoff_factor)
+        self.l.debug("thresholded:%.2f, min_cc_count:%d, avgcutoff: %s, heightcutoff:%.2f",
+                     min_cutoff_factor,min_cc_count,avg_cutoff, height_cutoff_factor)
         ccs = image.cc_analysis()
+        
         for s in spikes[:]:
             cond = inout_vertical_ys([(s['start'],s['stop'])])
             cs = [ c for c in ccs if cond(c) ]
@@ -135,6 +147,7 @@ class MusicImage(object):
     def to_rgb(self):
         return self._orig.to_rgb()
 
+
     def ccs(self,remove_text=True,remove_inside_staffs=True,remove_classified=False):
         """ Return the connected components of the image
         Choose to get all, or with some parts removed
@@ -147,38 +160,56 @@ class MusicImage(object):
         """
         self.l.debug("remove_text=%s, remove_inside_staffs=%s, remove_classified=%s",\
                      remove_text,remove_inside_staffs,remove_classified)
+        c = self.ccs_overall()
 
+        ccs = c["all"]
 
-        baseimg = self.without_staves()
-        ccs = set(baseimg.cc_analysis())
-
-        outsideccs = []
-        if remove_text or remove_inside_staffs:
-            cond = inout_staff_condition(self.ms().get_staffpos())
-            outsideccs = set([ c for c in ccs if not cond(c)])
 
         if (remove_text):
-            inccs = self.possible_text_ccs(image=self.without_insidestaves_info())
+            inccs = c["text"]
             self.l.debug("Removing %d ccs as text",len(inccs))
-            ccs = ccs-set(inccs) # remove text
+            ccs = ccs_manip(ccs,inccs)
 
         if (remove_inside_staffs):
             pre = ccs
-            ccs = outsideccs & ccs
+            ccs = ccs_manip(ccs,ret["outside"],condturn=lambda x: x)
             self.l.debug("Removing %d ccs as inside staffs",(len(pre)-len(ccs)))
 
         if (remove_classified):
-            clasccs = self.classified_ccs()
-            self.l.debug("Removing %d ccs as classified",(len(pre)-ccs))
-            ccs = ccs - clasccs
-
+            clasccs = ret["classified"]
+            self.l.debug("Removing %d ccs as classified",(len(classcs)))
+            ccs = ccs_manip(ccs,clasccs)
         return ccs
 
-    def classified_ccs(self,other=None):
+
+    def ccs_overall(self):
+        ret = {}
+        if self._ccs is None:
+            baseimg = self.without_staves()
+            ccs = set(baseimg.cc_analysis())
+            cond = inout_staff_condition(self.ms().get_staffpos())
+            ret["all"] = ccs
+            ret["outside"] = [ c for c in ccs if not cond(c)]
+            ret["inside"] = [ c for c in ccs if cond(c)]
+            assert (len(ret['outside'])+len(ret["inside"]) == len(ccs))
+            ret["text"] = self.possible_text_ccs(image=self.without_insidestaves_info(),ccs=ret["outside"])
+            self._ccs = ret
+        else:
+            ret = self._ccs
+
+        if not "classified" in ret and not self.classifier is None:
+           ret["classified"] = self.classified_ccs(ccs_manip(ret['outside'],ret['text']))
+           self._ccs = ret
+
+        return ret
+
+
+
+    def classified_ccs(self,ccs=None):
         if self.classifier is None:
             raise Error("Classifier not initialized")
 
-        ci = self.classifier.classify_image(self)
+        ci = self.classifier.classify_image(self,ccs=ccs)
         d_t = ci.confident_d_t()
         self.l.debug("Confident d_t %f",d_t)
         ret = ci.classified_glyphs(d_t)
@@ -189,16 +220,17 @@ class MusicImage(object):
         """ Get cc's for three parts of the image
         text, instaff,other
         """
-        cond = inout_staff_condition(self.ms().get_staffpos())
-        instaff = [ c for c in self.ccs(False,False) if cond(c)]
-        other = self.ccs()
-        text =  self.possible_text_ccs()
+        seg = self.ccs_overall()
+        #cond = inout_staff_condition(self.ms().get_staffpos())
+        #instaff = [ c for c in self.ccs(False,False) if cond(c)]
+        #other = self.ccs()
+        #text =  self.possible_text_ccs()
         if classify:
-            classified = self.classified_ccs()
+            classified = seg['classified']
         else:
             classified = []
 
-        return text,instaff,other,classified
+        return seg['text'],seg['inside'],seg['outside'],classified
 
     def without(self,classified=True,text=True):
         ret = self.color_segment(other_color=RGBPixel(0,0,0),
@@ -210,7 +242,7 @@ class MusicImage(object):
 
     def color_segment(self,text_color=RGBPixel(255,255,0),\
                       instaff_color=RGBPixel(0,255,0),\
-                      other_color=RGBPixel(255,0,0),
+                      other_color=RGBPixel(100,100,100),
                       classified_color=None,
                      classified_box=False):
         """ Segment image in three with colors
@@ -257,6 +289,13 @@ class MusicImage(object):
             ret.highlight(c,text_color)
 
         return ret
+    def highlight_ccs(self,ccs):
+        bla = self.to_rgb()
+        [ bla.highlight(c,RGBPixel(0,255,0)) for c in ccs ]
+        return bla
+
+
+
 
 
 if __name__ == '__main__':
@@ -267,16 +306,16 @@ if __name__ == '__main__':
     FORMAT = "%(asctime)-15s %(levelname)s [%(name)s.%(funcName)s]  %(message)s"
     logging.basicConfig(level=logging.DEBUG,format=FORMAT)
     init_gamera()
-    c = Classifier_with_remove(training_filename="mergedyn2.xml")
-    c.set_k(2)
+    c = Classifier_with_remove(training_filename="preomr_edited_cnn.xml")
+    c.set_k(1)
     filename = sys.argv[-1]
     mi = MusicImage(load_image(filename),classifier=c)
     ret = mi.without()
     ret.save_PNG("%s_Removed.png"%filename)
-    logging.debug("Done with %s"%"brahmsRemove")
+    logging.debug("Done with %s"%filename)
     ret = mi.color_segment(classified_box=True)
     ret.save_PNG("%s_ColorSegment.png"%filename)
-    logging.debug("Done with %s"%"brahmsColorSegment")
+    logging.debug("Done with %s"%filename)
 
 
 

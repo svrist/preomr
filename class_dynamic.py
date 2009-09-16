@@ -66,9 +66,9 @@ class Classified_image:
             # Init bucket.
             if not result.has_key(count):
                 result[count] = []
-            result[count].append(self.myclassifier.d_t())
+            result[count].append((self.myclassifier.d_t(),e_fp))
 
-        confid = [ (len(v),v[0]) for key,v in result.iteritems() if key > 0]
+        confid = [ (len(v),v[0][0],v[0][1]) for key,v in result.iteritems() if key > 0]
         confid.sort(reverse=True)
 
         self.l.debug("top3: %s %s %s",confid[0],confid[1],confid[2])
@@ -138,14 +138,18 @@ class Classifier_with_remove(object):
         cdf = EmpiricalCDF([s[0] for s in self.stats])
         return cdf.invcdf(self.e_fp)
 
-    def classify_image(self,imgname):
+    def classify_image(self,imgname,ccs = None):
         if hasattr(imgname,'ccs'):
             mi = imgname
         else:
             self.l.debug("Loading image from file %s",imgname)
             mi = MusicImage(imgname)
 
-        relevant_cc = mi.ccs(remove_text=True,remove_inside_staffs=True)
+        if ccs is None:
+            self.l.debug("Getting relevant ccs.")
+            relevant_cc = mi.ccs(remove_text=True,remove_inside_staffs=True)
+        else:
+            relevant_cc = ccs
         ret = Classified_image(self,mi,relevant_cc)
         self.images.append(ret)
         return ret
