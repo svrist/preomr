@@ -1,0 +1,12 @@
+2009-09-15 20:48:24,204 INFO [root.<module>]  das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-d-sharp-minor.pdf - 4 pages. [1, 2, 3, 4] chosen
+2009-09-15 20:49:35,615 WARNING [root.<module>]  Failed to parse fantaisie-elgiaque-pour-guitare-seule.pdf: Unsupported PDF version: 1.5
+2009-09-15 20:49:35,655 INFO [root.<module>]  goldberg-variations-25.pdf - 3 pages. [1, 2, 3] chosen
+2009-09-15 20:50:24,033 INFO [root.<module>]  ich-elender-mensch-wer-wird-mich-erlosen.pdf - 29 pages. [2, 5, 6, 7, 10, 13, 15, 20, 27, 29] chosen
+2009-09-15 20:52:22,437 INFO [root.<module>]  io-gia-tamai-aria-from-rodelinda.pdf - 6 pages. [1, 2, 3, 4, 5, 6] chosen
+2009-09-15 20:53:59,634 INFO [root.<module>]  iv-rondeaux-pour-la-guitare.pdf - 5 pages. [1, 2, 3, 4, 5] chosen
+2009-09-15 20:57:33,844 INFO [root.<module>]  la-traviata-n2-brindisi.pdf - 4 pages. [1, 2, 3, 4] chosen
+2009-09-15 20:58:52,217 INFO [root.<module>]  marche-aux-flambeaux.pdf - 6 pages. [1, 2, 3, 4, 5, 6] chosen
+2009-09-15 21:00:33,612 INFO [root.<module>]  symphony-no-2-in-d-major.pdf - 108 pages. [4, 28, 31, 39, 54, 68, 76, 81, 84, 100] chosen
+2009-09-15 21:03:33,990 INFO [root.<module>]  symphony-no-3-in-e-flat-major-eroica.pdf - 170 pages. [15, 19, 26, 38, 51, 58, 62, 76, 135, 149] chosen
+2009-09-15 21:06:51,926 INFO [root.<module>]  the-silver-swan.pdf - 3 pages. [1, 2, 3] chosen
+2009-09-15 21:07:44,061 INFO [root.<module>]  usquequo-domine.pdf - 4 pages. [1, 2, 3, 4] chosen
