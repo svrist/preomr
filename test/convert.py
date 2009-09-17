@@ -13,16 +13,21 @@ init_gamera()
 
 for file in sys.argv[1:]:
     print "Converting %s"%file
+    sys.stdout.flush()
     start = time.time()
-    #try:
-    pdf = Pdfsampler(file)
-    chosen_pages = pdf.randompages(2)
-    for page in chosen_pages:
-        page.save()
-        page.save_nostaves()
-        page.generate_gamera_script()
-        page.save_color_segmented()
+    try:
+        pdf = Pdfsampler(file)
+        chosen_pages = pdf.randompages(2)
+        for page in chosen_pages:
+            page.save()
+            page.save_nostaves()
+            page.generate_gamera_script()
+            page.save_color_segmented()
             #except Exception, e:
                 #logging.warn("Exception during file %s: %s",file,e)
+    except Exception,e:
+        print "Skipping %s",file
+        logging.warn("Failed with %s, Skipping: %s",file,e)
+
     print "Duration %f"%((time.time()-start))
     sys.stdout.flush()

@@ -130,7 +130,7 @@ class Pdfsampler:
     def randompages(self,count):
         doc = PDFDocument(self.filename)
         pages = doc.count_pages()
-        chosen_pages = random.sample([i for i in xrange(1,pages+1)],min(pages,10))
+        chosen_pages = random.sample([i for i in xrange(1,pages+1)],min(pages,count))
         chosen_pages.sort()
         self.l.info("%s - %d pages. %s chosen",self.filename,pages,chosen_pages)
         def pi(n): return Page(self.filename,n,self.c)
