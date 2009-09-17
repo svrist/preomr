@@ -60,7 +60,7 @@ class Classified_image:
     def confident_d_t(self):
         result = {}
         pre_e_fp = self.myclassifier.e_fp
-        for e_fp in arange(0.01,0.99,0.01):
+        for e_fp in arange(0.01,1.00,0.01):
             self.myclassifier.e_fp = e_fp
             count = len(self.classified_glyphs())
             # Init bucket.
@@ -71,7 +71,10 @@ class Classified_image:
         confid = [ (len(v),v[0][0],v[0][1]) for key,v in result.iteritems() if key > 0]
         confid.sort(reverse=True)
 
-        self.l.debug("top3: %s %s %s",confid[0],confid[1],confid[2])
+        ret = []
+        for i in range(0,min(5,len(confid))):
+            ret.append(confid[i])
+        self.l.debug("top: %s",ret)
 
         self.myclassifier.e_fp = pre_e_fp
         return confid[0][1]

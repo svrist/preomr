@@ -309,6 +309,7 @@ if __name__ == '__main__':
     c = Classifier_with_remove(training_filename="preomr_edited_cnn.xml")
     c.set_k(1)
     filename = sys.argv[-1]
+    #c.classifier.load_settings("gasettings.txt")
     mi = MusicImage(load_image(filename),classifier=c)
     ret = mi.without()
     ret.save_PNG("%s_Removed.png"%filename)
