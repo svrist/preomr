@@ -68,7 +68,7 @@ class Classified_image:
                 result[count] = []
             result[count].append((self.myclassifier.d_t(),e_fp))
 
-        confid = [ (len(v),v[0][0],v[0][1]) for key,v in result.iteritems() if key > 0]
+        confid = [ (len(v),v[0][0],v[0][1]) for key,v in result.iteritems() ]
         confid.sort(reverse=True)
 
         ret = []

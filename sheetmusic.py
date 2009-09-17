@@ -50,6 +50,8 @@ class MusicImage(object):
         self._image = self._image.to_onebit()
         self._ms = None
         self._noinside = None
+
+        self.classifier = None
         if not training_filename is None:
             self.classifier = Classifier_with_remove(training_filename)
 
