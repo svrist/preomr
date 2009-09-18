@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+from __future__ import with_statement
 
 import logging
 import os
@@ -23,7 +24,7 @@ import random
 import time
 from subprocess import Popen,PIPE,STDOUT
 from pdftools.pdffile import PDFDocument
-from sheetmusic import *
+from illustrative_sheetmusic import IllMusicImage
 
 from class_dynamic import Classifier_with_remove
 
@@ -33,17 +34,22 @@ class Page:
 
     def __init__(self,origfile,pagenumber,classifier=None):
         self._pagenumber = pagenumber
-        self._file = None
         self._origfile = origfile
-        self._noend = origfile[:-4]
-        self._mi = None
+        self._noend = origfile[:-4] # shortcut
         self._classifier = classifier
-        self.l = logging.getLogger(self.__class__.__name__)
+
+        # internal logger
+        self._l = logging.getLogger(self.__class__.__name__)
+
+        # Internal params init.
+        self._file = None
+        self._mi = None
+        self._nostavesfile = None
 
     def save(self,filename=None):
+        start = time.time()
         if filename is None:
             filename = self._genfilename()
-            logging.info("Filename not given. Using %s",filename)
 
         cmd = ' '.join([gspath,
                             '-dNOPAUSE',
@@ -59,45 +65,60 @@ class Page:
                         ])
         po = Popen(cmd,shell=True,stdout=PIPE,stderr=STDOUT).stdout
         for l in po.readlines():
-            self.l.debug("GS Output:%s",l)
+            self._l.debug("GS Output:%s",l)
         po.close()
         self._file = filename
+        self._l.debug("Saving file %s (duration %f)",
+                      filename,(time.time()-start))
+        return filename
 
     def _init_mi(self):
-        self._mi = MusicImage(self._file,classifier=self._classifier)
+        """ Setup a MusicImage with our classifier """
+        self._mi = IllMusicImage(self._file,classifier=self._classifier)
 
     def save_nostaves(self,filename=None):
+        start = time.time()
         if self._file is None:
-            self.l.debug("No converted tif page. Forcing one now.")
+            self._l.debug("No converted tif page. Forcing one now.")
             self.save()
 
         if filename is None:
             filename = self._genfilename(postfix="-nostaves",extension=".png")
-            self.l.info("Filename not given. Using %s",filename)
 
         if self._mi is None:
             self._init_mi()
 
         self._mi.without_staves().save_PNG(filename)
         self._nostavesfile = filename
+        self._l.debug("Saved file %s (duration %f)",filename,(time.time()-start))
+        return filename
 
-    def generate_gamera_script(self,dir=".",filename=None):
+    def generate_gamera_script(self,dir=".",filename=None,openfile=None):
+        start = time.time()
         if filename is None:
             filename = self._genfilename(dir=dir,extension=".py")
-            self.l.info("Filename not given. Using %s",filename)
+            #self._l.info("Filename not given. Using %s",filename)
 
-        gamscript = open(filename,'w')
-        gamscript_head = open("gamscripthead.py")
-        gamscript.write("# Open %s in gamera with a classifier\n"%self._nostavesfile)
-        gamscript.write(gamscript_head.read())
-        gamscript_head.close()
-        gamscript.write("\n####\n")
-        gamscript.write("image = load_image(\"%s\")\n"%self._nostavesfile)
-        gamscript.write("ccs = image.cc_analysis()\n")
-        gamscript.write("classifier.display(ccs,image)\n")
-        gamscript.close()
+        if openfile is None and not self._nostavesfile is None:
+            openfile = self._nostavesfile
+
+        if openfile is None:
+            raise Exception,"No file to open"
+
+        with open(filename,'w') as gamscript:
+            gamscript.write("# Open %s in gamera with a classifier\n"%self._nostavesfile)
+            with open("gamscripthead.py") as gamscript_head:
+                gamscript.write(gamscript_head.read())
+
+            gamscript.write("\n####\n")
+            gamscript.write("image = load_image(\"%s\")\n"%self._nostavesfile)
+            gamscript.write("ccs = image.cc_analysis()\n")
+            gamscript.write("classifier.display(ccs,image)\n")
+        self._l.debug("Saved file %s (duration %f)",filename,(time.time()-start))
+        return filename
 
     def save_color_segmented(self,filename=None):
+        start = time.time()
         if self._mi is None:
             self._init_mi()
 
@@ -106,6 +127,9 @@ class Page:
 
         color = self._mi.color_segment(classified_box=True)
         color.save_PNG(filename)
+        self._l.debug("Saved file %s (duration %f)",
+                      filename,(time.time()-start))
+        return filename
 
 
     def _genfilename(self,dir=None,postfix="",extension=".tif"):
@@ -114,7 +138,7 @@ class Page:
         filename = "%s/%s-page%02d%s%s"%\
                 (dir,self._noend,self._pagenumber,postfix,extension)
         if not os.path.exists(dir):
-            logging.debug("%s dir dint exits. Creating it.",dir)
+            self._l.debug("%s dir dint exits. Creating it.",dir)
             os.mkdir(dir)
 
         return filename
@@ -123,7 +147,7 @@ class Pdfsampler:
 
     def __init__(self,filename):
         self.filename = filename
-        self.l = logging.getLogger(self.__class__.__name__)
+        self._l = logging.getLogger(self.__class__.__name__)
         self.c = Classifier_with_remove(training_filename="../preomr_edited_cnn.xml")
         self.c.set_k(1)
 
@@ -132,7 +156,7 @@ class Pdfsampler:
         pages = doc.count_pages()
         chosen_pages = random.sample([i for i in xrange(1,pages+1)],min(pages,count))
         chosen_pages.sort()
-        self.l.info("%s - %d pages. %s chosen",self.filename,pages,chosen_pages)
+        self._l.info("%s - %d pages. %s chosen",self.filename,pages,chosen_pages)
         def pi(n): return Page(self.filename,n,self.c)
         return [ pi(p) for p in chosen_pages ]
 

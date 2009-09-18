@@ -17,29 +17,28 @@
 
 from gamera.core import *
 from remove import remstaves,reminside
-from within import inout_vertical_ys,between,inout_staff_condition
-from outline import outline
-from numpy import average
+from within import inout_staff_condition
+from ccs_util import ccs_remove, ccs_intersect
+from text import Text_in_music
 
-from proj import Projection
 
 import logging
-
-def ccs_manip(baseccs,subccs, condturn = lambda x: not x):
-    """ Manipulate "subccs" from baseccs and return a new list
-    Compares on offset_* and cols/rows.
-    Defaults to subtract subccs.
-    """
-    return [ c for c in baseccs \
-            if condturn((c.offset_x,c.offset_y,c.ncols,c.nrows) in \
-                [(ic.offset_x,ic.offset_y,ic.ncols,ic.nrows) for ic in \
-                subccs] ) ]
-
 
 class MusicImage(object):
 
     def __init__(self,image,training_filename=None, classifier=None):
-        """ Setup a wrapped image with music methods around """
+        """ Setup a wrapped image with music methods around 
+        If a classifier or training_filename is set, the classifier will be used
+        to match objects after text and "in-staff" objects have been removed.
+
+        If both training_filename and classifier is set, classier wins.
+
+        Keyword Arguments:
+            image - Gamera Image or image filename
+            training_filename - Filename to use for classifier,(optional)
+            classifier - Classifier to use. If both training_filename and
+            classifier is set, classifier wins.
+        """
         self.l = logging.getLogger(self.__class__.__name__)
         if isinstance(image,basestring):
             image = load_image(image)
@@ -50,6 +49,7 @@ class MusicImage(object):
         self._image = self._image.to_onebit()
         self._ms = None
         self._noinside = None
+        self._text_obj = None
 
         self.classifier = None
         if not training_filename is None:
@@ -57,6 +57,12 @@ class MusicImage(object):
 
         if not classifier is None:
             self.classifier = classifier
+
+    def _text(self):
+        if self._text_obj is None:
+            self.setup_textmatcher()
+
+        return self._text_obj
 
     def ms(self):
         if self._ms is None:
@@ -76,75 +82,20 @@ class MusicImage(object):
                                         self._ms.image.image_copy())
         return self._noinside
 
-    def with_row_projections(self,color=RGBPixel(200,50,50),image=None):
-        ret = self._orig.to_rgb()
-        if image is None:
-            image = self.without_insidestaves_info()
-        p = image.projection_rows()
-        l = [ (v,i) for i,v in enumerate(p) ]
-        [ ret.draw_line( (0,i[1]), (i[0],i[1]),color) for i in l]
-        return ret
-
-    def ccs_in_spike(self,spikes,ccs):
-        ret = []
-        for s in spikes[:]:
-            cond = inout_vertical_ys([(s['start'],s['stop'])])
-            cs = [ c for c in ccs if cond(c) ]
-            ret.extend(cs)
-
-        return ret
-
-    def possible_text_ccs(self,image=None,ccs=None):
-        if image is None:
-            self.l.debug("No image given. Using without_insidestaves_info()")
-            baseimg = self.without_insidestaves_info()
-        else:
-            baseimg = image
-        if ccs is None:
-            ccs = set(baseimg.cc_analysis())
-        spikes = self.possible_text_areas(image=self.without_insidestaves_info())
-        inccs = self.ccs_in_spike(spikes,ccs)
-        return inccs
+    def setup_textmatcher(self,
+                          min_cutoff_factor=0.02,
+                          height_cutoff_factor=0.8,image=None,
+                          avg_cutoff=(0.75,2.0),
+                          min_cc_count=10
+                         ):
+        self._text_obj = Text_in_music(self,
+                          min_cutoff_factor= min_cutoff_factor,
+                          height_cutoff_factor=height_cutoff_factor,
+                          avg_cutoff=avg_cutoff,
+                          min_cc_count=min_cc_count)
 
 
-    def possible_text_areas(self, min_cutoff_factor=0.02,
-                            height_cutoff_factor=0.8,image=None,
-                            avg_cutoff=(0.75,2.0),
-                            min_cc_count=10):
 
-        if image is None:
-            self.l.debug("No image given, using without_inside_staves_info()")
-            image = self.without_insidestaves_info()
-
-        p = Projection(image.projection_rows())
-        p.threshold(min_cutoff_factor*image.width)
-
-
-        spikes = p.spikes(height_cutoff_factor*self.ms().staffspace_height)
-        self.l.debug("thresholded:%.2f, min_cc_count:%d, avgcutoff: %s, heightcutoff:%.2f",
-                     min_cutoff_factor,min_cc_count,avg_cutoff, height_cutoff_factor)
-        ccs = image.cc_analysis()
-        
-        for s in spikes[:]:
-            cond = inout_vertical_ys([(s['start'],s['stop'])])
-            cs = [ c for c in ccs if cond(c) ]
-            avgaspect = average([ c.aspect_ratio() for c in cs ])
-            if not (len(cs) > min_cc_count and
-                    between(avgaspect,avg_cutoff[0],avg_cutoff[1])):
-                spikes.remove(s)
-        return spikes
-
-    def highlight_possible_text(self, image=None):
-
-        if image is None:
-            ret = self._orig.to_rgb()
-        else:
-            ret = image
-        spikes = self.possible_text_areas()
-
-        [ ret.draw_hollow_rect((0,s['start']),(ret.width-1,s['stop']),RGBPixel(255,0,0))\
-         for s in spikes ]
-        return ret
 
     def to_rgb(self):
         return self._orig.to_rgb()
@@ -170,37 +121,44 @@ class MusicImage(object):
         if (remove_text):
             inccs = c["text"]
             self.l.debug("Removing %d ccs as text",len(inccs))
-            ccs = ccs_manip(ccs,inccs)
+            ccs = ccs_remove(ccs,inccs)
 
         if (remove_inside_staffs):
             pre = ccs
-            ccs = ccs_manip(ccs,ret["outside"],condturn=lambda x: x)
+            ccs = ccs_intersect(ccs,ret["outside"])
             self.l.debug("Removing %d ccs as inside staffs",(len(pre)-len(ccs)))
 
         if (remove_classified):
             clasccs = ret["classified"]
             self.l.debug("Removing %d ccs as classified",(len(classcs)))
-            ccs = ccs_manip(ccs,clasccs)
+            ccs = ccs_remove(ccs,clasccs)
         return ccs
 
 
     def ccs_overall(self):
         ret = {}
+        self.l.debug("Ping")
         if self._ccs is None:
             baseimg = self.without_staves()
             ccs = set(baseimg.cc_analysis())
+            stavey = self.ms().get_staffpos()
+            if stavey is None:
+                raise Exception,"No stafflines, no need for anything here.  Abort"
             cond = inout_staff_condition(self.ms().get_staffpos())
             ret["all"] = ccs
             ret["outside"] = [ c for c in ccs if not cond(c)]
             ret["inside"] = [ c for c in ccs if cond(c)]
             assert (len(ret['outside'])+len(ret["inside"]) == len(ccs))
-            ret["text"] = self.possible_text_ccs(image=self.without_insidestaves_info(),ccs=ret["outside"])
+            self.l.debug("Ping text")
+            ret["text"] = self._text().possible_text_ccs(image=self.without_insidestaves_info(),ccs=ret["outside"])
+            self.l.debug("Ping after text")
             self._ccs = ret
         else:
+            self.l.debug("Cached")
             ret = self._ccs
 
         if not "classified" in ret and not self.classifier is None:
-           ret["classified"] = self.classified_ccs(ccs_manip(ret['outside'],ret['text']))
+           ret["classified"] = self.classified_ccs(ccs_remove(ret['outside'],ret['text']))
            self._ccs = ret
 
         return ret
@@ -223,10 +181,6 @@ class MusicImage(object):
         text, instaff,other
         """
         seg = self.ccs_overall()
-        #cond = inout_staff_condition(self.ms().get_staffpos())
-        #instaff = [ c for c in self.ccs(False,False) if cond(c)]
-        #other = self.ccs()
-        #text =  self.possible_text_ccs()
         if classify:
             classified = seg['classified']
         else:
@@ -242,67 +196,12 @@ class MusicImage(object):
                               )
         return ret
 
-    def color_segment(self,text_color=RGBPixel(255,255,0),\
-                      instaff_color=RGBPixel(0,255,0),\
-                      other_color=RGBPixel(100,100,100),
-                      classified_color=None,
-                     classified_box=False):
-        """ Segment image in three with colors
-        Segment the image into three parts:
-             - text
-             - inside staff
-             - Others/relevant for Classifier
-
-        Keyword arguments:
-            text_color --- What color to use for text ccs
-            instaff_color --- The color to use for in-staff ccs
-            other_color --- The color of the rest.
-            classified_color --- If set we will try to classify stuff in the
-            image and give them the given color
-            classified_box --- If set we will try to classify and but instead of
-            highlight I will box them.
-
-        """
-        ret = self.to_rgb().to_onebit().to_rgb()
-        classify = False
-        if not(classified_color is None and classified_box is None):
-            classify = True
-            if classified_color is None:
-                classified_color = RGBPixel(255,0,0)
-
-        text,instaff,other,classified = self.segment(classify=classify)
-        # Painting inside staff things green
-        for c in instaff:
-            ret.highlight(c,instaff_color)
-
-        # Painting relevant ccs' red.
-        for c in other:
-            ret.highlight(c,other_color)
-
-
-        for c in classified:
-            if classified_box:
-                outline(ret,c,width=2.0,color=classified_color)
-            else:
-                ret.highlight(c,classified_color)
-
-        # Painting text yellow
-        for c in text:
-            ret.highlight(c,text_color)
-
-        return ret
-    def highlight_ccs(self,ccs):
-        bla = self.to_rgb()
-        [ bla.highlight(c,RGBPixel(0,255,0)) for c in ccs ]
-        return bla
-
-
-
 
 
 if __name__ == '__main__':
     from gamera.core import * 
     from class_dynamic import Classifier_with_remove
+    from illustrative_sheetmusic import IllMusicImage
     import sys
     #LOG_FILENAME = '/tmp/logging_example.out'
     FORMAT = "%(asctime)-15s %(levelname)s [%(name)s.%(funcName)s]  %(message)s"
@@ -312,7 +211,7 @@ if __name__ == '__main__':
     c.set_k(1)
     filename = sys.argv[-1]
     #c.classifier.load_settings("gasettings.txt")
-    mi = MusicImage(load_image(filename),classifier=c)
+    mi = IllMusicImage(load_image(filename),classifier=c)
     ret = mi.without()
     ret.save_PNG("%s_Removed.png"%filename)
     logging.debug("Done with %s"%filename)

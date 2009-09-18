@@ -1,6 +1,7 @@
 import sys
 import logging
 import time
+import traceback
 FORMAT = "%(asctime)-15s %(levelname)s [%(name)s.%(funcName)s]  %(message)s"
 logging.basicConfig(level=logging.DEBUG,format=FORMAT,filename="convert.log")
 
@@ -20,14 +21,13 @@ for file in sys.argv[1:]:
         chosen_pages = pdf.randompages(2)
         for page in chosen_pages:
             page.save()
-            page.save_nostaves()
-            page.generate_gamera_script()
-            page.save_color_segmented()
-            #except Exception, e:
-                #logging.warn("Exception during file %s: %s",file,e)
+            #page.save_nostaves()
+            colfilename = page.save_color_segmented()
+            #        page.generate_gamera_script(openfile=colfilename)
     except Exception,e:
-        print "Skipping %s",file
+        print "Skipping %s"%file
         logging.warn("Failed with %s, Skipping: %s",file,e)
+        logging.info("Exception: %s",traceback.format_exc(10))
 
     print "Duration %f"%((time.time()-start))
     sys.stdout.flush()
