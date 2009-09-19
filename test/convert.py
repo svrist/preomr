@@ -8,6 +8,7 @@ logging.basicConfig(level=logging.DEBUG,format=FORMAT,filename="convert.log")
 sys.path.append("..")
 
 from  convlib import Pdfsampler
+from sheetmusic import NoStavesException
 from gamera.core import * 
 init_gamera()
 
@@ -18,11 +19,14 @@ for file in sys.argv[1:]:
     start = time.time()
     try:
         pdf = Pdfsampler(file)
-        chosen_pages = pdf.randompages(2)
+        chosen_pages = pdf.randompages(5)
         for page in chosen_pages:
             page.save()
             #page.save_nostaves()
-            colfilename = page.save_color_segmented()
+            try:
+                colfilename = page.save_color_segmented()
+            except NoStavesException,e:
+                logging.info("No staves in %s page %s",file,page._pagenumber)
             #        page.generate_gamera_script(openfile=colfilename)
     except Exception,e:
         print "Skipping %s"%file

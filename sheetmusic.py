@@ -24,6 +24,9 @@ from text import Text_in_music
 
 import logging
 
+class NoStavesException(Exception):
+    pass
+
 class MusicImage(object):
 
     def __init__(self,image,training_filename=None, classifier=None):
@@ -137,21 +140,18 @@ class MusicImage(object):
 
     def ccs_overall(self):
         ret = {}
-        self.l.debug("Ping")
         if self._ccs is None:
             baseimg = self.without_staves()
             ccs = set(baseimg.cc_analysis())
             stavey = self.ms().get_staffpos()
             if stavey is None:
-                raise Exception,"No stafflines, no need for anything here.  Abort"
+                raise NoStavesException,"No stafflines, no need for anything here.  Abort"
             cond = inout_staff_condition(self.ms().get_staffpos())
             ret["all"] = ccs
             ret["outside"] = [ c for c in ccs if not cond(c)]
             ret["inside"] = [ c for c in ccs if cond(c)]
             assert (len(ret['outside'])+len(ret["inside"]) == len(ccs))
-            self.l.debug("Ping text")
             ret["text"] = self._text().possible_text_ccs(image=self.without_insidestaves_info(),ccs=ret["outside"])
-            self.l.debug("Ping after text")
             self._ccs = ret
         else:
             self.l.debug("Cached")
