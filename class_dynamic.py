@@ -22,7 +22,6 @@ from remove import remstaves
 from outline import outline
 from cdf import EmpiricalCDF
 from within import inout_staff_condition
-from sheetmusic import MusicImage
 from numpy import arange
 import sys
 import re
@@ -145,6 +144,7 @@ class Classifier_with_remove(object):
         if hasattr(imgname,'ccs'):
             mi = imgname
         else:
+            from sheetmusic import MusicImage
             self.l.debug("Loading image from file %s",imgname)
             mi = MusicImage(imgname)
 

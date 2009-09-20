@@ -20,6 +20,7 @@ from remove import remstaves,reminside
 from within import inout_staff_condition
 from ccs_util import ccs_remove, ccs_intersect
 from text import Text_in_music
+from class_dynamic import Classifier_with_remove
 
 
 import logging
@@ -88,8 +89,8 @@ class MusicImage(object):
     def setup_textmatcher(self,
                           min_cutoff_factor=0.02,
                           height_cutoff_factor=0.8,image=None,
-                          avg_cutoff=(0.75,2.0),
-                          min_cc_count=10
+                          avg_cutoff=(0.70,2.0),
+                          min_cc_count=5,
                          ):
         self._text_obj = Text_in_music(self,
                           min_cutoff_factor= min_cutoff_factor,

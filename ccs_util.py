@@ -41,5 +41,10 @@ def ccs_in_spike(spikes,ccs):
             ret.extend(cs)
         return ret
 
+def ccs_in_rspike(spikes,ccs):
+    return [ c for s in spikes for c in ccs if s.contains_y(c.center_y)]
+        
+
+
 
 

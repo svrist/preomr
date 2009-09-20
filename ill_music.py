@@ -90,15 +90,16 @@ class IllMusicImage(MusicImage):
         return ret
 
 
-    def with_row_projections(self,color=RGBPixel(200,50,50),image=None,ret=None):
+    def with_row_projections(self,color=RGBPixel(200,50,50),image=None,ret=None,fac=None):
         if ret is None:
             ret = self._orig.to_rgb()
 
         if image is None:
             image = self.without_insidestaves_info()
         p = image.projection_rows()
-        l = [ (v,i) for i,v in enumerate(p) ]
-        [ ret.draw_line( (0,i[1]), (i[0],i[1]),color) for i in l]
+        # l = [ (v,i) for i,v in enumerate(p) ]
+        #[ ret.draw_line( (0,i[1]), (i[0],i[1]),color) for i in l]
+        self.draw_y_proj(p,image=ret,color=color,fac=None)
         return ret
 
     def highlight_text_by_hist(self,bc=5,f=lambda c: c.aspect_ratio()[0]):
@@ -125,19 +126,22 @@ class IllMusicImage(MusicImage):
 
     def highlight_words(self):
         ret = self._orig.to_rgb()
-        words = self._text()._words()
+        img = self.without_insidestaves_info().image_copy()
+        ccs = img.cc_analysis()
+        words = self._text()._words(img,ccs)
         [ ret.draw_hollow_rect(c,RGBPixel(255,0,0)) for c in words ]
         return ret
 
 
-    def draw_y_rl(self,rl,image=None,color=RGBPixel(255,0,0),norm=True):
+    def draw_y_proj(self,rl,image=None,color=RGBPixel(255,0,0),norm=True,side="left",fac=None):
         if image is None:
             image = self.to_rgb()
 
         assert len(rl) == image.nrows
 
         if norm:
-            fac = int(image.ncols/max(rl))
+            if fac is None:
+                fac = int(image.ncols/max(rl))
             rl = [ fac*r for r in rl ]
 
         l = [ (v,i) for i,v in enumerate(rl) ]
