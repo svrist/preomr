@@ -201,7 +201,7 @@ class MusicImage(object):
 if __name__ == '__main__':
     from gamera.core import * 
     from class_dynamic import Classifier_with_remove
-    from illustrative_sheetmusic import IllMusicImage
+    from ill_music import IllMusicImage
     import sys
     #LOG_FILENAME = '/tmp/logging_example.out'
     FORMAT = "%(asctime)-15s %(levelname)s [%(name)s.%(funcName)s]  %(message)s"

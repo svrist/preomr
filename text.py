@@ -24,6 +24,64 @@ from gamera.kdtree import *
 
 import logging
 
+class Word():
+    def __init__(self,word,ccs):
+        self.w = word
+        self.ccs = ccs
+
+    def clen(self):
+        return len(self.ccs)
+
+
+
+def wordlist(words,ccs,min_word_l):
+    ret = []
+    for w in words[:]:
+        r = Rect(w)
+        contained = [ c for c in ccs if r.contains_rect(c) ]
+        if len(contained) >= min_word_l:
+            word = Word(w,contained)
+            ret.append(word)
+    return ret
+
+class Line():
+    def __init__(self,line,words):
+        self.ws = words
+        self.l = line
+        self.t = KdTree([KdNode([c.w.center_x,c.w.center_y],c.w) for c in words ])
+
+    def distance_next_cc(self,c):
+        nextn = self.t.k_nearest_neighbors([c.w.center_x,c.w.center_y],2)
+        assert len(nextn)>0
+        if len(nextn) == 1:
+            return 0
+        return c.w.distance_bb(nextn[1].data)# first after me
+
+    def line_feature(self):
+        return average([d for c,d in self])*1.0/len(self)
+
+    def __getitem__(self,key):
+        words = self.ws
+        return (words[key],self.distance_next_cc(words[key]))
+
+    def __iter__(self):
+        for i,k in enumerate(self.ws):
+            yield self[i]
+
+
+    def __len__(self):
+        return len(self.ws)
+
+def llist(lines,words):
+    ret = []
+    for l in lines:
+        ws = [ c for c in words if l.contains_y(c.w.center_y) ]
+        ret.append(Line(l,ws))
+    return ret
+
+
+
+
 class Text_in_music():
 
     def __init__(self,image,
@@ -31,7 +89,8 @@ class Text_in_music():
                  height_cutoff_factor=0.8,
                  avg_cutoff=(0.75,2.0),
                  min_cc_count=5,
-                 min_wordlenght = 2,
+                 min_wordlength = 2,
+                 deviation_avg_feature = 3,
                  text_near = None
                 ):
         self.l = logging.getLogger(self.__class__.__name__)
@@ -39,16 +98,77 @@ class Text_in_music():
 
         # Settings
         if text_near is None:
-            text_near = int(image._orig.ncols /  200.0 * 1.5) # 200 chars on the width of page.  Allow almost 1.5 chars space between
+            text_near = int(image._orig.ncols /  200.0 * 1.0) # 200 chars on the width of page.  Allow almost 1.5 chars space between
         self._min_cutoff_factor = min_cutoff_factor
         self._height_cutoff_factor = height_cutoff_factor
         self._avg_cutoff = avg_cutoff
         self._min_cc_count = min_cc_count
         self._text_near = text_near
-        self._min_wordlenght = min_wordlenght # two ccs in a "word" is a good word.
+        self._min_wordlength = min_wordlength # two ccs in a "word" is a good word.
+        self._deviation_avg_feature = deviation_avg_feature
         self.l.debug("thresholded:%.2f, min_cc_count:%d, avgcutoff: %s, heightcutoff:%.2f",
                      self._min_cutoff_factor,self._min_cc_count,self._avg_cutoff,
                      self._height_cutoff_factor)
+
+    def _confirmed_text_lines(self,words):
+        """ Take a list of words and return a list of confirmed text lines
+        """
+        p = self.word_projections(words=words).rspikes(self._image._orig.ncols-1) # Get lines of document
+
+
+        # split out words per line, based on word.center_y
+        lines = llist(p,words)
+        #rs = [ [ c for c in words if r.contains_y(c.center_y) ] for r in p ]
+
+        # Augment rs list with a KdTree over all "words" in the given line
+            #rtree = [ (r,KdTree([KdNode([c.center_x,c.center_y],c) for c in r ])) \
+            #for r in rs ]
+
+        # create a list with "word" and distance to nearest next word for each
+        # line.
+        #distc = [ [ (c,distance_next_cc(c,t))\
+                #for c in words if r.contains_y(c.center_y)] for r,t in rtree ]
+        #distc = [ (l,average([d for c,d in l])*1.0/len(l)) for l in lines ]
+        avgl = average( [ l.line_feature() for l in lines ] )
+
+        flat = [ l for l in lines if l.line_feature() < avgl*self._deviation_avg_feature ]
+        return flat
+
+    def _words(self,image,pageseg_function=None):
+        if pageseg_function is None:
+            pageseg_function = pc(self)
+        words = pageseg_function(image)
+        return words
+
+    def _lines(self,image,pageseg_function=None,ccs=None):
+        words = self._words(image,pageseg_function)
+        return self._confirmed_text_lines(wordlist(words,ccs,self._min_wordlength))
+   
+
+    def _good_ccs(self,image=None,ccs=None, pageseg_function=None):
+        if image is None:
+            image = self._image.without_insidestaves_info()
+        if ccs is None:
+            ccs = image.cc_analysis()
+        lines = self._lines(image,pageseg_function,ccs)
+        ret = []
+        for  l in lines:
+            for w,d in l:
+                ret.extend(w.ccs)
+        return ret 
+
+    def word_projections(self,image=None,words = None,word_seg=None):
+        if image is None:
+            image = self._image.without_insidestaves_info()
+
+        if words is None:
+            ccs = image.cc_analysis()
+            words = wordlist(word_seg(self)(image),ccs)
+
+        return Projection([ len( [ c for c in words if c.w.contains_y(y) ]) \
+                for y in range(0,image.nrows)])
+
+
 
     def possible_text_ccs(self, image=None, ccs=None):
         if image is None:
@@ -62,18 +182,7 @@ class Text_in_music():
         spikes = self._possible_text_areas(image=self._image.without_insidestaves_info(),
                                            ccs=ccs)
         inccs = ccs_in_spike(spikes,ccs)
-
-        words = baseimg.projection_cutting(Tx=self._text_near)
-
-        goodccs = []
-        for w in words:
-            r = Rect(w)
-            contained = [ c for c in inccs if r.contains_rect(c) ]
-            if len(contained) > self._min_wordlenght:
-                goodccs.extend(contained)
-
-        #n,bins,patches = hist([c. 
-
+        goodccs = self._good_ccs(baseimg,inccs)
         self.l.debug("Removed %d/%d ccs due to wordsize", (len(inccs)-len(goodccs)),len(inccs))
         return goodccs
 
@@ -104,3 +213,12 @@ class Text_in_music():
                 spikes.remove(s)
         return spikes
 
+
+def pc(text):
+    return lambda image : image.projection_cutting(Tx=text._text_near,Ty=1)
+
+def bb(text):
+    return lambda image : image.bbox_merging()
+
+def rsm(text):
+    return lambda image : image.runlength_smearing()

@@ -24,7 +24,7 @@ import random
 import time
 from subprocess import Popen,PIPE,STDOUT
 from pdftools.pdffile import PDFDocument
-from illustrative_sheetmusic import IllMusicImage
+from ill_music import IllMusicImage
 
 from class_dynamic import Classifier_with_remove
 
@@ -151,10 +151,10 @@ class Pdfsampler:
         self.c = Classifier_with_remove(training_filename="../preomr_edited_cnn.xml")
         self.c.set_k(1)
 
-    def randompages(self,count):
+    def randompages(self,count,firstpage=1):
         doc = PDFDocument(self.filename)
         pages = doc.count_pages()
-        chosen_pages = random.sample([i for i in xrange(1,pages+1)],min(pages,count))
+        chosen_pages = random.sample([i for i in xrange(firstpage,pages+1)],min(pages-firstpage+1,count))
         chosen_pages.sort()
         self._l.info("%s - %d pages. %s chosen",self.filename,pages,chosen_pages)
         def pi(n): return Page(self.filename,n,self.c)

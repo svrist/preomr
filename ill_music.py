@@ -71,9 +71,9 @@ class IllMusicImage(MusicImage):
 
         return ret
 
-    def highlight_ccs(self,ccs):
+    def highlight_ccs(self,ccs,color=RGBPixel(0,255,0)):
         bla = self.to_rgb()
-        [ bla.highlight(c,RGBPixel(0,255,0)) for c in ccs ]
+        [ bla.highlight(c,color) for c in ccs ]
         return bla
 
 
@@ -90,13 +90,63 @@ class IllMusicImage(MusicImage):
         return ret
 
 
-    def with_row_projections(self,color=RGBPixel(200,50,50),image=None):
-        ret = self._orig.to_rgb()
+    def with_row_projections(self,color=RGBPixel(200,50,50),image=None,ret=None):
+        if ret is None:
+            ret = self._orig.to_rgb()
+
         if image is None:
             image = self.without_insidestaves_info()
         p = image.projection_rows()
         l = [ (v,i) for i,v in enumerate(p) ]
         [ ret.draw_line( (0,i[1]), (i[0],i[1]),color) for i in l]
         return ret
+
+    def highlight_text_by_hist(self,bc=5,f=lambda c: c.aspect_ratio()[0]):
+        import matplotlib.pyplot as plt
+        from random import randint
+        ret = self._orig.to_rgb()
+        ccs = self._text().possible_text_ccs()
+        l = [ f(c) for c in ccs ]
+
+        n,bins,patches = plt.hist(l,bc)
+        colors = [ RGBPixel(255,c,c) for c in xrange(0,255,int(255/bc)) ]
+        nv = [ (v,i) for i,v in enumerate(n) ]
+        nv.sort(reverse=True)
+        nv = [ (v,origi, colors[i] ) for i,(v,origi) in enumerate(nv) ]
+
+        for v,i,color in nv :
+            [ ret.highlight(c,color) for c in ccs \
+             if f(c) >= bins[i]  and f(c) <= bins[i+1] ]
+
+        i = 0
+        [ ret.draw_hollow_rect(c,colors[0]) for c in ccs if f(c) >= bins[i] and
+         f(c) <= bins[i+1] ]
+
+
+    def highlight_words(self):
+        ret = self._orig.to_rgb()
+        words = self._text()._words()
+        [ ret.draw_hollow_rect(c,RGBPixel(255,0,0)) for c in words ]
+        return ret
+
+
+    def draw_y_rl(self,rl,image=None,color=RGBPixel(255,0,0),norm=True):
+        if image is None:
+            image = self.to_rgb()
+
+        assert len(rl) == image.nrows
+
+        if norm:
+            fac = int(image.ncols/max(rl))
+            rl = [ fac*r for r in rl ]
+
+        l = [ (v,i) for i,v in enumerate(rl) ]
+        [ image.draw_line( (0,i[1]), (i[0],i[1]),color) for i in l]
+        return image
+
+
+
+
+
 
 

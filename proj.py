@@ -15,9 +15,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+from gamera.core import Rect
 
 class Projection(object):
-    """ Projection wrapper
+    """ projection wrapper
     for finding  peaks, and peak areas
     """
     def __init__(self,proj):
@@ -35,6 +36,11 @@ class Projection(object):
         """
         self.proj = [ v if v > threshold else 0\
                      for v in self.proj ]
+
+    def rspikes(self,width,height_threshold=None):
+        return [ Rect((0,s['start']),(width,s['stop'])) \
+                for s in self.spikes(height_threshold)
+               ]
 
     def spikes(self,height_threshold=None):
         """ Get a list of all spikes split around zero areas.
@@ -75,6 +81,16 @@ class Projection(object):
     def __getitem__(self,key):
         self.proj[key]
 
+    def __len__(self):
+        return len(self.proj)
+
+    def __iter__(self):
+        return self.proj.__iter__()
+
+    def __contains__(self,item):
+        return item in self.proj
+
+
 if __name__ == '__main__':
     from gamera.core import *
     import sys
@@ -109,7 +125,7 @@ if __name__ == '__main__':
         #i.highlight_possible_text().scale(0.5,2).save_PNG("%s_possibletext.png"%noend)
         i.highlight_possible_text(
             image=i.with_row_projections(RGBPixel(50,50,50))
-            ).scale(0.5,2).save_PNG("%s_possibletext_withprojections.png"%noend)
+            ).scale(0.5,2).save_PNG("%s_possibletext_withproj.png"%noend)
 
         print ("Save %s_possibletext.png and "+\
-        "%s_possibletext_withprojections.png")%(noend,noend)
+        "%s_possibletext_withproj.png")%(noend,noend)
