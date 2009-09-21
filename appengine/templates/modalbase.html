@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>{% block title %}{{title}}{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    {% include "header.html" %}
+        {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    <div  id="feedback-modal">{%block feedback %}{%endblock%}</div>
+    <div id="actions-modal">{% block actions %}{% endblock %}</div>
+    <div id="content-modal">{% block content %}{% endblock %}</div>
+  </body>
+</html>

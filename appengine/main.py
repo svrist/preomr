@@ -4,6 +4,7 @@ import os
 import random
 import datetime
 from google.appengine.ext import webapp
+from google.appengine.ext.webapp.util import login_required
 from shardcounter import get_count
 
 import author
@@ -30,13 +31,19 @@ class Main(BaseRequestHandler):
 
 class BlobInDataStore(BaseRequestHandler):
     def get(self,id):
-        #     self.enforce_admin()
+        self.enforce_admin()
         self.response.headers['Content-Type'] = 'application/pdf'
         expires_date = datetime.datetime.utcnow() + datetime.timedelta(365)
         expires_str = expires_date.strftime("%d %b %Y %H:%M:%S GMT")
         # self.response.headers.add_header("Expires", expires_str)
         work = Work.get_by_id(int(id))
         self.response.out.write(work.data)
+
+class User(BaseRequestHandler):
+    @login_required
+    def get(self):
+        self.generate("user.html",{})
+
 
 
 if __name__ == "__main__":
@@ -56,5 +63,6 @@ if __name__ == "__main__":
          ('/work/read/list/wget/(\d+)$',work.WorkReadWget),
          ('/work/read/(\d+)$',work.WorkRead),
          ('/work/cache/(\d+)$',work.Cache),
+         ('/user',User),
         ], debug=True)
     main(application)

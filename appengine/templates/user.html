@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<table summary="User">
+  <caption>User</caption>
+  <tbody>
+  <tr > 
+    <th scope="row" id="r0">NickName</th>
+    <td>{{user.nickname}}</td>
+  <tr>
+    <th scope="row" id="r1">Email</th>
+    <td>{{user.email }}</td>
+  </tr>
+  <tr>
+    <th scope="row" id="r1">Is Admin</th>
+    <td>{{users.is_current_user_admin }}</td>
+  </tr>
+  </tbody>
+</table>
+{% endblock %}

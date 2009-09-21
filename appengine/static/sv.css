@@ -1,0 +1,51 @@
+div#page {
+  border:1px solid purple;
+  width:855px;
+  margin:0 auto;
+  padding:5px;
+  text-align:left;
+}
+
+div {
+  /*text-align:center;*/
+}
+div#header {
+  border:2px solid red;
+  width:850px;
+  height:30px;
+}
+
+a.admin {
+  font-weight: bold;
+  color: #F00;
+}
+
+div#menu {
+  border:2px solid green;
+  width:250px;
+  float:left;
+  margin:10px 0 10px 5px;
+  height:350px;
+  padding-left:10px
+}
+
+div#content {
+  /*border-left:2px solid blue;*/
+  width:550px;
+  margin:10px 0 10px 285px;
+  min-height:500px;
+  _height:500px
+  padding: 5px
+}
+
+div#footer {
+  border:2px solid red;
+  width:850px;
+  height:30px;
+}
+
+#content ul {
+  text-align: left;
+  margin-left: 20px
+  /*position: relative;*/
+}

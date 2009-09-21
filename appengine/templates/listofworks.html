@@ -1,10 +1,6 @@
-<html>
-  <head><title>{{ title }}</title>
-    <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
-    <link rel="StyleSheet" href="/static/thickbox.css" type="text/css"> 
-    <script type="text/javascript" src="/static/jquery.js"></script>
-    <script type="text/javascript" src="/static/thickbox-compressed.js"></script>
-    <script type="text/javascript">
+{% extends "base.html" %}
+{%block extrahead %}
+<script type="text/javascript">
       $(document).ready(function() {
                         $('#Result').hide();
                         $('#loadingDiv').hide()
@@ -27,12 +23,15 @@
                                                          return false;
                                                          });
                         });
-</script>
-  </head>
-  <body>
-    <h1><a href="/work/read/list">List: {{ listname }}</a></h1>
+                      </script>
+{%endblock%}
+{% block feedback %}
     <div id="loadingDiv"><img src="/static/loader.gif" /></div>
     <div id="Result">Result here</div>
+{% endblock %}
+{%block content %}
+<!-- listofworks -->
+    <h1><a href="/work/read/list">List: {{ listname }}</a></h1>
   <table summary="Works"> 
 			<caption>Works</caption> 
 			<thead> 
@@ -66,14 +65,15 @@
                <td><a href="/author/read/{{w.author.key.id}}?height=250&width=500" class="thickbox">{{ w.author.name }}</a></td> 
                <td>{{ w.site }}</td> 
                <td align="right">
+                 {% if admin %}
                  {% if not w.data %} 
                  <a href="/work/cache/{{w.key.id}}" title="Cache a copy of the pdf"><img src="/static/download.png" alt="Cache a copy of the pdf"/></a>
                  {% endif %}
                  <a href="{{ w.link }}" target="_blank" title="The original pdf"><img src="/static/pdf.gif" alt="Original pdf"></a>
+                 {% endif %}
                </td>
 				</tr>
 			{% endfor %}
 			</tbody>
-	</table>
- </body>
-</html>
+       </table>
+{%endblock%}

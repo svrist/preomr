@@ -102,6 +102,11 @@ def main(application):
 templatedir = "templates/"
 
 default_template_vars = { "logouturl" : users.create_logout_url('/'),
-                         "loggedin" : users.get_current_user is not None,
+                         "loggedin" : not users.get_current_user() is None,
+                         "admin" : users.is_current_user_admin(),
+                         "user" : users.get_current_user(),
+                         "loginurl" : users.create_login_url('/'),
+                         "users" : users,
+                         "title": "PreOMR",
                         }
 _DEBUG=True

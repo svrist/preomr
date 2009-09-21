@@ -18,11 +18,12 @@ import logging
 from google.appengine.ext import db
 from base_request_handler import BaseRequestHandler
 from shardcounter import increment,get_count
-from model import Work,SavedList,SavedListForm
+from model import Work,SavedList
 import random
 
 class Create(BaseRequestHandler):
     def get(self):
+        self.enforce_admin()
         pagesize = 1000
         count = int(self.request.get("size",default_value=10))
         site = self.request.get("site",default_value=None)
@@ -90,5 +91,7 @@ class Read(BaseRequestHandler):
 
 class CreateForm(BaseRequestHandler):
     def get(self):
-        templatevars = {"form":SavedListForm()}
+        self.enforce_admin()
+        from forms import SavedListForm
+        templatevars = {"form":SavedListForm() }
         self.generate("createlist.html",templatevars)

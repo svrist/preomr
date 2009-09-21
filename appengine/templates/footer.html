@@ -1,3 +1,4 @@
-{% if loggedin %}<p id="logout"><a href="{{ logouturl }}">Logout</a></p>{% endif %}
+{% if loggedin %}<p id="logout"><a href="{{ logouturl }}">Logout</a></p>
+{% else %}<p id="logout"><a href="/login">Login</a></p> {% endif %}
   </body>
 </html>

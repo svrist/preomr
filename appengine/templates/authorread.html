@@ -1,8 +1,5 @@
-<html>
-  <head><title>{{ title }}</title>
-  <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
-  </head>
-  <body>
+{% extends "modalbase.html" %}
+{% block content %}
   <table summary="Author"> 
     <caption>Author - {{author.name}}</caption> 
          <tbody>
@@ -14,4 +11,4 @@
            <tr><td>Last changed</td><td>{{ author.updated }}</td></tr>
          </tbody>
        </table>
-  </body>
+{% endblock %}

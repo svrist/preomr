@@ -1,9 +1,6 @@
-<html>
-  <head><title>{{ title }}</title>
-  <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
-  </head>
-  <body>
-  <table summary="Sites"> 
+{% extends "base.html" %}
+{% block content %}
+<table summary="Sites"> 
 			<caption>Sites</caption> 
 			<thead> 
 				<tr> 
@@ -25,7 +22,5 @@
 				</tr>
 			{% endfor %}
 			</tbody>
-	</table>
-
- </body>
-</html>
+       </table>
+{% endblock %}

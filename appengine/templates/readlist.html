@@ -1,9 +1,6 @@
-<html>
-  <head><title>{{ title }}</title>
-  <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
-  </head>
-  <body>
-  <table summary="List Of Works"> 
+{% extends "base.html" %}
+{% block content %}
+<table summary="List Of Works"> 
 			<caption>List of Works</caption> 
 			<thead> 
 				<tr> 
@@ -28,11 +25,12 @@
                <td>{{ l.site }}</td> 
                <td>{{ l.ids }}</td> 
                <td>
+                 {% if admin %}
                  <a href="/work/list/delete/{{ l.key.id }}"><img src="/static/del.png" /></a>
+                 {% endif %}
                </td>
 				</tr>
 			{% endfor %}
 			</tbody>
-	</table>
- </body>
-</html>
+       </table>
+{% endblock %}

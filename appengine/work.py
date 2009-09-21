@@ -87,6 +87,7 @@ class WorkReadCached(BaseRequestHandler):
 
 class Cache(BaseRequestHandler):
     def get(self,id):
+        self.enforce_admin()
         work = Work.get_by_id(int(id))
         rpc = urlfetch.create_rpc()
         blob = urlfetch.make_fetch_call(rpc,work.link)
@@ -105,6 +106,7 @@ class Cache(BaseRequestHandler):
 
 class WorkReadWget(BaseRequestHandler):
     def get(self,id):
+        self.enforce_admin()
         keylist = SavedList.get_by_id(int(id))
         templatevars = {"works":Work.get(keylist.keys)}
         templatevars["url"] = self.request.uri

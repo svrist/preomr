@@ -1,16 +1,21 @@
-<html>
-  <head><title>{{ title }}</title>
-  <link rel="StyleSheet" href="/static/greyscale.css" type="text/css"> 
-  </head>
-  <body>
-    <a href="/work/createlist">Create a list</a> - <a href="/work/read/list">See lists</a>
+{% extends "base.html" %}
+
+{% block title %} {{ title }} {% endblock%}
+
+{% block actions %}
+<ul>
+  <li><a href="/work/createlist">Create a list</a></li>
+  <li><a href="/work/read/list">See lists</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
   <table summary="DB Counts"> 
 			<caption>DB Counts</caption> 
 			<thead> 
 				<tr> 
 					<th scope="col">Name</th> 
 					<th scope="col">Count</th> 
-					
 				</tr> 
 			</thead>	
 			<tfoot> 
@@ -27,6 +32,5 @@
 				</tr>
 			{% endfor %}
 			</tbody>
-	</table>
-
-  </body>
+       </table>
+{% endblock %}

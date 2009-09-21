@@ -34,7 +34,7 @@ a:link {border-bottom: 1px dashed #ddd;
 color: #000;}
 
 a:visited {border-bottom: 1px dashed #ccc;
-text-decoration: line-through;
+/*text-decoration: line-through;*/
 color: #808080;}
 
 a:hover {border-bottom: 1px dashed #bbb;
@@ -63,3 +63,4 @@ tbody th {white-space: nowrap;}
 .odd {background: #fcfcfc;}
 
 tbody tr:hover {background: #fafafa;}
+
