@@ -1,0 +1,2 @@
+dynamics: {count: 0, found: 0}
+text: {count: 23, found: 23,falsenegatives:31}

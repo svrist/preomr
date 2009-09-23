@@ -287,7 +287,7 @@ class Text_in_music():
 
 
 def pc(text,ccs):
-    return lambda image : image.projection_cutting(Tx=text._text_near_width(ccs),Ty=1)
+    return lambda image : image.projection_cutting(Tx=int(text._text_near_width(ccs)),Ty=1)
 
 def bb(text):
     return lambda image : image.bbox_merging()

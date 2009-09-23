@@ -74,11 +74,15 @@ class MusicImage(object):
         return self._ms
 
     def without_staves(self):
+        """ Return the image without staves """
         if self._ms is None:
             self._ms = remstaves(self._image)
         return self._ms.image
 
     def without_insidestaves_info(self):
+        """ Return an image without staves, and everything that touches
+        stafflines
+        """
         self.without_staves()
 
         if self._noinside is None:
@@ -92,6 +96,9 @@ class MusicImage(object):
                           avg_cutoff=(0.70,2.0),
                           min_cc_count=5,
                          ):
+        """
+        See text.py - Text_in_music.__init__
+        """
         self._text_obj = Text_in_music(self,
                           min_cutoff_factor= min_cutoff_factor,
                           height_cutoff_factor=height_cutoff_factor,
@@ -102,6 +109,7 @@ class MusicImage(object):
 
 
     def to_rgb(self):
+        """ Return the image as RGB edition """
         return self._orig.to_rgb()
 
 
@@ -140,6 +148,16 @@ class MusicImage(object):
 
 
     def ccs_overall(self):
+        """ Segment image in inside/outside staves,text,dynamics and return the
+        ccs for each of these segments as a dict:
+            return {
+                     'all'
+                     'outside'
+                     'inside'
+                     'text'
+                     'classified'
+                }
+        """
         ret = {}
         if self._ccs is None:
             baseimg = self.without_staves()
@@ -159,14 +177,14 @@ class MusicImage(object):
             ret = self._ccs
 
         if not "classified" in ret and not self.classifier is None:
-           ret["classified"] = self.classified_ccs(ccs_remove(ret['outside'],ret['text']))
+           ret["classified"] = self._classified_ccs(ccs_remove(ret['outside'],ret['text']))
            self._ccs = ret
 
         return ret
 
 
 
-    def classified_ccs(self,ccs=None):
+    def _classified_ccs(self,ccs=None):
         if self.classifier is None:
             raise Error("Classifier not initialized")
 
@@ -180,6 +198,7 @@ class MusicImage(object):
     def segment(self,classify=False):
         """ Get cc's for three parts of the image
         text, instaff,other
+        OBSOLETE
         """
         seg = self.ccs_overall()
         if classify:
@@ -189,16 +208,7 @@ class MusicImage(object):
 
         return seg['text'],seg['inside'],seg['outside'],classified
 
-    def without(self,classified=True,text=True):
-        ret = self.color_segment(other_color=RGBPixel(0,0,0),
-                               text_color=RGBPixel(255,255,255),
-                               instaff_color=RGBPixel(0,0,0),
-                               classified_color=RGBPixel(255,255,255)
-                              )
-        return ret
-
-
-
+   
 if __name__ == '__main__':
     from gamera.core import * 
     from class_dynamic import Classifier_with_remove

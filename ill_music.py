@@ -134,6 +134,23 @@ class IllMusicImage(MusicImage):
 
 
     def draw_y_proj(self,rl,image=None,color=RGBPixel(255,0,0),norm=True,side="left",fac=None):
+        """ Draw projections on the y-axis on top of an image 
+        *rl*:
+            the projection data. One value for each y-value in the image
+        *image*:
+            The image to draw upon. Defaults to use this image in rgb edition
+        *color*:
+            The color to draw with.
+        *norm*:
+            Should the projections be normalized so that the longest value is a
+            page wide?. Defaults to true.
+        *side*:
+            Unused for now. From which side should the projections be drawn.
+            Left/Right. default left.
+        *fac*:
+            Factor to normalize by.
+        """
+
         if image is None:
             image = self.to_rgb()
 
@@ -148,9 +165,11 @@ class IllMusicImage(MusicImage):
         [ image.draw_line( (0,i[1]), (i[0],i[1]),color) for i in l]
         return image
 
-
-
-
-
-
-
+    def without(self,classified=True,text=True):
+        """ Create an image where text and classified are whited out"""
+        ret = self.color_segment(other_color=RGBPixel(0,0,0),
+                               text_color=RGBPixel(255,255,255),
+                               instaff_color=RGBPixel(0,0,0),
+                               classified_color=RGBPixel(255,255,255)
+                              )
+        return ret
