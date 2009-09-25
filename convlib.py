@@ -22,6 +22,7 @@ import sys
 import os
 import random
 import time
+import yaml
 from subprocess import Popen,PIPE,STDOUT
 from pdftools.pdffile import PDFDocument
 from ill_music import IllMusicImage
@@ -130,6 +131,22 @@ class Page:
         self._l.debug("Saved file %s (duration %f)",
                       filename,(time.time()-start))
         return filename
+
+    def gen_count_yaml(self,filename=None):
+        if filename is None:
+            filename = self._genfilename(postfix="-colorseg",extension=".yaml")
+        if self._mi is None:
+            self._init_mi()
+        c = self._mi.ccs_overall()
+        cl = dict([ (k,len(v)) for k,v in c.iteritems() ])
+        with open(filename,"w") as f:
+            data = {'text':{'found':cl['text'],'count':cl['text']},
+                    'dynamics':{'found':cl['classified'], 'count':cl['classified']
+                               }
+                   }
+            yaml.dump(data,f)
+        logging.debug("Wrote %s",filename)
+
 
 
     def _genfilename(self,dir=None,postfix="",extension=".tif"):

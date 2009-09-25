@@ -26,6 +26,7 @@ for file in sys.argv[1:]:
             #page.save_nostaves()
             try:
                 colfilename = page.save_color_segmented()
+                fn = page.gen_count_yaml()
             except NoStavesException,e:
                 logging.info("No staves in %s page %s",file,page._pagenumber)
             #        page.generate_gamera_script(openfile=colfilename)
