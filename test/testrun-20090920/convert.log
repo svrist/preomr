@@ -1,0 +1,319 @@
+2009-09-20 14:16:03,398 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:16:03,555 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:16:03,671 INFO [Pdfsampler.randompages]  das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor.pdf - 3 pages. [1, 2, 3] chosen
+2009-09-20 14:16:03,671 DEBUG [Page._genfilename]  das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor dir dint exits. Creating it.
+2009-09-20 14:16:05,953 DEBUG [Page.save]  Saving file das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor/das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor-page01.tif (duration 2.282000)
+2009-09-20 14:16:26,887 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:16:29,487 DEBUG [Text_in_music.possible_text_ccs]  Removed 2/212 ccs due to wordsize
+2009-09-20 14:16:29,598 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:16:29,667 DEBUG [Classified_image.confident_d_t]  top: [(76, 2.4071428571428575, 0.01), (14, 15.458577951728641, 0.80000000000000004), (2, 14.612194958770301, 0.78000000000000003), (1, 19.396389324960754, 0.98999999999999999), (1, 19.187336473050756, 0.97999999999999998)]
+2009-09-20 14:16:29,667 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:16:29,668 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:16:31,400 DEBUG [Page.save_color_segmented]  Saved file das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor/das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor-page01-colorseg.png (duration 25.447000)
+2009-09-20 14:16:32,667 DEBUG [Page.save]  Saving file das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor/das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor-page02.tif (duration 1.263000)
+2009-09-20 14:16:58,082 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:17:00,674 DEBUG [Text_in_music.possible_text_ccs]  Removed 1/196 ccs due to wordsize
+2009-09-20 14:17:00,780 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:17:00,868 DEBUG [Classified_image.confident_d_t]  top: [(59, 6.8781250000000007, 0.19), (18, 2.4071428571428575, 0.01), (7, 15.458577951728641, 0.80000000000000004), (4, 15.593811154598825, 0.87), (2, 14.612194958770301, 0.78000000000000003)]
+2009-09-20 14:17:00,868 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 6.878125
+2009-09-20 14:17:00,868 DEBUG [IllMusicImage.classified_ccs]  Found 1 glyphs
+2009-09-20 14:17:02,611 DEBUG [Page.save_color_segmented]  Saved file das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor/das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor-page02-colorseg.png (duration 29.944000)
+2009-09-20 14:17:03,357 DEBUG [Page.save]  Saving file das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor/das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor-page03.tif (duration 0.737000)
+2009-09-20 14:17:23,326 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:17:25,532 DEBUG [Text_in_music.possible_text_ccs]  Removed 2/196 ccs due to wordsize
+2009-09-20 14:17:25,619 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:17:25,648 DEBUG [Classified_image.confident_d_t]  top: [(77, 2.4071428571428575, 0.01), (13, 15.458577951728641, 0.80000000000000004), (2, 14.612194958770301, 0.78000000000000003), (1, 19.396389324960754, 0.98999999999999999), (1, 19.187336473050756, 0.97999999999999998)]
+2009-09-20 14:17:25,648 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:17:25,648 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:17:27,493 DEBUG [Page.save_color_segmented]  Saved file das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor/das-wohltemperirte-clavier-band-i-prelude-and-fugue-in-b-flat-minor-page03-colorseg.png (duration 24.136000)
+2009-09-20 14:17:30,062 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:17:30,117 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:17:30,259 INFO [Pdfsampler.randompages]  das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major.pdf - 6 pages. [1, 2, 3, 4, 5] chosen
+2009-09-20 14:17:30,259 DEBUG [Page._genfilename]  das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major dir dint exits. Creating it.
+2009-09-20 14:17:31,819 DEBUG [Page.save]  Saving file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page01.tif (duration 1.560000)
+2009-09-20 14:17:59,694 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:18:02,931 DEBUG [Text_in_music.possible_text_ccs]  Removed 2/210 ccs due to wordsize
+2009-09-20 14:18:03,032 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:18:03,082 DEBUG [Classified_image.confident_d_t]  top: [(48, 7.696130952380952, 0.29000000000000004), (17, 6.3125, 0.12), (12, 14.612194958770301, 0.78000000000000003), (11, 2.4071428571428575, 0.01), (2, 18.978283621140761, 0.96999999999999997)]
+2009-09-20 14:18:03,082 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 7.696131
+2009-09-20 14:18:03,084 DEBUG [IllMusicImage.classified_ccs]  Found 2 glyphs
+2009-09-20 14:18:05,229 DEBUG [Page.save_color_segmented]  Saved file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page01-colorseg.png (duration 33.409000)
+2009-09-20 14:18:07,496 DEBUG [Page.save]  Saving file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page02.tif (duration 2.253000)
+2009-09-20 14:18:36,117 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:18:39,625 DEBUG [Text_in_music.possible_text_ccs]  Removed 1/196 ccs due to wordsize
+2009-09-20 14:18:39,734 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:18:39,802 DEBUG [Classified_image.confident_d_t]  top: [(92, 2.4071428571428575, 0.01), (2, 19.187336473050756, 0.97999999999999998), (1, 18.978283621140761, 0.96999999999999997), (1, 18.76923076923077, 0.96000000000000008), (1, 18.137660256410257, 0.95000000000000007)]
+2009-09-20 14:18:39,802 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:18:39,802 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:18:42,667 DEBUG [Page.save_color_segmented]  Saved file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page02-colorseg.png (duration 35.171000)
+2009-09-20 14:18:44,461 DEBUG [Page.save]  Saving file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page03.tif (duration 1.787000)
+2009-09-20 14:19:23,640 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:19:27,160 DEBUG [Text_in_music.possible_text_ccs]  Removed 2/196 ccs due to wordsize
+2009-09-20 14:19:27,326 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:19:27,411 DEBUG [Classified_image.confident_d_t]  top: [(87, 2.4071428571428575, 0.01), (5, 15.638888888888888, 0.88), (1, 19.396389324960754, 0.98999999999999999), (1, 19.187336473050756, 0.97999999999999998), (1, 18.978283621140761, 0.96999999999999997)]
+2009-09-20 14:19:27,411 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:19:27,411 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:19:29,880 DEBUG [Page.save_color_segmented]  Saved file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page03-colorseg.png (duration 45.417000)
+2009-09-20 14:19:30,523 DEBUG [Page.save]  Saving file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page04.tif (duration 0.635000)
+2009-09-20 14:19:54,032 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:19:56,019 DEBUG [Text_in_music.possible_text_ccs]  Removed 1/196 ccs due to wordsize
+2009-09-20 14:19:56,081 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:19:56,092 DEBUG [Classified_image.confident_d_t]  top: [(94, 2.4071428571428575, 0.01), (5, 18.137660256410257, 0.95000000000000007)]
+2009-09-20 14:19:56,092 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:19:56,092 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:19:58,565 DEBUG [Page.save_color_segmented]  Saved file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page04-colorseg.png (duration 28.043000)
+2009-09-20 14:20:00,905 DEBUG [Page.save]  Saving file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page05.tif (duration 2.324000)
+2009-09-20 14:20:28,177 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:20:31,640 DEBUG [Text_in_music.possible_text_ccs]  Removed 2/196 ccs due to wordsize
+2009-09-20 14:20:31,727 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:20:31,773 DEBUG [Classified_image.confident_d_t]  top: [(79, 2.4071428571428575, 0.01), (11, 15.458577951728641, 0.80000000000000004), (2, 16.091933760683755, 0.91000000000000003), (1, 19.396389324960754, 0.98999999999999999), (1, 19.187336473050756, 0.97999999999999998)]
+2009-09-20 14:20:31,773 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:20:31,773 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:20:33,951 DEBUG [Page.save_color_segmented]  Saved file das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major/das-wohltemperirte-clavier-band-ii-prelude-and-fugue-in-b-flat-major-page05-colorseg.png (duration 33.045000)
+2009-09-20 14:20:37,147 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:20:37,163 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:20:37,164 WARNING [root.<module>]  Failed with deux-airs-de-ballets-de-lopera-de-moise-de-rossini.pdf, Skipping: Unsupported PDF version: 1.5
+2009-09-20 14:20:37,207 INFO [root.<module>]  Exception: Traceback (most recent call last):
+  File "convert.py", line 22, in <module>
+    chosen_pages = pdf.randompages(5)
+  File "..\convlib.py", line 155, in randompages
+    doc = PDFDocument(self.filename)
+  File "C:\Python25\Lib\site-packages\pdftools\pdffile.py", line 85, in __init__
+    self._read_document()
+  File "C:\Python25\Lib\site-packages\pdftools\pdffile.py", line 605, in _read_document
+    linear_info = self._read_linearized()
+  File "C:\Python25\Lib\site-packages\pdftools\pdffile.py", line 358, in _read_linearized
+    raise PDFError, "Unsupported PDF version: %s" % version
+PDFError: Unsupported PDF version: 1.5
+
+2009-09-20 14:20:39,950 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:20:39,996 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:20:40,040 INFO [Pdfsampler.randompages]  guitar-skole-no-22-allegretto.pdf - 1 pages. [1] chosen
+2009-09-20 14:20:40,042 DEBUG [Page._genfilename]  guitar-skole-no-22-allegretto dir dint exits. Creating it.
+2009-09-20 14:20:40,829 DEBUG [Page.save]  Saving file guitar-skole-no-22-allegretto/guitar-skole-no-22-allegretto-page01.tif (duration 0.788000)
+2009-09-20 14:21:06,548 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:21:09,306 DEBUG [Text_in_music.possible_text_ccs]  Removed 30/429 ccs due to wordsize
+2009-09-20 14:21:09,789 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:21:09,934 DEBUG [Classified_image.confident_d_t]  top: [(82, 3.3834821428571429, 0.089999999999999997), (8, 2.4071428571428575, 0.01), (2, 16.091933760683755, 0.91000000000000003), (1, 19.396389324960754, 0.98999999999999999), (1, 19.187336473050756, 0.97999999999999998)]
+2009-09-20 14:21:09,944 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 3.383482
+2009-09-20 14:21:09,944 DEBUG [IllMusicImage.classified_ccs]  Found 11 glyphs
+2009-09-20 14:21:12,430 DEBUG [Page.save_color_segmented]  Saved file guitar-skole-no-22-allegretto/guitar-skole-no-22-allegretto-page01-colorseg.png (duration 31.600000)
+2009-09-20 14:21:15,484 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:21:15,503 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:21:15,555 INFO [Pdfsampler.randompages]  no-21-au-clair-de-la-lune.pdf - 1 pages. [1] chosen
+2009-09-20 14:21:15,555 DEBUG [Page._genfilename]  no-21-au-clair-de-la-lune dir dint exits. Creating it.
+2009-09-20 14:21:16,338 DEBUG [Page.save]  Saving file no-21-au-clair-de-la-lune/no-21-au-clair-de-la-lune-page01.tif (duration 0.783000)
+2009-09-20 14:21:50,880 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:21:53,986 DEBUG [Text_in_music.possible_text_ccs]  Removed 0/397 ccs due to wordsize
+2009-09-20 14:21:54,335 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:21:54,378 DEBUG [Classified_image.confident_d_t]  top: [(93, 2.4071428571428575, 0.01), (3, 18.978283621140761, 0.96999999999999997), (1, 18.76923076923077, 0.96000000000000008), (1, 18.137660256410257, 0.95000000000000007), (1, 17.50608974358974, 0.94000000000000006)]
+2009-09-20 14:21:54,380 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:21:54,381 DEBUG [IllMusicImage.classified_ccs]  Found 4 glyphs
+2009-09-20 14:21:58,454 DEBUG [Page.save_color_segmented]  Saved file no-21-au-clair-de-la-lune/no-21-au-clair-de-la-lune-page01-colorseg.png (duration 42.116000)
+2009-09-20 14:22:01,855 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:22:01,877 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:22:01,947 INFO [Pdfsampler.randompages]  op-29-no-22.pdf - 4 pages. [1, 2, 3, 4] chosen
+2009-09-20 14:22:01,947 DEBUG [Page._genfilename]  op-29-no-22 dir dint exits. Creating it.
+2009-09-20 14:22:02,904 DEBUG [Page.save]  Saving file op-29-no-22/op-29-no-22-page01.tif (duration 0.957000)
+2009-09-20 14:22:28,309 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:22:31,017 DEBUG [Text_in_music.possible_text_ccs]  Removed 15/101 ccs due to wordsize
+2009-09-20 14:22:31,078 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:22:31,201 DEBUG [Classified_image.confident_d_t]  top: [(44, 7.0666666666666682, 0.20000000000000001), (19, 2.4071428571428575, 0.01), (15, 13.166666666666671, 0.64000000000000001), (10, 15.458577951728641, 0.80000000000000004), (4, 18.76923076923077, 0.96000000000000008)]
+2009-09-20 14:22:31,203 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 7.066667
+2009-09-20 14:22:31,203 DEBUG [IllMusicImage.classified_ccs]  Found 1 glyphs
+2009-09-20 14:22:33,532 DEBUG [Page.save_color_segmented]  Saved file op-29-no-22/op-29-no-22-page01-colorseg.png (duration 30.628000)
+2009-09-20 14:22:34,114 DEBUG [Page.save]  Saving file op-29-no-22/op-29-no-22-page02.tif (duration 0.564000)
+2009-09-20 14:22:55,384 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:22:57,963 DEBUG [Text_in_music.possible_text_ccs]  Removed 1/85 ccs due to wordsize
+2009-09-20 14:22:58,000 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:22:58,055 DEBUG [Classified_image.confident_d_t]  top: [(63, 2.4071428571428575, 0.01), (15, 13.166666666666671, 0.64000000000000001), (9, 15.458577951728641, 0.80000000000000004), (3, 18.978283621140761, 0.96999999999999997), (3, 15.9409188034188, 0.90000000000000002)]
+2009-09-20 14:22:58,055 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:22:58,056 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:22:59,877 DEBUG [Page.save_color_segmented]  Saved file op-29-no-22/op-29-no-22-page02-colorseg.png (duration 25.762000)
+2009-09-20 14:23:00,480 DEBUG [Page.save]  Saving file op-29-no-22/op-29-no-22-page03.tif (duration 0.599000)
+2009-09-20 14:23:25,503 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:23:28,759 DEBUG [Text_in_music.possible_text_ccs]  Removed 15/15 ccs due to wordsize
+2009-09-20 14:23:28,780 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:23:28,875 DEBUG [Classified_image.confident_d_t]  top: [(62, 2.4071428571428575, 0.01), (10, 15.458577951728641, 0.80000000000000004), (9, 13.166666666666671, 0.64000000000000001), (3, 18.978283621140761, 0.96999999999999997), (3, 15.9409188034188, 0.90000000000000002)]
+2009-09-20 14:23:28,875 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:23:28,875 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:23:30,782 DEBUG [Page.save_color_segmented]  Saved file op-29-no-22/op-29-no-22-page03-colorseg.png (duration 30.301000)
+2009-09-20 14:23:31,262 DEBUG [Page.save]  Saving file op-29-no-22/op-29-no-22-page04.tif (duration 0.475000)
+2009-09-20 14:23:56,273 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:23:59,927 DEBUG [Text_in_music.possible_text_ccs]  Removed 8/72 ccs due to wordsize
+2009-09-20 14:23:59,963 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:24:00,006 DEBUG [Classified_image.confident_d_t]  top: [(63, 2.4071428571428575, 0.01), (15, 13.166666666666671, 0.64000000000000001), (14, 15.458577951728641, 0.80000000000000004), (3, 18.76923076923077, 0.96000000000000008), (1, 19.396389324960754, 0.98999999999999999)]
+2009-09-20 14:24:00,006 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:24:00,006 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:24:02,957 DEBUG [Page.save_color_segmented]  Saved file op-29-no-22/op-29-no-22-page04-colorseg.png (duration 31.696000)
+2009-09-20 14:24:07,987 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:24:08,009 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:24:08,048 INFO [Pdfsampler.randompages]  promenade-2.pdf - 2 pages. [1, 2] chosen
+2009-09-20 14:24:08,049 DEBUG [Page._genfilename]  promenade-2 dir dint exits. Creating it.
+2009-09-20 14:24:08,789 DEBUG [Page.save]  Saving file promenade-2/promenade-2-page01.tif (duration 0.741000)
+2009-09-20 14:24:33,953 INFO [root.<module>]  No staves in promenade-2.pdf page 1
+2009-09-20 14:24:35,200 DEBUG [Page.save]  Saving file promenade-2/promenade-2-page02.tif (duration 1.246000)
+2009-09-20 14:25:03,618 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:25:05,967 DEBUG [Text_in_music.possible_text_ccs]  Removed 3/84 ccs due to wordsize
+2009-09-20 14:25:06,003 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:25:06,088 DEBUG [Classified_image.confident_d_t]  top: [(59, 6.8781250000000007, 0.19), (10, 15.458577951728641, 0.80000000000000004), (9, 4.3598214285714274, 0.099999999999999992), (9, 2.4071428571428575, 0.01), (3, 15.9409188034188, 0.90000000000000002)]
+2009-09-20 14:25:06,088 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 6.878125
+2009-09-20 14:25:06,088 DEBUG [IllMusicImage.classified_ccs]  Found 3 glyphs
+2009-09-20 14:25:08,345 DEBUG [Page.save_color_segmented]  Saved file promenade-2/promenade-2-page02-colorseg.png (duration 33.144000)
+2009-09-20 14:25:12,062 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:25:12,085 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:25:12,138 INFO [Pdfsampler.randompages]  six-divertissements-pour-la-guitare-n6-siciliana.pdf - 3 pages. [1, 2, 3] chosen
+2009-09-20 14:25:12,229 DEBUG [Page._genfilename]  six-divertissements-pour-la-guitare-n6-siciliana dir dint exits. Creating it.
+2009-09-20 14:25:12,882 DEBUG [Page.save]  Saving file six-divertissements-pour-la-guitare-n6-siciliana/six-divertissements-pour-la-guitare-n6-siciliana-page01.tif (duration 0.744000)
+2009-09-20 14:25:37,657 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:25:40,226 DEBUG [Text_in_music.possible_text_ccs]  Removed 0/55 ccs due to wordsize
+2009-09-20 14:25:40,256 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:25:40,326 DEBUG [Classified_image.confident_d_t]  top: [(79, 2.4071428571428575, 0.01), (7, 15.458577951728641, 0.80000000000000004), (2, 15.9409188034188, 0.90000000000000002), (2, 15.638888888888888, 0.88), (1, 19.396389324960754, 0.98999999999999999)]
+2009-09-20 14:25:40,326 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:25:40,328 DEBUG [IllMusicImage.classified_ccs]  Found 2 glyphs
+2009-09-20 14:25:42,256 DEBUG [Page.save_color_segmented]  Saved file six-divertissements-pour-la-guitare-n6-siciliana/six-divertissements-pour-la-guitare-n6-siciliana-page01-colorseg.png (duration 29.373000)
+2009-09-20 14:25:42,845 DEBUG [Page.save]  Saving file six-divertissements-pour-la-guitare-n6-siciliana/six-divertissements-pour-la-guitare-n6-siciliana-page02.tif (duration 0.581000)
+2009-09-20 14:26:07,109 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:26:09,871 DEBUG [Text_in_music.possible_text_ccs]  Removed 0/0 ccs due to wordsize
+2009-09-20 14:26:09,887 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:26:09,948 DEBUG [Classified_image.confident_d_t]  top: [(89, 2.4071428571428575, 0.01), (1, 19.396389324960754, 0.98999999999999999), (1, 19.187336473050756, 0.97999999999999998), (1, 18.978283621140761, 0.96999999999999997), (1, 18.76923076923077, 0.96000000000000008)]
+2009-09-20 14:26:09,948 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:26:09,950 DEBUG [IllMusicImage.classified_ccs]  Found 2 glyphs
+2009-09-20 14:26:12,085 DEBUG [Page.save_color_segmented]  Saved file six-divertissements-pour-la-guitare-n6-siciliana/six-divertissements-pour-la-guitare-n6-siciliana-page02-colorseg.png (duration 29.239000)
+2009-09-20 14:26:12,615 DEBUG [Page.save]  Saving file six-divertissements-pour-la-guitare-n6-siciliana/six-divertissements-pour-la-guitare-n6-siciliana-page03.tif (duration 0.523000)
+2009-09-20 14:27:09,200 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:27:14,737 DEBUG [Text_in_music.possible_text_ccs]  Removed 2/344 ccs due to wordsize
+2009-09-20 14:27:15,188 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:27:15,328 DEBUG [Classified_image.confident_d_t]  top: [(77, 2.4071428571428575, 0.01), (10, 15.035386455249471, 0.79000000000000004), (2, 15.9409188034188, 0.90000000000000002), (1, 19.396389324960754, 0.98999999999999999), (1, 19.187336473050756, 0.97999999999999998)]
+2009-09-20 14:27:15,329 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:27:15,331 DEBUG [IllMusicImage.classified_ccs]  Found 2 glyphs
+2009-09-20 14:27:18,134 DEBUG [Page.save_color_segmented]  Saved file six-divertissements-pour-la-guitare-n6-siciliana/six-divertissements-pour-la-guitare-n6-siciliana-page03-colorseg.png (duration 65.520000)
+2009-09-20 14:27:20,795 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:27:20,822 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:27:20,986 INFO [Pdfsampler.randompages]  srnade-pour-la-guitarre-flte-et-alto-oeuvre-50.pdf - 15 pages. [7, 9, 10, 11, 14] chosen
+2009-09-20 14:27:20,986 DEBUG [Page._genfilename]  srnade-pour-la-guitarre-flte-et-alto-oeuvre-50 dir dint exits. Creating it.
+2009-09-20 14:27:21,493 DEBUG [Page.save]  Saving file srnade-pour-la-guitarre-flte-et-alto-oeuvre-50/srnade-pour-la-guitarre-flte-et-alto-oeuvre-50-page07.tif (duration 0.506000)
+2009-09-20 14:28:20,872 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:28:20,891 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:28:21,141 INFO [Pdfsampler.randompages]  symphony-in-e-flat-major.pdf - 48 pages. [10, 13, 14, 34, 38] chosen
+2009-09-20 14:28:21,148 DEBUG [Page._genfilename]  symphony-in-e-flat-major dir dint exits. Creating it.
+2009-09-20 14:28:23,249 DEBUG [Page.save]  Saving file symphony-in-e-flat-major/symphony-in-e-flat-major-page10.tif (duration 2.107000)
+2009-09-20 14:28:56,290 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:28:59,265 DEBUG [Text_in_music.possible_text_ccs]  Removed 0/160 ccs due to wordsize
+2009-09-20 14:28:59,381 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:28:59,499 DEBUG [Classified_image.confident_d_t]  top: [(15, 8.4661706349206334, 0.31), (14, 12.67715419501134, 0.63), (11, 6.8781250000000007, 0.19), (8, 10.133333333333329, 0.48000000000000004), (8, 2.4071428571428575, 0.01)]
+2009-09-20 14:28:59,500 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 8.466171
+2009-09-20 14:28:59,500 DEBUG [IllMusicImage.classified_ccs]  Found 51 glyphs
+2009-09-20 14:29:01,523 DEBUG [Page.save_color_segmented]  Saved file symphony-in-e-flat-major/symphony-in-e-flat-major-page10-colorseg.png (duration 38.275000)
+2009-09-20 14:29:02,793 DEBUG [Page.save]  Saving file symphony-in-e-flat-major/symphony-in-e-flat-major-page13.tif (duration 1.264000)
+2009-09-20 14:29:25,381 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:29:28,069 DEBUG [Text_in_music.possible_text_ccs]  Removed 0/160 ccs due to wordsize
+2009-09-20 14:29:28,151 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:29:28,200 DEBUG [Classified_image.confident_d_t]  top: [(40, 6.3125, 0.12), (21, 11.05646258503401, 0.55000000000000004), (11, 2.4071428571428575, 0.01), (7, 15.458577951728641, 0.80000000000000004), (3, 13.765811965811963, 0.76000000000000001)]
+2009-09-20 14:29:28,200 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 6.312500
+2009-09-20 14:29:28,200 DEBUG [IllMusicImage.classified_ccs]  Found 6 glyphs
+2009-09-20 14:29:29,967 DEBUG [Page.save_color_segmented]  Saved file symphony-in-e-flat-major/symphony-in-e-flat-major-page13-colorseg.png (duration 27.174000)
+2009-09-20 14:29:31,342 DEBUG [Page.save]  Saving file symphony-in-e-flat-major/symphony-in-e-flat-major-page14.tif (duration 1.369000)
+2009-09-20 14:30:04,921 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:30:10,236 DEBUG [Text_in_music.possible_text_ccs]  Removed 1/161 ccs due to wordsize
+2009-09-20 14:30:10,562 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:30:10,755 DEBUG [Classified_image.confident_d_t]  top: [(31, 9.5333333333333314, 0.46000000000000002), (13, 8.8511904761904763, 0.32000000000000001), (11, 3.3834821428571429, 0.089999999999999997), (10, 7.0666666666666682, 0.20000000000000001), (9, 15.458577951728641, 0.80000000000000004)]
+2009-09-20 14:30:10,756 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 9.533333
+2009-09-20 14:30:10,762 DEBUG [IllMusicImage.classified_ccs]  Found 19 glyphs
+2009-09-20 14:30:14,887 DEBUG [Page.save_color_segmented]  Saved file symphony-in-e-flat-major/symphony-in-e-flat-major-page14-colorseg.png (duration 43.544000)
+2009-09-20 14:30:17,084 DEBUG [Page.save]  Saving file symphony-in-e-flat-major/symphony-in-e-flat-major-page34.tif (duration 2.190000)
+2009-09-20 14:30:56,433 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:30:59,385 DEBUG [Text_in_music.possible_text_ccs]  Removed 0/160 ccs due to wordsize
+2009-09-20 14:30:59,473 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:30:59,572 DEBUG [Classified_image.confident_d_t]  top: [(66, 5.3361607142857146, 0.11), (10, 15.458577951728641, 0.80000000000000004), (10, 2.4071428571428575, 0.01), (3, 15.9409188034188, 0.90000000000000002), (3, 14.189003462291133, 0.77000000000000002)]
+2009-09-20 14:30:59,572 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 5.336161
+2009-09-20 14:30:59,575 DEBUG [IllMusicImage.classified_ccs]  Found 6 glyphs
+2009-09-20 14:31:01,400 DEBUG [Page.save_color_segmented]  Saved file symphony-in-e-flat-major/symphony-in-e-flat-major-page34-colorseg.png (duration 44.316000)
+2009-09-20 14:31:02,318 DEBUG [Page.save]  Saving file symphony-in-e-flat-major/symphony-in-e-flat-major-page38.tif (duration 0.913000)
+2009-09-20 14:31:23,184 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:31:25,619 DEBUG [Text_in_music.possible_text_ccs]  Removed 0/161 ccs due to wordsize
+2009-09-20 14:31:25,703 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:31:25,789 DEBUG [Classified_image.confident_d_t]  top: [(32, 9.5333333333333314, 0.46000000000000002), (20, 5.3361607142857146, 0.11), (14, 8.4661706349206334, 0.31), (10, 15.458577951728641, 0.80000000000000004), (9, 2.4071428571428575, 0.01)]
+2009-09-20 14:31:25,789 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 9.533333
+2009-09-20 14:31:25,790 DEBUG [IllMusicImage.classified_ccs]  Found 17 glyphs
+2009-09-20 14:31:27,596 DEBUG [Page.save_color_segmented]  Saved file symphony-in-e-flat-major/symphony-in-e-flat-major-page38-colorseg.png (duration 25.278000)
+2009-09-20 14:31:30,415 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:31:30,434 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:31:30,683 INFO [Pdfsampler.randompages]  symphony-in-g-major-military.pdf - 57 pages. [6, 13, 28, 44, 54] chosen
+2009-09-20 14:31:30,684 DEBUG [Page._genfilename]  symphony-in-g-major-military dir dint exits. Creating it.
+2009-09-20 14:31:31,851 DEBUG [Page.save]  Saving file symphony-in-g-major-military/symphony-in-g-major-military-page06.tif (duration 1.167000)
+2009-09-20 14:31:55,770 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:31:58,289 DEBUG [Text_in_music.possible_text_ccs]  Removed 2/172 ccs due to wordsize
+2009-09-20 14:31:58,368 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:31:58,433 DEBUG [Classified_image.confident_d_t]  top: [(78, 2.4071428571428575, 0.01), (6, 15.035386455249471, 0.79000000000000004), (3, 15.9409188034188, 0.90000000000000002), (2, 17.50608974358974, 0.94000000000000006), (2, 15.593811154598825, 0.87)]
+2009-09-20 14:31:58,434 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:31:58,434 DEBUG [IllMusicImage.classified_ccs]  Found 0 glyphs
+2009-09-20 14:32:00,105 DEBUG [Page.save_color_segmented]  Saved file symphony-in-g-major-military/symphony-in-g-major-military-page06-colorseg.png (duration 28.254000)
+2009-09-20 14:32:01,204 DEBUG [Page.save]  Saving file symphony-in-g-major-military/symphony-in-g-major-military-page13.tif (duration 1.091000)
+2009-09-20 14:32:24,029 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:32:26,687 DEBUG [Text_in_music.possible_text_ccs]  Removed 0/175 ccs due to wordsize
+2009-09-20 14:32:26,813 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:32:26,940 DEBUG [Classified_image.confident_d_t]  top: [(25, 11.05646258503401, 0.55000000000000004), (23, 7.25, 0.23000000000000001), (9, 15.458577951728641, 0.80000000000000004), (8, 6.3125, 0.12), (8, 2.4071428571428575, 0.01)]
+2009-09-20 14:32:26,940 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 11.056463
+2009-09-20 14:32:26,944 DEBUG [IllMusicImage.classified_ccs]  Found 33 glyphs
+2009-09-20 14:32:28,664 DEBUG [Page.save_color_segmented]  Saved file symphony-in-g-major-military/symphony-in-g-major-military-page13-colorseg.png (duration 27.459000)
+2009-09-20 14:32:29,641 DEBUG [Page.save]  Saving file symphony-in-g-major-military/symphony-in-g-major-military-page28.tif (duration 0.971000)
+2009-09-20 14:32:49,375 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:32:52,111 DEBUG [Text_in_music.possible_text_ccs]  Removed 1/174 ccs due to wordsize
+2009-09-20 14:32:52,246 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:32:52,346 DEBUG [Classified_image.confident_d_t]  top: [(26, 8.892261904761904, 0.38), (10, 13.166666666666671, 0.64000000000000001), (9, 7.696130952380952, 0.29000000000000004), (8, 2.4071428571428575, 0.01), (7, 7.1888888888888891, 0.22)]
+2009-09-20 14:32:52,348 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 8.892262
+2009-09-20 14:32:52,348 DEBUG [IllMusicImage.classified_ccs]  Found 15 glyphs
+2009-09-20 14:32:54,065 DEBUG [Page.save_color_segmented]  Saved file symphony-in-g-major-military/symphony-in-g-major-military-page28-colorseg.png (duration 24.423000)
+2009-09-20 14:32:55,150 DEBUG [Page.save]  Saving file symphony-in-g-major-military/symphony-in-g-major-military-page44.tif (duration 1.080000)
+2009-09-20 14:33:16,081 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:33:21,030 DEBUG [Text_in_music.possible_text_ccs]  Removed 1/173 ccs due to wordsize
+2009-09-20 14:33:21,289 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:33:21,434 DEBUG [Classified_image.confident_d_t]  top: [(61, 6.3125, 0.12), (16, 14.612194958770301, 0.78000000000000003), (8, 2.4071428571428575, 0.01), (3, 18.76923076923077, 0.96000000000000008), (3, 13.657692307692304, 0.75)]
+2009-09-20 14:33:21,434 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 6.312500
+2009-09-20 14:33:21,436 DEBUG [IllMusicImage.classified_ccs]  Found 24 glyphs
+2009-09-20 14:33:25,078 DEBUG [Page.save_color_segmented]  Saved file symphony-in-g-major-military/symphony-in-g-major-military-page44-colorseg.png (duration 29.927000)
+2009-09-20 14:33:26,834 DEBUG [Page.save]  Saving file symphony-in-g-major-military/symphony-in-g-major-military-page54.tif (duration 1.734000)
+2009-09-20 14:34:15,451 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:34:18,596 DEBUG [Text_in_music.possible_text_ccs]  Removed 1/173 ccs due to wordsize
+2009-09-20 14:34:18,658 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:34:18,701 DEBUG [Classified_image.confident_d_t]  top: [(76, 2.4071428571428575, 0.01), (11, 14.612194958770301, 0.78000000000000003), (5, 15.789903846153843, 0.89000000000000001), (2, 18.76923076923077, 0.96000000000000008), (1, 19.396389324960754, 0.98999999999999999)]
+2009-09-20 14:34:18,701 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 2.407143
+2009-09-20 14:34:18,703 DEBUG [IllMusicImage.classified_ccs]  Found 5 glyphs
+2009-09-20 14:34:20,447 DEBUG [Page.save_color_segmented]  Saved file symphony-in-g-major-military/symphony-in-g-major-military-page54-colorseg.png (duration 53.612000)
+2009-09-20 14:34:23,101 DEBUG [Classifier_with_remove.init_classifier]  features=['volume64regions'], filename=../preomr_edited_cnn.xml
+2009-09-20 14:34:23,117 INFO [Classifier_with_remove.load_new_training_data]  ../preomr_edited_cnn.xml
+2009-09-20 14:34:23,187 INFO [Pdfsampler.randompages]  widmung.pdf - 4 pages. [1, 2, 3, 4] chosen
+2009-09-20 14:34:23,188 DEBUG [Page._genfilename]  widmung dir dint exits. Creating it.
+2009-09-20 14:34:23,697 DEBUG [Page.save]  Saving file widmung/widmung-page01.tif (duration 0.508000)
+2009-09-20 14:34:43,941 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:34:46,507 DEBUG [Text_in_music.possible_text_ccs]  Removed 4/133 ccs due to wordsize
+2009-09-20 14:34:46,596 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:34:46,691 DEBUG [Classified_image.confident_d_t]  top: [(52, 4.3598214285714274, 0.099999999999999992), (9, 2.4071428571428575, 0.01), (8, 12.187641723356009, 0.62), (7, 15.458577951728641, 0.80000000000000004), (7, 13.250000000000002, 0.70000000000000007)]
+2009-09-20 14:34:46,693 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 4.359821
+2009-09-20 14:34:46,694 DEBUG [IllMusicImage.classified_ccs]  Found 1 glyphs
+2009-09-20 14:34:48,484 DEBUG [Page.save_color_segmented]  Saved file widmung/widmung-page01-colorseg.png (duration 24.787000)
+2009-09-20 14:34:48,910 DEBUG [Page.save]  Saving file widmung/widmung-page02.tif (duration 0.419000)
+2009-09-20 14:35:13,967 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:35:16,470 DEBUG [Text_in_music.possible_text_ccs]  Removed 10/72 ccs due to wordsize
+2009-09-20 14:35:16,526 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:35:16,637 DEBUG [Classified_image.confident_d_t]  top: [(69, 4.3598214285714274, 0.099999999999999992), (10, 15.035386455249471, 0.79000000000000004), (9, 2.4071428571428575, 0.01), (1, 19.396389324960754, 0.98999999999999999), (1, 19.187336473050756, 0.97999999999999998)]
+2009-09-20 14:35:16,637 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 4.359821
+2009-09-20 14:35:16,638 DEBUG [IllMusicImage.classified_ccs]  Found 2 glyphs
+2009-09-20 14:35:18,401 DEBUG [Page.save_color_segmented]  Saved file widmung/widmung-page02-colorseg.png (duration 29.492000)
+2009-09-20 14:35:19,007 DEBUG [Page.save]  Saving file widmung/widmung-page03.tif (duration 0.601000)
+2009-09-20 14:35:41,959 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:35:44,650 DEBUG [Text_in_music.possible_text_ccs]  Removed 27/216 ccs due to wordsize
+2009-09-20 14:35:44,744 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:35:44,809 DEBUG [Classified_image.confident_d_t]  top: [(67, 4.3598214285714274, 0.099999999999999992), (9, 15.458577951728641, 0.80000000000000004), (9, 2.4071428571428575, 0.01), (3, 15.9409188034188, 0.90000000000000002), (1, 19.396389324960754, 0.98999999999999999)]
+2009-09-20 14:35:44,809 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 4.359821
+2009-09-20 14:35:44,809 DEBUG [IllMusicImage.classified_ccs]  Found 3 glyphs
+2009-09-20 14:35:46,663 DEBUG [Page.save_color_segmented]  Saved file widmung/widmung-page03-colorseg.png (duration 27.655000)
+2009-09-20 14:35:47,252 DEBUG [Page.save]  Saving file widmung/widmung-page04.tif (duration 0.583000)
+2009-09-20 14:36:10,525 DEBUG [Text_in_music.__init__]  thresholded:0.02, min_cc_count:10, avgcutoff: (0.75, 2.0), heightcutoff:0.80
+2009-09-20 14:36:13,029 DEBUG [Text_in_music.possible_text_ccs]  Removed 319/319 ccs due to wordsize
+2009-09-20 14:36:13,111 DEBUG [Classified_image.classified_glyphs]  k=1
+2009-09-20 14:36:13,433 DEBUG [Classified_image.confident_d_t]  top: [(37, 4.3598214285714274, 0.099999999999999992), (14, 10.133333333333329, 0.48000000000000004), (9, 13.166666666666671, 0.64000000000000001), (9, 2.4071428571428575, 0.01), (6, 15.458577951728641, 0.80000000000000004)]
+2009-09-20 14:36:13,434 DEBUG [IllMusicImage.classified_ccs]  Confident d_t 4.359821
+2009-09-20 14:36:13,437 DEBUG [IllMusicImage.classified_ccs]  Found 1 glyphs
+2009-09-20 14:36:15,204 DEBUG [Page.save_color_segmented]  Saved file widmung/widmung-page04-colorseg.png (duration 27.951000)
