@@ -1,2 +1,2 @@
 dynamics: {count: 19, found: 19}
-text: {count: 177, found: 177, falsenegative:10, falsepositive:6}
+text: {count: 177, found: 177, falsenegative: 10, falsepositive: 6}
