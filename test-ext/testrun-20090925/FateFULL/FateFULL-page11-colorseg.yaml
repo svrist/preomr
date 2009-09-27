@@ -1,2 +1,2 @@
 dynamics: {count: 17, found: 17}
-text: {count: 266, found: 266}
+text: {count: 266, found: 266, falsepositive:29, comment:"Mange gode eksempler på problemerne med tekst-recog", falsenegative:48}
