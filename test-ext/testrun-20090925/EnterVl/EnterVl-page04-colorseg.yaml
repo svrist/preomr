@@ -1,0 +1,2 @@
+dynamics: {count: 17, found: 17, falsepositive:3, comment:"text f and l as positives"}
+text: {count: 0, found: 0, falsenegative:86, comment:"no text lines"}
