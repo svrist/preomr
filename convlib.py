@@ -132,6 +132,26 @@ class Page:
                       filename,(time.time()-start))
         return filename
 
+    def save_without(self,filename=None,type="png"):
+        start = time.time()
+        if self._mi is None:
+            self._init_mi()
+
+        if filename is None:
+            filename = self._genfilename(postfix="-without",extension=(".%s"%type))
+
+        color = self._mi.without()
+        if type is "png":
+            color.save_PNG(filename)
+        elif type is "tif":
+            color.save_tiff(filename)
+        else:
+            raise Exception,"Unknown type %s"%type
+        self._l.debug("Saved file %s (duration %f)",
+                      filename,(time.time()-start))
+        return filename
+
+
     def gen_count_yaml(self,filename=None):
         if filename is None:
             filename = self._genfilename(postfix="-colorseg",extension=".yaml")
@@ -176,4 +196,12 @@ class Pdfsampler:
         self._l.info("%s - %d pages. %s chosen",self.filename,pages,chosen_pages)
         def pi(n): return Page(self.filename,n,self.c)
         return [ pi(p) for p in chosen_pages ]
+
+    def all(self,firstpage=1):
+        doc = PDFDocument(self.filename)
+        pages = doc.count_pages()
+        chosen_pages = [i for i in xrange(firstpage,pages+1)]
+        self._l.info("%s - %d pages. All chosen",self.filename,pages)
+        def pi(n): return Page(self.filename,n,self.c)
+        return [ pi(p) for p in chosen_pages  ]
 

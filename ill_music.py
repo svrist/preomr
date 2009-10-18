@@ -165,7 +165,7 @@ class IllMusicImage(MusicImage):
         [ image.draw_line( (0,i[1]), (i[0],i[1]),color) for i in l]
         return image
 
-    def without(self,classified=True,text=True):
+    def without(self):
         """ Create an image where text and classified are whited out"""
         ret = self.color_segment(other_color=RGBPixel(0,0,0),
                                text_color=RGBPixel(255,255,255),
