@@ -281,6 +281,14 @@ class Text_in_music():
                 spikes.remove(s)
         return spikes
 
+    def _inccs(self,image,ccs=None):
+        if ccs is None:
+            ccs = set(image.cc_analysis())
+        spikes = self._possible_text_areas(image=baseimg,
+                                           ccs=ccs)
+        inccs = ccs_in_rspike(spikes,ccs)
+
+        return inccs
 
 #=======================Public=================
 
@@ -292,12 +300,8 @@ class Text_in_music():
         else:
             baseimg = image
 
-        if ccs is None:
-            ccs = set(baseimg.cc_analysis())
         # Horizontal projections
-        spikes = self._possible_text_areas(image=baseimg,
-                                           ccs=ccs)
-        inccs = ccs_in_rspike(spikes,ccs)
+        inccs = self._inccs(image,ccs)
 
         # Iterative projection profile cutting
         goodccs = self._good_ccs(baseimg,inccs)
@@ -355,7 +359,11 @@ if __name__ == '__main__':
 
     # Draw words
     r = mi.to_rgb()
-
+    bsimg = mi._image.without_insidestaves_info()
+    inccs = t._inccs(image=bsimg)
+    words = t._words(image=bsimg,ccs=inccs)
+    for c in words:
+        r.highlight(c,RGBPixel(255,0,0))
 
 
 
