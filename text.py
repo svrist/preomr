@@ -24,6 +24,10 @@ from gamera.kdtree import *
 
 import logging
 
+def slack_match(y1,y2,slack=1):
+    return y1 <= y2+slack and y1 >= y2-slack
+
+
 class Word():
     """ Wrapper for two types of CC from an image.
     CC as the one returned from a pagesegmentation algorithm
@@ -192,7 +196,7 @@ class Text_in_music():
     def _confirmed_text_lines(self,words):
         """ Take a list of words and return a list of confirmed text lines
         """
-        p = self.word_projections(words=words).rspikes(self._image._orig.ncols-1) # Get lines of document
+        p = self._word_projections(words=words).rspikes(self._image._orig.ncols-1) # Get lines of document
         lines = llist(p,words)
         avgl = average( [ l.line_feature() for l in lines ] )
         self.l.debug("Avg line_feature")
@@ -213,6 +217,27 @@ class Text_in_music():
         return median([ c.ncols for c in ccs])*self._text_near
    
 
+    def _def_wordproj(self,image=None,words=None,word_seg):
+        if image is None:
+            image = self._image.without_insidestaves_info()
+        if words is None:
+            ccs = image.cc_analysis()
+            words = wordlist(word_seg(self)(image),ccs)
+        return image,words
+
+    def _word_projections(self,image=None,words = None,word_seg=None):
+        words,image = self._def_wordproj(image,words,word_seg)
+        return Projection([ len( [ c for c in words if c.w.contains_y(y) ]) \
+                for y in range(0,image.nrows)])
+
+
+    def _word_projections_slackmatch(self,image=None,words = None,word_seg=None,slack=1):
+        words,image = self._def_wordproj(image,words,word_seg)
+        return Projection([ len( [ c for c in words if slack_match(c.w.center_y,y) ]) \
+                for y in range(0,image.nrows)])
+
+
+
     def _good_ccs(self,image=None,ccs=None, pageseg_function=None):
         if image is None:
             image = self._image.without_insidestaves_info()
@@ -225,35 +250,6 @@ class Text_in_music():
             for w,d in l:
                 ret.extend(w.ccs)
         return ret 
-
-    def word_projections(self,image=None,words = None,word_seg=None):
-        if image is None:
-            image = self._image.without_insidestaves_info()
-
-        if words is None:
-            ccs = image.cc_analysis()
-            words = wordlist(word_seg(self)(image),ccs)
-
-        return Projection([ len( [ c for c in words if c.w.contains_y(y) ]) \
-                for y in range(0,image.nrows)])
-
-
-
-    def possible_text_ccs(self, image=None, ccs=None):
-        if image is None:
-            self.l.debug("No image given. Using without_insidestaves_info()")
-            baseimg = self._image.without_insidestaves_info()
-        else:
-            baseimg = image
-
-        if ccs is None:
-            ccs = set(baseimg.cc_analysis())
-        spikes = self._possible_text_areas(image=baseimg,
-                                           ccs=ccs)
-        inccs = ccs_in_rspike(spikes,ccs)
-        goodccs = self._good_ccs(baseimg,inccs)
-        self.l.debug("Removed %d/%d ccs due to wordsize", (len(inccs)-len(goodccs)),len(inccs))
-        return goodccs
 
     def _possible_text_areas_projection(self,image):
         p = Projection(image.projection_rows())
@@ -286,94 +282,27 @@ class Text_in_music():
         return spikes
 
 
-def pc(text,ccs):
-    return lambda image : image.projection_cutting(Tx=int(text._text_near_width(ccs)),Ty=1)
-
-def bb(text):
-    return lambda image : image.bbox_merging()
-
-def rsm(text):
-    return lambda image : image.runlength_smearing()
-
-def expand_ccs(image,ccs,Ex,Ey):
-    # two helper functions for merging rectangles
-    def find_intersecting_rects(glyphs, index):
-        g = glyphs[index]
-        inter = []
-        for i in range(len(glyphs)):
-            if i == index:
-                continue
-            if g.intersects(glyphs[i]):
-                inter.append(i)
-        return inter
-    def list_union_rects(big_rects):
-        current = 0
-        rects = big_rects
-        while(1):
-            inter = find_intersecting_rects(rects, current)
-            if len(inter):
-                g = rects[current]
-                new_rects = [g]
-                for i in range(len(rects)):
-                    if i == current:
-                        continue
-                    if i in inter:
-                        g.union(rects[i])
-                    else:
-                        new_rects.append(rects[i])
-                rects = new_rects
-                current = 0
-            else:
-                current += 1
-            if(current >= len(rects)):
-                break
-        return rects
-
-    # the actual plugin
-    from gamera.core import Dim, Rect, Point, Cc
-    from gamera.plugins.image_utilities import union_images
-    page = image
-
-    # extend CC bounding boxes
-    big_rects = []
-    for c in ccs:
-        ul_y = max(0, c.ul_y - Ey)
-        ul_x = max(0, c.ul_x - Ex)
-        lr_y = min(page.lr_y, c.lr_y + Ey)
-        lr_x = min(page.lr_x, c.lr_x + Ex)
-        nrows = lr_y - ul_y + 1
-        ncols = lr_x - ul_x + 1
-        big_rects.append(Rect(Point(ul_x, ul_y), Dim(ncols, nrows)))
-    extended_segs = list_union_rects(big_rects)
-
-    # build new merged CCs
-    tmplist = ccs[:]
-    dellist = []
-    seg_ccs = []
-    seg_cc = []
-    if(len(extended_segs) > 0):
-        label = 1
-        for seg in extended_segs:
-            label += 1
-            for cc in tmplist:
-                if(seg.intersects(cc)):
-                    # mark original image with segment label
-                    #self.highlight(cc, label)
-                    seg_cc.append(cc)
-                    dellist.append(cc)
-            if len(seg_cc) == 0:
-                continue
-            seg_rect = seg_cc[0].union_rects(seg_cc)
-            new_seg = Cc(image, label, seg_rect.ul, seg_rect.lr)
-            seg_cc = []
-            for item in dellist:
-                tmplist.remove(item)
-            dellist = []
-            seg_ccs.append(new_seg)
-    return seg_ccs
+#=======================Public=================
 
 
+    def possible_text_ccs(self, image=None, ccs=None):
+        if image is None:
+            self.l.debug("No image given. Using without_insidestaves_info()")
+            baseimg = self._image.without_insidestaves_info()
+        else:
+            baseimg = image
 
+        if ccs is None:
+            ccs = set(baseimg.cc_analysis())
+        # Horizontal projections
+        spikes = self._possible_text_areas(image=baseimg,
+                                           ccs=ccs)
+        inccs = ccs_in_rspike(spikes,ccs)
+
+        # Iterative projection profile cutting
+        goodccs = self._good_ccs(baseimg,inccs)
+        self.l.debug("Removed %d from original %d ccs", (len(inccs)-len(goodccs)),len(inccs))
+        return goodccs
 
 
 if __name__ == '__main__':
@@ -414,7 +343,6 @@ if __name__ == '__main__':
         r.draw_hollow_rect(re,RGBPixel(210,210,210))
     for re in sp:
         r.draw_hollow_rect(re,RGBPixel(150,150,150))
-
     ra = t._possible_text_areas()
     for re in ra:
         r.draw_hollow_rect(re,RGBPixel(255,0,0))
@@ -424,6 +352,16 @@ if __name__ == '__main__':
         r.highlight(c,RGBPixel(0,100,0))
     r.save_PNG("%s/%s-02-areas-and-ccs.png"%(outputbase,basename))
     logging.debug("02-areas-and-ccs.png")
+
+    # Draw words
+    r = mi.to_rgb()
+
+
+
+
+
+
+
 
     r = mi.color_segment()
     r.save_PNG("%s/%s-XX-colorsegmented.png"%(outputbase,basename))
