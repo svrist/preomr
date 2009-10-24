@@ -27,6 +27,14 @@ import logging
 def slack_match(y1,y2,slack=1):
     return y1 <= y2+slack and y1 >= y2-slack
 
+def pc(text,ccs):
+    return lambda image : image.projection_cutting(Tx=int(text._text_near_width(ccs)),Ty=1)
+def bb(text):
+    return lambda image : image.bbox_merging()
+def rsm(text):
+    return lambda image : image.runlength_smearing()
+
+
 
 class Word():
     """ Wrapper for two types of CC from an image.
@@ -135,7 +143,7 @@ class Text_in_music():
                  min_cc_count=5,
                  min_wordlength = 2,
                  deviation_avg_feature = 3,
-                 text_near = 1.0
+                 text_near = 0.5
                 ):
         """ Text in Music approimation
         This will try to identify areas of the given image which might be text.
@@ -217,30 +225,26 @@ class Text_in_music():
         return median([ c.ncols for c in ccs])*self._text_near
    
 
-    def _def_wordproj(self,image=None,words=None,word_seg):
+    def _def_image(self,image=None):
         if image is None:
             image = self._image.without_insidestaves_info()
-        if words is None:
-            ccs = image.cc_analysis()
-            words = wordlist(word_seg(self)(image),ccs)
-        return image,words
+        return image
 
-    def _word_projections(self,image=None,words = None,word_seg=None):
-        words,image = self._def_wordproj(image,words,word_seg)
+    def _word_projections(self,words,image=None):
+        image = self._def_image(image)
         return Projection([ len( [ c for c in words if c.w.contains_y(y) ]) \
                 for y in range(0,image.nrows)])
 
 
-    def _word_projections_slackmatch(self,image=None,words = None,word_seg=None,slack=1):
-        words,image = self._def_wordproj(image,words,word_seg)
+    def _word_projections_slackmatch(self,words,image=None,slack=1):
+        image = self._def_image(image)
         return Projection([ len( [ c for c in words if slack_match(c.w.center_y,y) ]) \
                 for y in range(0,image.nrows)])
 
 
 
     def _good_ccs(self,image=None,ccs=None, pageseg_function=None):
-        if image is None:
-            image = self._image.without_insidestaves_info()
+        image = self._def_image(image)
         if ccs is None:
             ccs = image.cc_analysis()
 
@@ -261,11 +265,7 @@ class Text_in_music():
     def _possible_text_areas(self,
                              image=None,
                             ccs=None):
-
-        if image is None:
-            self.l.debug("No image given, using without_inside_staves_info()")
-            image = self._image.without_insidestaves_info()
-
+        image=self._def_image(image)
         if ccs is None:
             ccs = image.cc_analysis()
 
@@ -284,7 +284,7 @@ class Text_in_music():
     def _inccs(self,image,ccs=None):
         if ccs is None:
             ccs = set(image.cc_analysis())
-        spikes = self._possible_text_areas(image=baseimg,
+        spikes = self._possible_text_areas(image=image,
                                            ccs=ccs)
         inccs = ccs_in_rspike(spikes,ccs)
 
@@ -294,11 +294,7 @@ class Text_in_music():
 
 
     def possible_text_ccs(self, image=None, ccs=None):
-        if image is None:
-            self.l.debug("No image given. Using without_insidestaves_info()")
-            baseimg = self._image.without_insidestaves_info()
-        else:
-            baseimg = image
+        baseimg = self._def_image(image)
 
         # Horizontal projections
         inccs = self._inccs(image,ccs)
@@ -359,15 +355,29 @@ if __name__ == '__main__':
 
     # Draw words
     r = mi.to_rgb()
-    bsimg = mi._image.without_insidestaves_info()
+    bsimg = mi.without_insidestaves_info()
     inccs = t._inccs(image=bsimg)
-    words = t._words(image=bsimg,ccs=inccs)
+    words = wordlist(t._words(image=bsimg,ccs=inccs),inccs,t._min_wordlength)
     for c in words:
-        r.highlight(c,RGBPixel(255,0,0))
+        r.draw_hollow_rect(c.w,RGBPixel(255,0,0))
+    p = t._word_projections(words=words)
+    r = mi.draw_y_proj(p,image=r,color=RGBPixel(100,0,0))
+    r.save_PNG("%s/%s-03-words-and-word-projections.png"%(outputbase,basename))
+    logging.debug("03-words-and-word-projections.png")
 
-
-
-
+    # Draw words proj slack
+    r = mi.to_rgb()
+    bsimg = mi.without_insidestaves_info()
+    inccs = t._inccs(image=bsimg)
+    for c in inccs:
+        r.highlight(c,RGBPixel(0,200,0))
+    words = wordlist(t._words(image=bsimg,ccs=inccs),inccs,t._min_wordlength)
+    for c in words:
+        r.draw_hollow_rect(c.w,RGBPixel(255,0,0))
+    p = t._word_projections_slackmatch(words=words,slack=2)
+    r = mi.draw_y_proj(p,image=r,color=RGBPixel(100,0,0))
+    r.save_PNG("%s/%s-03.slack-words-and-word-projections.png"%(outputbase,basename))
+    logging.debug("03.slack-words-and-word-projections.png")
 
 
 
