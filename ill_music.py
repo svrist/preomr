@@ -159,6 +159,8 @@ class IllMusicImage(MusicImage):
         if norm:
             if fac is None:
                 fac = int(image.ncols/max(rl))
+            elif fac < 1:
+                fac = int((image.ncols/max(rl))*fac)
             rl = [ fac*r for r in rl ]
 
         l = [ (v,i) for i,v in enumerate(rl) ]

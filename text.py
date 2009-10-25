@@ -112,6 +112,9 @@ class Line():
         """
         return average([d for c,d in self])*1.0/len(self)
 
+    def charcount_feature(self):
+        return median([ len(c.ccs) for c,d in self ])
+
     #### Sequence interface
     def __getitem__(self,key):
         """ Index the words in this Line """
@@ -207,9 +210,16 @@ class Text_in_music():
         p = self._word_projections(words=words).rspikes(self._image._orig.ncols-1) # Get lines of document
         lines = llist(p,words)
         avgl = average( [ l.line_feature() for l in lines ] )
-        self.l.debug("Avg line_feature")
         flat = [ l for l in lines if l.line_feature() < avgl*self._deviation_avg_feature ]
         return flat
+
+    def _confirmed_text_lines_charcount(self,words):
+        p = self._word_projections(words=words).rspikes(self._image._orig.ncols-1) # Get lines of document
+        lines = llist(p,words)
+        avgl = average( [ l.line_feature() for l in lines ] )
+        flat = [ l for l in lines if (l.line_feature() < avgl*self._deviation_avg_feature and l.charcount_feature()>1) ]
+        return flat
+
 
     def _words(self,image,ccs,pageseg_function=None):
         if pageseg_function is None:
@@ -222,25 +232,29 @@ class Text_in_music():
         return self._confirmed_text_lines(wordlist(words,ccs,self._min_wordlength))
 
     def _text_near_width(self,ccs):
+        """ A factor of the median width of the given ccs """
         return median([ c.ncols for c in ccs])*self._text_near
    
 
     def _def_image(self,image=None):
+        """ Generate an image if the given image is None """
         if image is None:
             image = self._image.without_insidestaves_info()
         return image
 
     def _word_projections(self,words,image=None):
+        """  Projection of the words touching each y coordinate."""
         image = self._def_image(image)
         return Projection([ len( [ c for c in words if c.w.contains_y(y) ]) \
                 for y in range(0,image.nrows)])
 
 
     def _word_projections_slackmatch(self,words,image=None,slack=1):
+        """ Projection of the center of words with a given slack """
         image = self._def_image(image)
-        return Projection([ len( [ c for c in words if slack_match(c.w.center_y,y) ]) \
-                for y in range(0,image.nrows)])
-
+        return Projection([ len( [ c for c in words \
+                                  if slack_match(c.w.center_y,y,slack=slack) ]) \
+                           for y in range(0,image.nrows)])
 
 
     def _good_ccs(self,image=None,ccs=None, pageseg_function=None):
@@ -253,7 +267,7 @@ class Text_in_music():
         for  l in lines:
             for w,d in l:
                 ret.extend(w.ccs)
-        return ret 
+        return ret
 
     def _possible_text_areas_projection(self,image):
         p = Projection(image.projection_rows())
@@ -357,32 +371,36 @@ if __name__ == '__main__':
     r = mi.to_rgb()
     bsimg = mi.without_insidestaves_info()
     inccs = t._inccs(image=bsimg)
+    for c in inccs:
+        r.highlight(c,RGBPixel(0,200,0))
+
     words = wordlist(t._words(image=bsimg,ccs=inccs),inccs,t._min_wordlength)
     for c in words:
         r.draw_hollow_rect(c.w,RGBPixel(255,0,0))
     p = t._word_projections(words=words)
-    r = mi.draw_y_proj(p,image=r,color=RGBPixel(100,0,0))
+    # scale to half a page width
+    r = mi.draw_y_proj(p,image=r,color=RGBPixel(100,0,0),fac=0.5) 
     r.save_PNG("%s/%s-03-words-and-word-projections.png"%(outputbase,basename))
     logging.debug("03-words-and-word-projections.png")
 
-    # Draw words proj slack
+
+    # Lines
     r = mi.to_rgb()
     bsimg = mi.without_insidestaves_info()
-    inccs = t._inccs(image=bsimg)
-    for c in inccs:
-        r.highlight(c,RGBPixel(0,200,0))
-    words = wordlist(t._words(image=bsimg,ccs=inccs),inccs,t._min_wordlength)
-    for c in words:
-        r.draw_hollow_rect(c.w,RGBPixel(255,0,0))
-    p = t._word_projections_slackmatch(words=words,slack=2)
-    r = mi.draw_y_proj(p,image=r,color=RGBPixel(100,0,0))
-    r.save_PNG("%s/%s-03.slack-words-and-word-projections.png"%(outputbase,basename))
-    logging.debug("03.slack-words-and-word-projections.png")
-
-
+    p2 = p.rspikes(mi._image.ncols-1)
+    for myr in p2:
+        r.draw_hollow_rect(myr,RGBPixel(100,100,100))
+    lines = t._confirmed_text_lines(words)
+    for l in lines:
+        r.draw_hollow_rect(l.l,RGBPixel(255,0,0))
+    occs = mi.ccs_overall()
+    for c in occs["text"]:
+        r.highlight(c,RGBPixel(0,150,0))
+    r.save_PNG("%s/%s-04-lines-and-text.png"%(outputbase,basename))
+    logging.debug("04-lines-and-text.png")
 
     r = mi.color_segment()
-    r.save_PNG("%s/%s-XX-colorsegmented.png"%(outputbase,basename))
+    r.save_PNG("%s/%s-05-colorsegmented.png"%(outputbase,basename))
 
 
 
