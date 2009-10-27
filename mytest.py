@@ -64,34 +64,42 @@ def test_e_fp(filename,expected_count=10):
         ci.load_new_training_data(dynamic)
         print "%s - count_of_training=%d, k=%d"%(dynamic,len(c.stats),c.k)
         result = {} # Push into buckets based on the count of found glyphs.
+        csv = {}
         sys.stdout.flush()
 
         # Try with different epsilon for false_positives: e_fp
-        for e_fp in arange(0.01,0.99,0.01):
+        for e_fp in arange(0.01,1.01,0.01):
             c.e_fp=e_fp
             count = len(ci.classified_glyphs())
 
             # Init bucket.
             if not result.has_key(count):
                 result[count] = []
-            result[count].append(Result_item(count,e_fp,c.d_t()))
+
+            result[count].append((e_fp,c.d_t()))
+            csv[e_fp] = count
 
         # Find the best match to the wanted result.
         k,res,diff  = find_nearest(result,expected_count)
         
+        confid = [ (len(v),key,v[0][0],v[0][1]) for key,v in result.iteritems() ]
+        confid2 = [ (key,len(v)) for key,v in result.iteritems() ]
 
-        confid = [ {"conf_count":len(v), "found_elements":key} for key,v in result.iteritems() ]
+        confid.sort(reverse=True)
+        confid2.sort()
+        print "efp,count"
+        for e_fp,c in sorted(csv.iteritems()):
+            print "%s,%s"%(e_fp,c)
+        print
+        print "count,spansize"
+        for count,spansize in confid2:
+            print "%s,%s"%(count,spansize)
 
-        confid.sort()
 
+        return
         ret = []
-        for i in range(1,min(10,len(confid))+1):
-            ret.append(confid[-i])
-
-
-        print ret
-
-
+        for i in range(0,min(10,len(confid))+1):
+            ret.append(confid[i])
 
         if not result.has_key(expected_count):
             print "Never found the desired amount with %s"%dynamic

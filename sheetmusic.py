@@ -91,19 +91,27 @@ class MusicImage(object):
         return self._noinside
 
     def setup_textmatcher(self,
+                          image=None,
                           min_cutoff_factor=0.02,
-                          height_cutoff_factor=0.8,image=None,
+                          height_cutoff_factor=0.8,
                           avg_cutoff=(0.70,2.0),
                           min_cc_count=5,
+                          min_wordlength = 2,
+                          deviation_avg_feature = 3,
+                          text_near = 0.5
                          ):
         """
         See text.py - Text_in_music.__init__
         """
         self._text_obj = Text_in_music(self,
-                          min_cutoff_factor= min_cutoff_factor,
-                          height_cutoff_factor=height_cutoff_factor,
-                          avg_cutoff=avg_cutoff,
-                          min_cc_count=min_cc_count)
+                                       min_cutoff_factor= min_cutoff_factor,
+                                       height_cutoff_factor=height_cutoff_factor,
+                                       avg_cutoff=avg_cutoff,
+                                       min_cc_count=min_cc_count,
+                                       min_wordlength=min_wordlength,
+                                       deviation_avg_feature=deviation_av_feature,
+                                       text_near=text_near
+                                      )
 
 
 
@@ -137,7 +145,7 @@ class MusicImage(object):
 
         if (remove_inside_staffs):
             pre = ccs
-            ccs = ccs_intersect(ccs,ret["outside"])
+            ccs = ccs_intersect(ccs,c["outside"])
             self.l.debug("Removing %d ccs as inside staffs",(len(pre)-len(ccs)))
 
         if (remove_classified):

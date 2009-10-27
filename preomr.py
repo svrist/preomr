@@ -19,19 +19,27 @@ import logging
 import sys
 import re
 from class_dynamic import Classifier_with_remove
-from sheetmusic import MusicImage
+from ill_music import IllMusicImage
 
 
 if __name__ == '__main__':
     FORMAT = "%(asctime)-15s %(levelname)s [%(name)s.%(funcName)s]  %(message)s"
-    logging.basicConfig(level=logging.DEBUG,format=FORMAT)
+    logging.basicConfig(level=logging.INFO,format=FORMAT)
     init_gamera()
-
-    c = Classifier_with_remove(training_filename=sys.argv[1])
-    c.set_k(2)
-    for imgname in sys.argv[2:]:
+    files = []
+    if sys.argv[1][-4:] == ".xml":
+        c = Classifier_with_remove(training_filename=sys.argv[1])
+        files = sys.argv[2:]
+    else:
+        c = Classifier_with_remove(training_filename="preomr_edited_cnn.xml")
+        files = sys.argv[1:]
+    c.set_k(1)
+    sys.stdout.flush()
+    for imgname in files:
         m = re.match(r"^(.*)\.[^\.]+$",imgname)
         noend = m.group(1)
-        mi = MusicImage(imgname,classifier=c)
+        mi = IllMusicImage(imgname,classifier=c)
         without = mi.without()
         without.save_PNG("%s_clean.png"%noend)
+        print "%s_clean.png"%noend
+        sys.stdout.flush()

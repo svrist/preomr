@@ -2,35 +2,23 @@
 
 {% block title %} {{ title }} {% endblock%}
 
-{% block actions %}
-<ul>
-  <li><a href="/work/createlist">Create a list</a></li>
-  <li><a href="/work/read/list">See lists</a></li>
-</ul>
-{% endblock %}
 
 {% block content %}
-  <table summary="DB Counts"> 
-			<caption>DB Counts</caption> 
-			<thead> 
-				<tr> 
-					<th scope="col">Name</th> 
-					<th scope="col">Count</th> 
-				</tr> 
-			</thead>	
-			<tfoot> 
-				<tr> 
-					<th scope="row">Total</th> 
-					<td colspan="1">{{ countcounts }}</td> 
-				</tr> 
-			</tfoot> 
-			<tbody> 
-			{% for c in counts %}
-				<tr > 
-					<th scope="row" id="r101">{{ c.name }}</th> 
-					<td><a href="twitter.com/radubilei">{{ c.count }}</a></td> 
-				</tr>
-			{% endfor %}
-			</tbody>
-       </table>
+<a href="http://dl.getdropbox.com/u/204603/Noder/project.20091025.pdf">Report (english) 17MB</a>
+<img width="500" src="/static/text-words-and-proj.png" target="_blank" />
+<h2>Abstract</h2>
+<p>
+We provide an introduction to Optical Music Recognition research along with a
+tool for doing pre-processing of images to aid current commerical
+tools when the purpose is automated gathering of statistical information from
+large music corpora. This is implemented by using the Gamera Open Source
+framework for Document Image Analysis and uses both a K-Nearest-Neighbor
+recognizer  with rejection based on confidence measures and different
+image projection and estimation techniques to remove text and dynamics from a high
+quality image of sheet music.</p>
+<p>Experiments show 99% precison for text and
+dynamics with a recall from 84% to 98% for the tool but it was not possible
+to verify benificial effect of the PreOmr processing.</p>
+<h2>Source code</h2>
+Download the code via github: <a href="http://github.com/svrist/preomr">preomr</a>
 {% endblock %}

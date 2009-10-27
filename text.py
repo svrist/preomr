@@ -165,7 +165,7 @@ class Text_in_music():
          *avg_cutoff*:
              What should the average aspect-ratio be of all ccs in an area to be
              considered as an area with text?
-             Defaults to 0.75 -> 2.0 ie somewhere around quadratic
+             Defaults to 0.70 -> 2.0 ie somewhere around quadratic
 
          *min_cc_count*:
             How many cc's should there be in an area for it to be considered a

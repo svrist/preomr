@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %} {{ title }} {% endblock%}
+
+
+{% block actions %}
+<ul>
+  <li><a href="/work/createlist">Create a list</a></li>
+  <li><a href="/work/read/list">See lists</a></li>
+</ul>
+{% endblock %}
+{% block content %}
+
+  <table summary="DB Counts"> 
+			<caption>DB Counts</caption> 
+			<thead> 
+				<tr> 
+					<th scope="col">Name</th> 
+					<th scope="col">Count</th> 
+				</tr> 
+			</thead>	
+			<tfoot> 
+				<tr> 
+					<th scope="row">Total</th> 
+					<td colspan="1">{{ countcounts }}</td> 
+				</tr> 
+			</tfoot> 
+			<tbody> 
+			{% for c in counts %}
+				<tr > 
+					<th scope="row" id="r101">{{ c.name }}</th> 
+					<td><a href="twitter.com/radubilei">{{ c.count }}</a></td> 
+				</tr>
+			{% endfor %}
+			</tbody>
+       </table>
+
+{% endblock %}

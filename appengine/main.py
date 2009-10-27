@@ -17,8 +17,7 @@ from model import Work
 from base_request_handler import BaseRequestHandler, Login, Logout,main
 
 fetchit = False
-
-class Main(BaseRequestHandler):
+class Maingae(BaseRequestHandler):
     def get(self):
         templatevars = {"title":"PreOMR"}
         cnames = ["Work","Author","Work-free-score","Work-mutopia",
@@ -27,6 +26,12 @@ class Main(BaseRequestHandler):
 
         templatevars["countcounts"] = len(cnames)
         templatevars["counts"] = [ { 'name':cn,'count':get_count(cn)} for cn in cnames ]
+        self.generate("indexgae.html",templatevars)
+
+
+class Main(BaseRequestHandler):
+    def get(self):
+        templatevars = {"title":"PreOMR"}
         self.generate("index.html",templatevars)
 
 class BlobInDataStore(BaseRequestHandler):
@@ -48,7 +53,9 @@ class User(BaseRequestHandler):
 
 if __name__ == "__main__":
     application = webapp.WSGIApplication(
-        [('/', Main), ('/work/create',work.WorkCreate),
+        [('/', Main), 
+        ('/maingae', Maingae), ('/work/create',work.WorkCreate),
+         ('/work/create',work.WorkCreate),
          ('/author/create',author.AuthorCreate),
          ('/author/read/(\d+)$',author.AuthorRead),
          ('/login', Login),
