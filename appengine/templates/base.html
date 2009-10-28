@@ -8,7 +8,10 @@
   </head>
   <body>
     <div id="page">
-    <div id="header">
+      <div id="header">
+<h1>Optical Music Recognition for structural information from high-quality
+  scanned
+  music</h1>
       <div  id="feedback">{%block feedback %}{%endblock%}</div>
     </div>
     <div id="menu">{% block menu %}
@@ -19,13 +22,15 @@
       <div id="content">
         <div id="actions">{% block actions %}{% endblock %}</div>
         {% block content %}{% endblock %}</div>
-    <div id="footer">
+      <div id="footer">
+        Author: <a href="http://seet.dk">S&oslash;ren Vrist</a> - 
       {% if users.get_current_user %}
-      <p id="logout"><a href="/user" {%if users.is_current_user_admin %}class="admin"{%endif%}>{{ users.get_current_user }}</a> <a href="{{ logouturl }}">Logout</a>
-        </p>
+      <span id="logout"><a href="/user" {%if users.is_current_user_admin %}class="admin"{%endif%}>{{ users.get_current_user }}</a> <a href="{{ logouturl }}">Logout</a>
+        </span>
       {% else %}
-      <p id="login"><a href="{{ loginurl }}">Login</a></p>
+      <span id="login"><a href="{{ loginurl }}">Login</a></span>
       {% endif %}
+
     </div>
   </div>
   </body>

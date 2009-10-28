@@ -1,7 +1,7 @@
 div#page {
   border:1px solid purple;
   width:855px;
-  margin:0 auto;
+  margin:4 auto;
   padding:5px;
   text-align:left;
 }
@@ -10,9 +10,10 @@ div {
   /*text-align:center;*/
 }
 div#header {
-  border:2px solid red;
+  /*border:2px so;*/
   width:850px;
-  height:30px;
+  height:65px;
+  line-height: 200%;
 }
 
 a.admin {
@@ -21,11 +22,11 @@ a.admin {
 }
 
 div#menu {
-  border:2px solid green;
+  border-right:2px solid green;
   width:250px;
   float:left;
   margin:10px 0 10px 5px;
-  height:350px;
+  height:500px;
   padding-left:10px
 }
 

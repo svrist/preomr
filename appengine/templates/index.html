@@ -4,21 +4,32 @@
 
 
 {% block content %}
-<a href="http://dl.getdropbox.com/u/204603/Noder/project.20091025.pdf">Report (english) 17MB</a>
-<img width="500" src="/static/text-words-and-proj.png" target="_blank" />
+<img width="500" height="226" src="/static/text-words-and-proj.png" target="_blank" alt="OMR illustration"/>
 <h2>Abstract</h2>
 <p>
 We provide an introduction to Optical Music Recognition research along with a
-tool for doing pre-processing of images to aid current commerical
-tools when the purpose is automated gathering of statistical information from
-large music corpora. This is implemented by using the Gamera Open Source
-framework for Document Image Analysis and uses both a K-Nearest-Neighbor
-recognizer  with rejection based on confidence measures and different
-image projection and estimation techniques to remove text and dynamics from a high
-quality image of sheet music.</p>
-<p>Experiments show 99% precison for text and
-dynamics with a recall from 84% to 98% for the tool but it was not possible
-to verify benificial effect of the PreOmr processing.</p>
+working tool for doing pre-processing of high quality scanned sheetm music to
+aid current commerical tools when the purpose is automated gathering of
+statistical information from large music corpora. This is implemented by using
+the Gamera Open Source framework for Document Image Analysis and uses a
+K-Nearest-Neighbor recognizer for recognizing and removing dynamic symbols
+like ``forte'' and ``pianisimo''. For text identification and removal
+different image projection and estimation techniques is used.
+</p>
+<br>
+<p>
+Tests was performed and results reported as precision and recall along with a                          weighted average know as the f-measure. The precision and recall is concepts 
+from information retrival. In this report precision tells how many of the removed 
+symbols actally should have been removed and showed a good result of 99\%. 
+Recall described how many of the total symbols we would like to remove that 
+was actually found. For text the recall was around 84\% and could possibly be
+improved. For dynamic removal the recall was found to be 98\% whichs is quite
+reasonable. Qualitative tests to verify if preprocessing makes a difference 
+was performed but it was not possible to show any beneficial effect.
+</p>
+<h2>Report</h2>
+<a href="http://dl.getdropbox.com/u/204603/Noder/project.20091027.pdf">Report (english) 17MB</a<br/>
 <h2>Source code</h2>
 Download the code via github: <a href="http://github.com/svrist/preomr">preomr</a>
+
 {% endblock %}
