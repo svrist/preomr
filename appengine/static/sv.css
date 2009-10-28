@@ -2,7 +2,7 @@ div#page {
   border:1px solid purple;
   width:855px;
   margin:4 auto;
-  padding:5px;
+  padding:0px;
   text-align:left;
 }
 
@@ -10,8 +10,9 @@ div {
   /*text-align:center;*/
 }
 div#header {
-  /*border:2px so;*/
-  width:850px;
+  border-bottom:2px solid red;
+  padding: 5px;
+  width:845px;
   height:65px;
   line-height: 200%;
 }
@@ -40,9 +41,10 @@ div#content {
 }
 
 div#footer {
-  border:2px solid red;
-  width:850px;
+  border-top:2px solid red;
+  width:845;
   height:30px;
+  padding: 5px;
 }
 
 #content ul {
