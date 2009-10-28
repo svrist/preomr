@@ -23,7 +23,7 @@ color: #333;
 background: transparent;}
 
 /* =links
------------------------------------------------ */
+----------------------------------------------- 
 
 a {padding: 1px;
 text-decoration: none;
@@ -34,12 +34,11 @@ a:link {border-bottom: 1px dashed #ddd;
 color: #000;}
 
 a:visited {border-bottom: 1px dashed #ccc;
-/*text-decoration: line-through;*/
 color: #808080;}
 
 a:hover {border-bottom: 1px dashed #bbb;
 color: #666;}
-
+*/
 /* =head =foot
 ----------------------------------------------- */
 
