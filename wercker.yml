@@ -6,14 +6,17 @@ build:
             id
 deploy:
   steps: 
+    - mktemp:
+        envvar: KEY_FILE
+    - create-file:
+        name: writekey
+        filename: $KEY_FILE
+        content: $JSON_KEY
+        overwrite: true
+        hide-from-log: true
     - script:
         code: |
             cd $WERCKER_SOURCE_DIR
-            key=`mktemp --suffix .json`
-            ls -latr $key
-            echo $JSON_KEY > $key
-            debug "Using $EMAIL for deploy, keyfile: $key"
-            cat $key
-            gcloud auth activate-service-account $EMAIL --key-file $key
+            gcloud auth activate-service-account $EMAIL --key-file $KEY_FILE
             gcloud preview app deploy appengine/app.yaml --project preomr-1244 
             success 'Finished'
