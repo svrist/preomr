@@ -1,5 +1,5 @@
 #box: python:2.7-slim
-box: wercker/default
+box: default
 build:
   steps:
     - script:
