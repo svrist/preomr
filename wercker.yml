@@ -1,5 +1,4 @@
-#box: python:2.7-slim
-box: default
+box: python:2.7-slim
 build:
   steps:
     - script:
