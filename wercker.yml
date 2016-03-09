@@ -1,4 +1,4 @@
-box: pypi/appengine-sdk
+box: mgood/appengine-python
 build:
   steps:
     - script:
@@ -9,5 +9,7 @@ deploy:
     - script:
         code: |
             cd $WERCKER_SOURCE_DIR
-            app_cfg.py appengine/app.yaml --email $EMAIL --w
-
+            echo "$APP_PASSWORD" > "$WERCKER_STEP_TEMP/password"
+            debug "Using $EMAIL for deploy"
+            app_cfg.py appengine/app.yaml --email $EMAIL --passin < "$WERCKER_STEP_TEMP/password"
+            success 'Finished'
