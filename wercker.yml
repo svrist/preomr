@@ -12,6 +12,6 @@ deploy:
             echo "$JSON_KEY" > "$WERCKER_STEP_TEMP/jsonkey"
             debug "Using $EMAIL for deploy, keyfile."
             ls -latr /usr/local/google-cloud-sdk/bin
-            gcloud auth login $EMAIL --key-file $WERCKER_STEP_TEMP/jsonkey
+            gcloud auth activate-service-account $EMAIL --key-file $WERCKER_STEP_TEMP/jsonkey
             gcloud preview app deploy appengine/app.yaml --project preomr-1244 
             success 'Finished'
