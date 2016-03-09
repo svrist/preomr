@@ -6,8 +6,7 @@ from google.appengine.ext import webapp
 from google.appengine.api import users
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
-from django.utils import simplejson as json
-from django.core import serializers
+import json
 
 class BaseRequestHandler(webapp.RequestHandler):
     def handle_exception(self, exception, debug_mode):
@@ -68,7 +67,7 @@ class Login(BaseRequestHandler):
 
 class Logout(BaseRequestHandler):
     def get(self):
-        self.redirect(users.create_logout_url('/')) 
+        self.redirect(users.create_logout_url('/'))
 
 def real_main(application):
     logging.getLogger().setLevel(logging.DEBUG)
