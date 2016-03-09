@@ -1,4 +1,4 @@
-box: google/cloud-sdk
+box: pypi/appengine-sdk
 build:
   steps:
     - script:
@@ -8,8 +8,6 @@ deploy:
   steps: 
     - script:
         code: |
-            uname -a
-            which dev_appserver.py
-            ls /google-cloud-sdk/bin/
             cd $WERCKER_SOURCE_DIR
-            gcloud preview app deploy appengine/app.yaml
+            app_cfg.py appengine/app.yaml --email $EMAIL --w
+
