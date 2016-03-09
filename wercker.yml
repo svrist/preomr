@@ -9,8 +9,9 @@ deploy:
     - script:
         code: |
             cd $WERCKER_SOURCE_DIR
-            echo "$APP_PASSWORD" > "$WERCKER_STEP_TEMP/password"
-            debug "Using $EMAIL for deploy"
+            echo "$JSON_KEY" > "$WERCKER_STEP_TEMP/jsonkey"
+            debug "Using $EMAIL for deploy, keyfile."
             ls -latr /usr/local/google-cloud-sdk/bin
-            app_cfg.py appengine/app.yaml --email $EMAIL --passin < "$WERCKER_STEP_TEMP/password"
+            gcloud auth login $EMAIL --key-file $WERCKER_STEP_TEMP/jsonkey
+            gcloud preview app deploy appengine/app.yaml --project preomr-1244 
             success 'Finished'
