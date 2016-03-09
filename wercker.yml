@@ -1,4 +1,5 @@
 box: wercker/default
+build:
 deploy:
   steps: 
     - nicocanali/appengine-deploy:
