@@ -2,6 +2,7 @@ application: preomr-1244
 version: 2
 runtime: python27
 api_version: 1
+threadsafe: False
 
 handlers:
 - url: /static
