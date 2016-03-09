@@ -9,7 +9,7 @@ deploy:
     - script:
         code: |
             cd $WERCKER_SOURCE_DIR
-            key=`mktemp`
+            key=`mktemp --suffix .json`
             ls -latr $key
             echo "$JSON_KEY" > $key
             debug "Using $EMAIL for deploy, keyfile: $key"
