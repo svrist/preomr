@@ -1,10 +1,15 @@
-box: google/cloud-sdk
 build:
+  box: python:2.7
   steps:
+    - pip-install:
+        requirements_file: ""
+        packages_list: "nose NoseGAE webtest appengine-sdk"
     - script:
         code: |
-            id
+            cd $WERCKER_SOURCE_DIR/appengine
+            nosetests --with-gae --gae-lib-root /usr/local/lib/python2.7/site-packages/appengine_sdk/google_appengine/ t
 deploy:
+  box: google/cloud-sdk
   steps: 
     - mktemp:
         envvar: KEY_FILE
