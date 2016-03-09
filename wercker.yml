@@ -10,4 +10,4 @@ deploy:
         code: |
             uname -a
             which dev_appserver.py
-            which app_cfg.py
+            ls /google-cloud-sdk/bin/
