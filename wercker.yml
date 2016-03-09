@@ -13,7 +13,7 @@ deploy:
             ls -latr $key
             echo $JSON_KEY > $key
             debug "Using $EMAIL for deploy, keyfile: $key"
-            cat $key | python -m json.tool
+            cat $key
             ls -latr $key
             gcloud auth activate-service-account $EMAIL --key-file $key
             gcloud preview app deploy appengine/app.yaml --project preomr-1244 
