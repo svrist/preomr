@@ -1,8 +1,9 @@
-import cgi
-import logging
-import os
-import random
 import datetime
+try:
+    from google.appengine.dist import use_library
+    use_library('django', '1.2')
+except ImportError:
+    pass
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import login_required
 from shardcounter import get_count
