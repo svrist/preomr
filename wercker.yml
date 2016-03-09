@@ -1,4 +1,4 @@
-box: python:2.7-slim
+box: debian
 build:
   steps:
     - script:
@@ -6,6 +6,9 @@ build:
             id
 deploy:
   steps: 
+    - script:
+        code: |
+            apt-get install curl
     - fbrinker/appengine-deploy-path:
         email: $EMAIL
         password: $APP_PASS
