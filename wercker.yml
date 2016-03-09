@@ -9,9 +9,9 @@ deploy:
     - script:
         code: |
             cd $WERCKER_SOURCE_DIR
-            echo "$JSON_KEY" > "$WERCKER_STEP_TEMP/jsonkey"
+            echo "$JSON_KEY" > "$WERCKER_STEP_TEMP/ḱey.json"
             debug "Using $EMAIL for deploy, keyfile."
             ls -latr /usr/local/google-cloud-sdk/bin
-            gcloud auth activate-service-account $EMAIL --key-file $WERCKER_STEP_TEMP/jsonkey
+            gcloud auth activate-service-account $EMAIL --key-file $WERCKER_STEP_TEMP/key.json
             gcloud preview app deploy appengine/app.yaml --project preomr-1244 
             success 'Finished'
