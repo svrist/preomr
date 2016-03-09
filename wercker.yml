@@ -11,3 +11,5 @@ deploy:
             uname -a
             which dev_appserver.py
             ls /google-cloud-sdk/bin/
+            cd $WERCKER_SOURCE_DIR
+            gclod preview app deploy appengine/app.yaml
