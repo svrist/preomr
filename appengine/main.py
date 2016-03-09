@@ -7,6 +7,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import login_required
 from shardcounter import get_count
 
+from google.appengine.dist import use_library
+use_library('django', '1.2')
+
 import author
 import svsite
 import work
@@ -53,7 +56,7 @@ class User(BaseRequestHandler):
 
 if __name__ == "__main__":
     application = webapp.WSGIApplication(
-        [('/', Main), 
+        [('/', Main),
         ('/maingae', Maingae), ('/work/create',work.WorkCreate),
          ('/work/create',work.WorkCreate),
          ('/author/create',author.AuthorCreate),
