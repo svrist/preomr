@@ -1,6 +1,6 @@
 box: wercker/default
-  deploy:
-      steps: 
-        - nicocanali/appengine-deploy:
-            email: $EMAIL
-            app_pwd: $APP_PWD
+deploy:
+  steps: 
+    - nicocanali/appengine-deploy:
+        email: $EMAIL
+        app_pwd: $APP_PWD
