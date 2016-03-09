@@ -1,4 +1,4 @@
-box: ubuntu
+box: google/cloud-sdk
 build:
   steps:
     - script:
@@ -9,9 +9,5 @@ deploy:
     - script:
         code: |
             uname -a
-            dpkg --list
-            sudo apt-get -y install curl 
-    - fbrinker/appengine-deploy-path:
-        email: $EMAIL
-        password: $APP_PASS
-        srcpath: ./appengine
+            which dev_appserver.py
+            which app_cfg.py
