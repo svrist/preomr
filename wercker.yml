@@ -17,6 +17,7 @@ deploy:
     - script:
         code: |
             cd $WERCKER_SOURCE_DIR
-            gcloud auth activate-service-account $EMAIL --key-file $KEY_FILE
+            cat appengine/app.yaml
+            gcloud auth activate-service-account --key-file $KEY_FILE
             gcloud preview app deploy appengine/app.yaml --project preomr-1244 
             success 'Finished'
