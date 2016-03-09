@@ -1,4 +1,5 @@
-box: python:2.7-slim
+#box: python:2.7-slim
+box: wercker/default
 build:
   steps:
     - script:
@@ -6,6 +7,7 @@ build:
             id
 deploy:
   steps: 
-    - nicocanali/appengine-deploy:
+    - fbrinker/appengine-deploy-path:
         email: $EMAIL
-        app_pwd: $APP_PWD
+        password: $APP_PASS
+        srcpath: ./appengine
