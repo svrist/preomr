@@ -8,7 +8,9 @@ deploy:
   steps: 
     - script:
         code: |
-            apt-get install curl
+            uname -a
+            dpkg --list
+            sudo apt-get install curl
     - fbrinker/appengine-deploy-path:
         email: $EMAIL
         password: $APP_PASS
