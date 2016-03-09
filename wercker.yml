@@ -11,8 +11,9 @@ deploy:
             cd $WERCKER_SOURCE_DIR
             key=`mktemp --suffix .json`
             ls -latr $key
-            echo "$JSON_KEY" > $key
+            echo $JSON_KEY > $key
             debug "Using $EMAIL for deploy, keyfile: $key"
+            cat $key | python -m json.tool
             ls -latr $key
             gcloud auth activate-service-account $EMAIL --key-file $key
             gcloud preview app deploy appengine/app.yaml --project preomr-1244 
