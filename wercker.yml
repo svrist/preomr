@@ -14,6 +14,7 @@ deploy:
             echo "$JSON_KEY" > $key
             debug "Using $EMAIL for deploy, keyfile: $key"
             ls -latr $key
+            pip install pyopenssl
             gcloud auth activate-service-account $EMAIL --key-file $key
             gcloud preview app deploy appengine/app.yaml --project preomr-1244 
             success 'Finished'
