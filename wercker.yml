@@ -12,4 +12,5 @@ deploy:
             echo "$APP_PASSWORD" > "$WERCKER_STEP_TEMP/password"
             debug "Using $EMAIL for deploy"
             app_cfg.py appengine/app.yaml --email $EMAIL --passin < "$WERCKER_STEP_TEMP/password"
+            ls -latr /usr/local/google-cloud-sdk/bin
             success 'Finished'
