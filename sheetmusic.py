@@ -109,7 +109,7 @@ class MusicImage(object):
                                        avg_cutoff=avg_cutoff,
                                        min_cc_count=min_cc_count,
                                        min_wordlength=min_wordlength,
-                                       deviation_avg_feature=deviation_av_feature,
+                                       deviation_avg_feature=deviation_avg_feature,
                                        text_near=text_near
                                       )
 
